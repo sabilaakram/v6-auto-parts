@@ -1,0 +1,243 @@
+{% doc %}
+  @prompt
+    Generate a simple full-width image banner section for the bottom of the About Us page: just one image, no text, spanning the page width, with an optional link. Height/aspect ratio, image fit, corner radius and separate desktop/mobile images must be editable from the theme editor.
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+{% assign ai_banner_image_class = 'ai-image-banner__img-' | append: ai_gen_id %}
+{% assign ai_banner_image_mobile_class = 'ai-image-banner__img-mobile-' | append: ai_gen_id %}
+
+{% style %}
+  .ai-image-banner-{{ai_gen_id}} {
+    display: block;
+    width: 100%;
+    background-color: {{ block.settings.background_color }};
+    padding: {{ block.settings.section_padding_top }}px 0 {{ block.settings.section_padding_bottom }}px;
+  }
+
+  .ai-image-banner__container-{{ai_gen_id}} {
+    width: {{ block.settings.container_width_percent }}%;
+    max-width: {{ block.settings.content_max_width }}px;
+    margin: 0 auto;
+  }
+
+  .ai-image-banner__frame-{{ai_gen_id}} {
+    display: block;
+    width: 100%;
+    height: {{ block.settings.height_desktop }}px;
+    border-radius: {{ block.settings.image_radius }}px;
+    overflow: hidden;
+    background: #f1f1f1;
+  }
+
+  .ai-image-banner__img-{{ai_gen_id}},
+  .ai-image-banner__img-mobile-{{ai_gen_id}} {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: {{ block.settings.image_fit }};
+  }
+
+  .ai-image-banner__img-mobile-{{ai_gen_id}} {
+    display: none;
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-image-banner-{{ai_gen_id}} {
+      padding: {{ block.settings.section_padding_top_mobile }}px 0 {{ block.settings.section_padding_bottom_mobile }}px;
+    }
+
+    .ai-image-banner__container-{{ai_gen_id}} {
+      width: 100%;
+    }
+
+    .ai-image-banner__frame-{{ai_gen_id}} {
+      height: {{ block.settings.height_mobile }}px;
+      border-radius: {{ block.settings.image_radius_mobile }}px;
+    }
+
+    {% if block.settings.image_mobile %}
+      .ai-image-banner__img-{{ai_gen_id}} {
+        display: none;
+      }
+
+      .ai-image-banner__img-mobile-{{ai_gen_id}} {
+        display: block;
+      }
+    {% endif %}
+  }
+{% endstyle %}
+
+<div class="ai-image-banner-{{ai_gen_id}}">
+  <div class="ai-image-banner__container-{{ai_gen_id}}">
+    {% if block.settings.link != blank %}<a href="{{ block.settings.link }}">{% endif %}
+    <div class="ai-image-banner__frame-{{ai_gen_id}}">
+      {% if block.settings.image %}
+        {{ block.settings.image | image_url: width: 2000 | image_tag: class: ai_banner_image_class, alt: block.settings.image_alt, loading: 'lazy', widths: '600,900,1200,1600,2000' }}
+      {% else %}
+        {{ 'hero-apparel-1' | placeholder_svg_tag: ai_banner_image_class }}
+      {% endif %}
+      {% if block.settings.image_mobile %}
+        {{ block.settings.image_mobile | image_url: width: 1200 | image_tag: class: ai_banner_image_mobile_class, alt: block.settings.image_alt, loading: 'lazy', widths: '400,600,800,1000,1200' }}
+      {% endif %}
+    </div>
+    {% if block.settings.link != blank %}</a>{% endif %}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Image banner (simple)",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "container_width_percent",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "label": "Container width",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "content_max_width",
+      "min": 1000,
+      "max": 1800,
+      "step": 50,
+      "unit": "px",
+      "label": "Max width",
+      "default": 1600
+    },
+    {
+      "type": "range",
+      "id": "section_padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "label": "Padding top (desktop)",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "section_padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "label": "Padding bottom (desktop)",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "section_padding_top_mobile",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "label": "Padding top (mobile)",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "section_padding_bottom_mobile",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "label": "Padding bottom (mobile)",
+      "default": 32
+    },
+    {
+      "type": "header",
+      "content": "Image"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image (desktop)"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_mobile",
+      "label": "Image (mobile, optional)",
+      "info": "Leave blank to reuse the desktop image."
+    },
+    {
+      "type": "text",
+      "id": "image_alt",
+      "label": "Alt text"
+    },
+    {
+      "type": "url",
+      "id": "link",
+      "label": "Link (optional)"
+    },
+    {
+      "type": "select",
+      "id": "image_fit",
+      "label": "Image fit",
+      "options": [
+        { "value": "cover", "label": "Cover" },
+        { "value": "contain", "label": "Contain" }
+      ],
+      "default": "cover"
+    },
+    {
+      "type": "range",
+      "id": "height_desktop",
+      "min": 150,
+      "max": 800,
+      "step": 10,
+      "unit": "px",
+      "label": "Height (desktop)",
+      "default": 420
+    },
+    {
+      "type": "range",
+      "id": "height_mobile",
+      "min": 120,
+      "max": 600,
+      "step": 10,
+      "unit": "px",
+      "label": "Height (mobile)",
+      "default": 220
+    },
+    {
+      "type": "range",
+      "id": "image_radius",
+      "min": 0,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "label": "Corner radius (desktop)",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "image_radius_mobile",
+      "min": 0,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "label": "Corner radius (mobile)",
+      "default": 0
+    }
+  ],
+  "presets": [
+    {
+      "name": "Image banner (simple)"
+    }
+  ]
+}
+{% endschema %}

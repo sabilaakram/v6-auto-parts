@@ -1,0 +1,890 @@
+{% doc %}
+  @prompt
+    Generate an "Our Team" section for the About Us page: centered red eyebrow label + bold heading, then a row of team member photo cards (photo + name). On desktop, if there are more than the configured number of visible columns the row becomes a horizontally scrollable carousel with prev/next arrows; if there are fewer members than the column count it stays a static centered row with no scrolling/arrows. On mobile the row is always a swipeable/scrollable carousel regardless of member count. All fonts, sizes, colors and each member's photo/name/role must be editable from the theme editor for desktop and mobile.
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+{% assign ai_team_image_class = 'ai-team__image-' | append: ai_gen_id %}
+
+{% assign team_count = 0 %}
+{% for i in (1..8) %}
+  {% assign enabled_key = 'team_' | append: i | append: '_enabled' %}
+  {% if block.settings[enabled_key] %}
+    {% assign team_count = team_count | plus: 1 %}
+  {% endif %}
+{% endfor %}
+{% assign is_desktop_carousel = false %}
+{% if team_count > block.settings.columns_desktop %}
+  {% assign is_desktop_carousel = true %}
+{% endif %}
+
+{% style %}
+  .ai-team-{{ai_gen_id}} {
+    display: block;
+    width: 100%;
+    background-color: {{ block.settings.background_color }};
+    padding: {{ block.settings.section_padding_top }}px 0 {{ block.settings.section_padding_bottom }}px;
+  }
+
+  .ai-team__container-{{ai_gen_id}} {
+    width: {{ block.settings.container_width_percent }}%;
+    max-width: {{ block.settings.content_max_width }}px;
+    margin: 0 auto;
+  }
+
+  .ai-team__header-{{ai_gen_id}} {
+    text-align: {{ block.settings.heading_alignment }};
+    margin-bottom: {{ block.settings.header_spacing_bottom }}px;
+  }
+
+  .ai-team__eyebrow-{{ai_gen_id}} {
+    font-family: {{ block.settings.eyebrow_font.family }}, {{ block.settings.eyebrow_font.fallback_families }};
+    font-weight: {{ block.settings.eyebrow_font.weight }};
+    font-style: {{ block.settings.eyebrow_font.style }};
+    font-size: {{ block.settings.eyebrow_size }}px;
+    color: {{ block.settings.eyebrow_color }};
+    letter-spacing: {{ block.settings.eyebrow_letter_spacing }}px;
+    text-transform: {{ block.settings.eyebrow_case }};
+    margin: 0 0 {{ block.settings.eyebrow_spacing_bottom }}px 0;
+    display: block;
+  }
+
+  .ai-team__heading-{{ai_gen_id}} {
+    font-family: {{ block.settings.heading_font.family }}, {{ block.settings.heading_font.fallback_families }};
+    font-weight: {{ block.settings.heading_font.weight }};
+    font-style: {{ block.settings.heading_font.style }};
+    font-size: {{ block.settings.heading_size }}px;
+    line-height: {{ block.settings.heading_line_height }};
+    color: {{ block.settings.heading_color }};
+    margin: 0;
+  }
+
+  .ai-team__row-{{ai_gen_id}} {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .ai-team__track-{{ai_gen_id}} {
+    display: flex;
+    gap: {{ block.settings.card_gap }}px;
+    flex: 1 1 auto;
+    min-width: 0;
+    scroll-behavior: smooth;
+  }
+
+  .ai-team__track-{{ai_gen_id}}.is-static {
+    justify-content: center;
+    flex-wrap: wrap;
+    overflow: visible;
+  }
+
+  .ai-team__track-{{ai_gen_id}}.is-carousel {
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .ai-team__track-{{ai_gen_id}}.is-carousel::-webkit-scrollbar {
+    display: none;
+  }
+
+  .ai-team__card-{{ai_gen_id}} {
+    flex: 0 0 calc((100% - ({{ block.settings.columns_desktop }} - 1) * {{ block.settings.card_gap }}px) / {{ block.settings.columns_desktop }});
+    scroll-snap-align: start;
+    text-align: center;
+  }
+
+  .ai-team__track-{{ai_gen_id}}.is-static .ai-team__card-{{ai_gen_id}} {
+    flex: 0 0 auto;
+    width: calc((100% - ({{ block.settings.columns_desktop }} - 1) * {{ block.settings.card_gap }}px) / {{ block.settings.columns_desktop }});
+  }
+
+  .ai-team__image-wrap-{{ai_gen_id}} {
+    width: 100%;
+    border-radius: {{ block.settings.image_radius }}px;
+    overflow: hidden;
+    background: #f1f1f1;
+    margin: 0 0 {{ block.settings.name_spacing_top }}px 0;
+    {% unless block.settings.image_aspect_ratio == 'auto' %}
+      aspect-ratio: {{ block.settings.image_aspect_ratio }};
+    {% endunless %}
+  }
+
+  .ai-team__image-{{ai_gen_id}} {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .ai-team__name-{{ai_gen_id}} {
+    font-family: {{ block.settings.name_font.family }}, {{ block.settings.name_font.fallback_families }};
+    font-weight: {{ block.settings.name_font.weight }};
+    font-style: {{ block.settings.name_font.style }};
+    font-size: {{ block.settings.name_size }}px;
+    color: {{ block.settings.name_color }};
+    margin: 0;
+  }
+
+  .ai-team__role-{{ai_gen_id}} {
+    font-family: {{ block.settings.role_font.family }}, {{ block.settings.role_font.fallback_families }};
+    font-weight: {{ block.settings.role_font.weight }};
+    font-style: {{ block.settings.role_font.style }};
+    font-size: {{ block.settings.role_size }}px;
+    color: {{ block.settings.role_color }};
+    margin: 4px 0 0 0;
+  }
+
+  .ai-team__arrow-{{ai_gen_id}} {
+    flex: 0 0 auto;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: {{ block.settings.arrow_bg_color }};
+    border: 1px solid {{ block.settings.arrow_border_color }};
+    color: {{ block.settings.arrow_icon_color }};
+    cursor: pointer;
+    padding: 0;
+  }
+
+  .ai-team__arrow-{{ai_gen_id}} svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .ai-team__arrow-{{ai_gen_id}}[hidden] {
+    display: none;
+  }
+
+  @media screen and (min-width: 750px) {
+    .ai-team__row-{{ai_gen_id}}:not(.is-carousel-desktop) .ai-team__arrow-{{ai_gen_id}} {
+      display: none;
+    }
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-team-{{ai_gen_id}} {
+      padding: {{ block.settings.section_padding_top_mobile }}px 0 {{ block.settings.section_padding_bottom_mobile }}px;
+    }
+
+    .ai-team__container-{{ai_gen_id}} {
+      width: 100%;
+    }
+
+    .ai-team__eyebrow-{{ai_gen_id}} {
+      font-size: {{ block.settings.eyebrow_size_mobile }}px;
+    }
+
+    .ai-team__heading-{{ai_gen_id}} {
+      font-size: {{ block.settings.heading_size_mobile }}px;
+    }
+
+    .ai-team__track-{{ai_gen_id}} {
+      gap: {{ block.settings.card_gap_mobile }}px;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      flex-wrap: nowrap;
+      justify-content: flex-start;
+    }
+
+    .ai-team__track-{{ai_gen_id}}::-webkit-scrollbar {
+      display: none;
+    }
+
+    .ai-team__card-{{ai_gen_id}},
+    .ai-team__track-{{ai_gen_id}}.is-static .ai-team__card-{{ai_gen_id}} {
+      flex: 0 0 calc((100% - ({{ block.settings.columns_mobile }} - 1) * {{ block.settings.card_gap_mobile }}px) / {{ block.settings.columns_mobile }});
+      width: auto;
+    }
+
+    .ai-team__name-{{ai_gen_id}} {
+      font-size: {{ block.settings.name_size_mobile }}px;
+    }
+
+    .ai-team__role-{{ai_gen_id}} {
+      font-size: {{ block.settings.role_size_mobile }}px;
+    }
+
+    .ai-team__arrow-{{ai_gen_id}} {
+      display: none;
+    }
+  }
+{% endstyle %}
+
+<div class="ai-team-{{ai_gen_id}}">
+  <div class="ai-team__container-{{ai_gen_id}}">
+    <div class="ai-team__header-{{ai_gen_id}}">
+      {% if block.settings.eyebrow_text != blank %}
+        <span class="ai-team__eyebrow-{{ai_gen_id}}">{{ block.settings.eyebrow_text }}</span>
+      {% endif %}
+      {% if block.settings.heading_text != blank %}
+        <h2 class="ai-team__heading-{{ai_gen_id}}">{{ block.settings.heading_text }}</h2>
+      {% endif %}
+    </div>
+
+    <ai-team-carousel-{{ai_gen_id}} class="ai-team__row-{{ai_gen_id}}{% if is_desktop_carousel %} is-carousel-desktop{% endif %}">
+      <button type="button" class="ai-team__arrow-{{ai_gen_id}}" data-direction="prev" aria-label="Previous team members"{% unless is_desktop_carousel %} hidden{% endunless %}>
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M15 5L8 12L15 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+
+      <div class="ai-team__track-{{ai_gen_id}}{% if is_desktop_carousel %} is-carousel{% else %} is-static{% endif %}" data-team-track>
+        {% for i in (1..8) %}
+          {% assign enabled_key = 'team_' | append: i | append: '_enabled' %}
+          {% assign image_key = 'team_' | append: i | append: '_image' %}
+          {% assign name_key = 'team_' | append: i | append: '_name' %}
+          {% assign role_key = 'team_' | append: i | append: '_role' %}
+          {% if block.settings[enabled_key] %}
+            <div class="ai-team__card-{{ai_gen_id}}">
+              <div class="ai-team__image-wrap-{{ai_gen_id}}">
+                {% if block.settings[image_key] %}
+                  {{ block.settings[image_key] | image_url: width: 800 | image_tag: class: ai_team_image_class, alt: block.settings[name_key], loading: 'lazy', widths: '200,300,400,600,800' }}
+                {% else %}
+                  {{ 'image' | placeholder_svg_tag: ai_team_image_class }}
+                {% endif %}
+              </div>
+              {% if block.settings[name_key] != blank %}
+                <p class="ai-team__name-{{ai_gen_id}}">{{ block.settings[name_key] }}</p>
+              {% endif %}
+              {% if block.settings[role_key] != blank %}
+                <p class="ai-team__role-{{ai_gen_id}}">{{ block.settings[role_key] }}</p>
+              {% endif %}
+            </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+
+      <button type="button" class="ai-team__arrow-{{ai_gen_id}}" data-direction="next" aria-label="Next team members"{% unless is_desktop_carousel %} hidden{% endunless %}>
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 5L16 12L9 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </ai-team-carousel-{{ai_gen_id}}>
+  </div>
+</div>
+
+<script>
+  (function() {
+    class AiTeamCarousel{{ai_gen_id}} extends HTMLElement {
+      connectedCallback() {
+        this.track = this.querySelector('[data-team-track]');
+        this.prevBtn = this.querySelector('[data-direction="prev"]');
+        this.nextBtn = this.querySelector('[data-direction="next"]');
+        if (!this.track || !this.prevBtn || !this.nextBtn) return;
+        this.prevBtn.addEventListener('click', () => this.scrollByCard(-1));
+        this.nextBtn.addEventListener('click', () => this.scrollByCard(1));
+      }
+
+      scrollByCard(direction) {
+        const card = this.track.querySelector('[class*="ai-team__card-"]');
+        if (!card) return;
+        const gap = parseFloat(getComputedStyle(this.track).gap) || 0;
+        const amount = (card.getBoundingClientRect().width + gap) * direction;
+        this.track.scrollBy({ left: amount, behavior: 'smooth' });
+      }
+    }
+
+    if (!customElements.get('ai-team-carousel-{{ai_gen_id}}')) {
+      customElements.define('ai-team-carousel-{{ai_gen_id}}', AiTeamCarousel{{ai_gen_id}});
+    }
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Our Team",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "container_width_percent",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "label": "Container width",
+      "default": 90
+    },
+    {
+      "type": "range",
+      "id": "content_max_width",
+      "min": 1000,
+      "max": 1800,
+      "step": 50,
+      "unit": "px",
+      "label": "Max width",
+      "default": 1400
+    },
+    {
+      "type": "range",
+      "id": "section_padding_top",
+      "min": 0,
+      "max": 150,
+      "step": 2,
+      "unit": "px",
+      "label": "Padding top (desktop)",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "section_padding_bottom",
+      "min": 0,
+      "max": 150,
+      "step": 2,
+      "unit": "px",
+      "label": "Padding bottom (desktop)",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "section_padding_top_mobile",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "label": "Padding top (mobile)",
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "section_padding_bottom_mobile",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "label": "Padding bottom (mobile)",
+      "default": 32
+    },
+    {
+      "type": "header",
+      "content": "Eyebrow"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow_text",
+      "label": "Eyebrow text",
+      "default": "Our Team"
+    },
+    {
+      "type": "font_picker",
+      "id": "eyebrow_font",
+      "label": "Font",
+      "default": "inter_n7"
+    },
+    {
+      "type": "color",
+      "id": "eyebrow_color",
+      "label": "Color",
+      "default": "#a50000"
+    },
+    {
+      "type": "range",
+      "id": "eyebrow_size",
+      "min": 8,
+      "max": 28,
+      "step": 1,
+      "unit": "px",
+      "label": "Size (desktop)",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "eyebrow_size_mobile",
+      "min": 8,
+      "max": 22,
+      "step": 1,
+      "unit": "px",
+      "label": "Size (mobile)",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "eyebrow_letter_spacing",
+      "min": 0,
+      "max": 8,
+      "step": 1,
+      "unit": "px",
+      "label": "Letter spacing",
+      "default": 2
+    },
+    {
+      "type": "select",
+      "id": "eyebrow_case",
+      "label": "Text case",
+      "options": [
+        { "value": "none", "label": "None" },
+        { "value": "uppercase", "label": "Uppercase" },
+        { "value": "lowercase", "label": "Lowercase" },
+        { "value": "capitalize", "label": "Capitalize" }
+      ],
+      "default": "uppercase"
+    },
+    {
+      "type": "range",
+      "id": "eyebrow_spacing_bottom",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "label": "Spacing below",
+      "default": 12
+    },
+    {
+      "type": "header",
+      "content": "Heading"
+    },
+    {
+      "type": "text",
+      "id": "heading_text",
+      "label": "Heading",
+      "default": "Professional Team"
+    },
+    {
+      "type": "font_picker",
+      "id": "heading_font",
+      "label": "Font",
+      "default": "assistant_n7"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Color",
+      "default": "#121212"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "min": 18,
+      "max": 64,
+      "step": 1,
+      "unit": "px",
+      "label": "Size (desktop)",
+      "default": 34
+    },
+    {
+      "type": "range",
+      "id": "heading_size_mobile",
+      "min": 16,
+      "max": 44,
+      "step": 1,
+      "unit": "px",
+      "label": "Size (mobile)",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "heading_line_height",
+      "min": 1,
+      "max": 1.6,
+      "step": 0.1,
+      "label": "Line height",
+      "default": 1.2
+    },
+    {
+      "type": "select",
+      "id": "heading_alignment",
+      "label": "Header alignment",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "range",
+      "id": "header_spacing_bottom",
+      "min": 0,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "label": "Space below header",
+      "default": 40
+    },
+    {
+      "type": "header",
+      "content": "Carousel / grid"
+    },
+    {
+      "type": "range",
+      "id": "columns_desktop",
+      "min": 2,
+      "max": 6,
+      "step": 1,
+      "label": "Visible columns (desktop)",
+      "info": "If more members are enabled than this, the row becomes a scrollable carousel with arrows.",
+      "default": 4
+    },
+    {
+      "type": "range",
+      "id": "columns_mobile",
+      "min": 1,
+      "max": 3,
+      "step": 0.1,
+      "label": "Visible columns (mobile)",
+      "info": "Use a decimal (e.g. 1.2) to peek the next card. Mobile always scrolls.",
+      "default": 1.2
+    },
+    {
+      "type": "range",
+      "id": "card_gap",
+      "min": 0,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "label": "Gap between cards (desktop)",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "card_gap_mobile",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "label": "Gap between cards (mobile)",
+      "default": 16
+    },
+    {
+      "type": "select",
+      "id": "image_aspect_ratio",
+      "label": "Photo aspect ratio",
+      "options": [
+        { "value": "auto", "label": "Original" },
+        { "value": "1/1", "label": "Square (1:1)" },
+        { "value": "3/4", "label": "Portrait (3:4)" },
+        { "value": "4/5", "label": "Portrait (4:5)" }
+      ],
+      "default": "3/4"
+    },
+    {
+      "type": "range",
+      "id": "image_radius",
+      "min": 0,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "label": "Photo corner radius",
+      "default": 12
+    },
+    {
+      "type": "color",
+      "id": "arrow_bg_color",
+      "label": "Arrow background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "arrow_icon_color",
+      "label": "Arrow icon color",
+      "default": "#121212"
+    },
+    {
+      "type": "color",
+      "id": "arrow_border_color",
+      "label": "Arrow border color",
+      "default": "#e5e5e5"
+    },
+    {
+      "type": "header",
+      "content": "Name & role style"
+    },
+    {
+      "type": "range",
+      "id": "name_spacing_top",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "label": "Space below photo",
+      "default": 16
+    },
+    {
+      "type": "font_picker",
+      "id": "name_font",
+      "label": "Name font",
+      "default": "assistant_n6"
+    },
+    {
+      "type": "color",
+      "id": "name_color",
+      "label": "Name color",
+      "default": "#121212"
+    },
+    {
+      "type": "range",
+      "id": "name_size",
+      "min": 10,
+      "max": 28,
+      "step": 1,
+      "unit": "px",
+      "label": "Name size (desktop)",
+      "default": 17
+    },
+    {
+      "type": "range",
+      "id": "name_size_mobile",
+      "min": 10,
+      "max": 22,
+      "step": 1,
+      "unit": "px",
+      "label": "Name size (mobile)",
+      "default": 15
+    },
+    {
+      "type": "font_picker",
+      "id": "role_font",
+      "label": "Role font",
+      "default": "assistant_n4"
+    },
+    {
+      "type": "color",
+      "id": "role_color",
+      "label": "Role color",
+      "default": "#767676"
+    },
+    {
+      "type": "range",
+      "id": "role_size",
+      "min": 8,
+      "max": 22,
+      "step": 1,
+      "unit": "px",
+      "label": "Role size (desktop)",
+      "default": 13
+    },
+    {
+      "type": "range",
+      "id": "role_size_mobile",
+      "min": 8,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "label": "Role size (mobile)",
+      "default": 12
+    },
+    {
+      "type": "header",
+      "content": "Team member 1"
+    },
+    {
+      "type": "checkbox",
+      "id": "team_1_enabled",
+      "label": "Enable",
+      "default": true
+    },
+    {
+      "type": "image_picker",
+      "id": "team_1_image",
+      "label": "Photo"
+    },
+    {
+      "type": "text",
+      "id": "team_1_name",
+      "label": "Name",
+      "default": "James Anderson"
+    },
+    {
+      "type": "text",
+      "id": "team_1_role",
+      "label": "Role"
+    },
+    {
+      "type": "header",
+      "content": "Team member 2"
+    },
+    {
+      "type": "checkbox",
+      "id": "team_2_enabled",
+      "label": "Enable",
+      "default": true
+    },
+    {
+      "type": "image_picker",
+      "id": "team_2_image",
+      "label": "Photo"
+    },
+    {
+      "type": "text",
+      "id": "team_2_name",
+      "label": "Name",
+      "default": "Emily Roberts"
+    },
+    {
+      "type": "text",
+      "id": "team_2_role",
+      "label": "Role"
+    },
+    {
+      "type": "header",
+      "content": "Team member 3"
+    },
+    {
+      "type": "checkbox",
+      "id": "team_3_enabled",
+      "label": "Enable",
+      "default": true
+    },
+    {
+      "type": "image_picker",
+      "id": "team_3_image",
+      "label": "Photo"
+    },
+    {
+      "type": "text",
+      "id": "team_3_name",
+      "label": "Name",
+      "default": "Michael Carter"
+    },
+    {
+      "type": "text",
+      "id": "team_3_role",
+      "label": "Role"
+    },
+    {
+      "type": "header",
+      "content": "Team member 4"
+    },
+    {
+      "type": "checkbox",
+      "id": "team_4_enabled",
+      "label": "Enable",
+      "default": true
+    },
+    {
+      "type": "image_picker",
+      "id": "team_4_image",
+      "label": "Photo"
+    },
+    {
+      "type": "text",
+      "id": "team_4_name",
+      "label": "Name",
+      "default": "Jessica Thompson"
+    },
+    {
+      "type": "text",
+      "id": "team_4_role",
+      "label": "Role"
+    },
+    {
+      "type": "header",
+      "content": "Team member 5"
+    },
+    {
+      "type": "checkbox",
+      "id": "team_5_enabled",
+      "label": "Enable",
+      "default": false
+    },
+    {
+      "type": "image_picker",
+      "id": "team_5_image",
+      "label": "Photo"
+    },
+    {
+      "type": "text",
+      "id": "team_5_name",
+      "label": "Name"
+    },
+    {
+      "type": "text",
+      "id": "team_5_role",
+      "label": "Role"
+    },
+    {
+      "type": "header",
+      "content": "Team member 6"
+    },
+    {
+      "type": "checkbox",
+      "id": "team_6_enabled",
+      "label": "Enable",
+      "default": false
+    },
+    {
+      "type": "image_picker",
+      "id": "team_6_image",
+      "label": "Photo"
+    },
+    {
+      "type": "text",
+      "id": "team_6_name",
+      "label": "Name"
+    },
+    {
+      "type": "text",
+      "id": "team_6_role",
+      "label": "Role"
+    },
+    {
+      "type": "header",
+      "content": "Team member 7"
+    },
+    {
+      "type": "checkbox",
+      "id": "team_7_enabled",
+      "label": "Enable",
+      "default": false
+    },
+    {
+      "type": "image_picker",
+      "id": "team_7_image",
+      "label": "Photo"
+    },
+    {
+      "type": "text",
+      "id": "team_7_name",
+      "label": "Name"
+    },
+    {
+      "type": "text",
+      "id": "team_7_role",
+      "label": "Role"
+    },
+    {
+      "type": "header",
+      "content": "Team member 8"
+    },
+    {
+      "type": "checkbox",
+      "id": "team_8_enabled",
+      "label": "Enable",
+      "default": false
+    },
+    {
+      "type": "image_picker",
+      "id": "team_8_image",
+      "label": "Photo"
+    },
+    {
+      "type": "text",
+      "id": "team_8_name",
+      "label": "Name"
+    },
+    {
+      "type": "text",
+      "id": "team_8_role",
+      "label": "Role"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Our Team"
+    }
+  ]
+}
+{% endschema %}
