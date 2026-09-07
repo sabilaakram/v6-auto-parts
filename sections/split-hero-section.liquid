@@ -1,0 +1,822 @@
+<style>
+  .split-hero-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    min-height: {{ section.settings.section_height }}px;
+    overflow: hidden;
+    gap: 0;
+  }
+
+  .split-hero-panel {
+    display: flex;
+    flex-direction: column;
+    padding: {{ section.settings.panel_padding }}px;
+    position: relative;
+    align-items: {{ section.settings.content_align_horizontal }};
+    justify-content: {{ section.settings.content_align_vertical }};
+  }
+
+  .split-hero-panel.left {
+    background-color: {{ section.settings.left_bg_color }};
+    clip-path: polygon(0 0, 92% 0, 80% 100%, 0 100%);
+  }
+
+  .split-hero-panel.right {
+    background-color: {{ section.settings.right_bg_color }};
+    clip-path: polygon(8% 0, 100% 0, 100% 100%, 20% 100%);
+  }
+
+  .split-hero-content {
+    display: flex;
+    flex-direction: column;
+    gap: {{ section.settings.content_gap }}px;
+    text-align: {{ section.settings.text_align }};
+    width: 100%;
+    max-width: 90%;
+  }
+
+  .split-hero-heading {
+    font-family: {{ section.settings.heading_font_family }};
+    font-size: {{ section.settings.heading_font_size }}px;
+    font-weight: {{ section.settings.heading_font_weight }};
+    color: {{ section.settings.heading_text_color }};
+    margin: 0;
+    line-height: 1.2;
+    letter-spacing: {{ section.settings.heading_letter_spacing }}px;
+    text-transform: {{ section.settings.heading_text_transform }};
+    order: {{ section.settings.heading_order }};
+  }
+
+  .split-hero-subheading {
+    font-family: {{ section.settings.subheading_font_family }};
+    font-size: {{ section.settings.subheading_font_size }}px;
+    font-weight: {{ section.settings.subheading_font_weight }};
+    color: {{ section.settings.subheading_text_color }};
+    margin: 0;
+    line-height: 1.5;
+    letter-spacing: {{ section.settings.subheading_letter_spacing }}px;
+    order: {{ section.settings.subheading_order }};
+  }
+
+  .split-hero-button {
+    display: inline-{% if section.settings.button_full_width %}block{% else %}block{% endif %};
+    padding: {{ section.settings.button_padding_vertical }}px {{ section.settings.button_padding_horizontal }}px;
+    background-color: {{ section.settings.button_bg_color }};
+    color: {{ section.settings.button_text_color }};
+    text-decoration: none;
+    font-family: {{ section.settings.button_font_family }};
+    font-size: {{ section.settings.button_font_size }}px;
+    font-weight: {{ section.settings.button_font_weight }};
+    border: {{ section.settings.button_border_width }}px solid {{ section.settings.button_border_color }};
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+    text-transform: {{ section.settings.button_text_transform }};
+    letter-spacing: {{ section.settings.button_letter_spacing }}px;
+    order: {{ section.settings.button_order }};
+    width: fit-content;
+    align-self: {{ section.settings.button_align }};
+  }
+
+  .split-hero-button:hover {
+    background-color: {{ section.settings.button_bg_color_hover }};
+    color: {{ section.settings.button_text_color_hover }};
+    transform: {{ section.settings.button_hover_effect }};
+  }
+
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .split-hero-section {
+      grid-template-columns: 1fr;
+      min-height: auto;
+    }
+
+    .split-hero-panel {
+      padding: {{ section.settings.panel_padding_mobile }}px;
+      min-height: {{ section.settings.section_height_mobile }}px;
+    }
+
+    .split-hero-panel.left {
+      clip-path: none;
+    }
+
+    .split-hero-panel.right {
+      clip-path: none;
+    }
+
+    .split-hero-heading {
+      font-size: {{ section.settings.heading_font_size_mobile }}px;
+    }
+
+    .split-hero-subheading {
+      font-size: {{ section.settings.subheading_font_size_mobile }}px;
+    }
+
+    .split-hero-button {
+      font-size: {{ section.settings.button_font_size_mobile }}px;
+      padding: {{ section.settings.button_padding_vertical_mobile }}px {{ section.settings.button_padding_horizontal_mobile }}px;
+    }
+
+    .split-hero-content {
+      gap: {{ section.settings.content_gap_mobile }}px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .split-hero-section {
+      min-height: auto;
+    }
+
+    .split-hero-panel {
+      padding: {{ section.settings.panel_padding_mobile }}px;
+      min-height: {{ section.settings.section_height_mobile }}px;
+      justify-content: center;
+    }
+
+    .split-hero-heading {
+      font-size: {{ section.settings.heading_font_size_mobile }}px;
+    }
+
+    .split-hero-subheading {
+      font-size: {{ section.settings.subheading_font_size_mobile }}px;
+    }
+  }
+</style>
+
+<section class="split-hero-section">
+  <!-- Left Panel -->
+  <div class="split-hero-panel left">
+    <div class="split-hero-content">
+      <h2 class="split-hero-heading">{{ section.settings.left_heading }}</h2>
+      <p class="split-hero-subheading">{{ section.settings.left_subheading }}</p>
+      <a href="{{ section.settings.left_button_link }}" class="split-hero-button">{{ section.settings.left_button_text }}</a>
+    </div>
+  </div>
+
+  <!-- Right Panel -->
+  <div class="split-hero-panel right">
+    <div class="split-hero-content">
+      <h2 class="split-hero-heading">{{ section.settings.right_heading }}</h2>
+      <p class="split-hero-subheading">{{ section.settings.right_subheading }}</p>
+      <a href="{{ section.settings.right_button_link }}" class="split-hero-button">{{ section.settings.right_button_text }}</a>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Split Hero Section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section Layout"
+    },
+    {
+      "type": "range",
+      "id": "section_height",
+      "min": 300,
+      "max": 800,
+      "step": 50,
+      "unit": "px",
+      "label": "Section Height (Desktop)",
+      "default": 400
+    },
+    {
+      "type": "range",
+      "id": "section_height_mobile",
+      "min": 200,
+      "max": 600,
+      "step": 50,
+      "unit": "px",
+      "label": "Section Height (Mobile)",
+      "default": 300
+    },
+    {
+      "type": "range",
+      "id": "panel_padding",
+      "min": 20,
+      "max": 100,
+      "step": 10,
+      "unit": "px",
+      "label": "Panel Padding (Desktop)",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "panel_padding_mobile",
+      "min": 15,
+      "max": 50,
+      "step": 5,
+      "unit": "px",
+      "label": "Panel Padding (Mobile)",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "content_gap",
+      "min": 5,
+      "max": 50,
+      "step": 5,
+      "unit": "px",
+      "label": "Gap Between Content Elements (Desktop)",
+      "default": 15
+    },
+    {
+      "type": "range",
+      "id": "content_gap_mobile",
+      "min": 5,
+      "max": 40,
+      "step": 5,
+      "unit": "px",
+      "label": "Gap Between Content Elements (Mobile)",
+      "default": 10
+    },
+    {
+      "type": "select",
+      "id": "content_align_vertical",
+      "label": "Vertical Alignment",
+      "options": [
+        {
+          "value": "flex-start",
+          "label": "Top"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "flex-end",
+          "label": "Bottom"
+        }
+      ],
+      "default": "flex-end"
+    },
+    {
+      "type": "select",
+      "id": "content_align_horizontal",
+      "label": "Horizontal Alignment",
+      "options": [
+        {
+          "value": "flex-start",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "flex-end",
+          "label": "Right"
+        }
+      ],
+      "default": "flex-start"
+    },
+    {
+      "type": "select",
+      "id": "text_align",
+      "label": "Text Alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "header",
+      "content": "Left Panel - Background"
+    },
+    {
+      "type": "color",
+      "id": "left_bg_color",
+      "label": "Background Color",
+      "default": "#000000"
+    },
+    {
+      "type": "header",
+      "content": "Left Panel - Heading"
+    },
+    {
+      "type": "text",
+      "id": "left_heading",
+      "label": "Heading Text",
+      "default": "GREASES & LUBRICANTS"
+    },
+    {
+      "type": "select",
+      "id": "heading_font_family",
+      "label": "Heading Font Family",
+      "options": [
+        {
+          "value": "-apple-system, sans-serif",
+          "label": "System Default"
+        },
+        {
+          "value": "'Bebas Neue', sans-serif",
+          "label": "Bebas Neue"
+        }
+      ],
+      "default": "-apple-system, sans-serif"
+    },
+    {
+      "type": "range",
+      "id": "heading_font_size",
+      "min": 20,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "label": "Heading Font Size (Desktop)",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "heading_font_size_mobile",
+      "min": 18,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "label": "Heading Font Size (Mobile)",
+      "default": 24
+    },
+    {
+      "type": "select",
+      "id": "heading_font_weight",
+      "label": "Heading Font Weight",
+      "options": [
+        {
+          "value": "300",
+          "label": "Light"
+        },
+        {
+          "value": "400",
+          "label": "Normal"
+        },
+        {
+          "value": "500",
+          "label": "Medium"
+        },
+        {
+          "value": "600",
+          "label": "Semi-Bold"
+        },
+        {
+          "value": "700",
+          "label": "Bold"
+        },
+        {
+          "value": "800",
+          "label": "Extra Bold"
+        },
+        {
+          "value": "900",
+          "label": "Black"
+        }
+      ],
+      "default": "700"
+    },
+    {
+      "type": "color",
+      "id": "heading_text_color",
+      "label": "Heading Text Color",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "range",
+      "id": "heading_letter_spacing",
+      "min": 0,
+      "max": 5,
+      "step": 0.5,
+      "unit": "px",
+      "label": "Heading Letter Spacing",
+      "default": 0
+    },
+    {
+      "type": "select",
+      "id": "heading_text_transform",
+      "label": "Heading Text Transform",
+      "options": [
+        {
+          "value": "none",
+          "label": "None"
+        },
+        {
+          "value": "uppercase",
+          "label": "Uppercase"
+        },
+        {
+          "value": "lowercase",
+          "label": "Lowercase"
+        },
+        {
+          "value": "capitalize",
+          "label": "Capitalize"
+        }
+      ],
+      "default": "uppercase"
+    },
+    {
+      "type": "range",
+      "id": "heading_order",
+      "min": 1,
+      "max": 3,
+      "step": 1,
+      "label": "Heading Position Order (1=First, 2=Middle, 3=Last)",
+      "default": 1
+    },
+    {
+      "type": "header",
+      "content": "Left Panel - Subheading"
+    },
+    {
+      "type": "text",
+      "id": "left_subheading",
+      "label": "Subheading Text",
+      "default": "Top engine & chain oils from your favorite brands"
+    },
+    {
+      "type": "select",
+      "id": "subheading_font_family",
+      "label": "Subheading Font Family",
+      "options": [
+        {
+          "value": "-apple-system, sans-serif",
+          "label": "System Default"
+        },
+        {
+          "value": "Arial, sans-serif",
+          "label": "Arial"
+        },
+        {
+          "value": "'Helvetica Neue', sans-serif",
+          "label": "Helvetica"
+        },
+        {
+          "value": "Georgia, serif",
+          "label": "Georgia"
+        }
+      ],
+      "default": "-apple-system, sans-serif"
+    },
+    {
+      "type": "range",
+      "id": "subheading_font_size",
+      "min": 12,
+      "max": 32,
+      "step": 1,
+      "unit": "px",
+      "label": "Subheading Font Size (Desktop)",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "subheading_font_size_mobile",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Subheading Font Size (Mobile)",
+      "default": 14
+    },
+    {
+      "type": "select",
+      "id": "subheading_font_weight",
+      "label": "Subheading Font Weight",
+      "options": [
+        {
+          "value": "300",
+          "label": "Light"
+        },
+        {
+          "value": "400",
+          "label": "Normal"
+        },
+        {
+          "value": "500",
+          "label": "Medium"
+        },
+        {
+          "value": "600",
+          "label": "Semi-Bold"
+        },
+        {
+          "value": "700",
+          "label": "Bold"
+        }
+      ],
+      "default": "400"
+    },
+    {
+      "type": "color",
+      "id": "subheading_text_color",
+      "label": "Subheading Text Color",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "range",
+      "id": "subheading_letter_spacing",
+      "min": 0,
+      "max": 3,
+      "step": 0.5,
+      "unit": "px",
+      "label": "Subheading Letter Spacing",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "subheading_order",
+      "min": 1,
+      "max": 3,
+      "step": 1,
+      "label": "Subheading Position Order (1=First, 2=Middle, 3=Last)",
+      "default": 2
+    },
+    {
+      "type": "header",
+      "content": "Left Panel - Button"
+    },
+    {
+      "type": "text",
+      "id": "left_button_text",
+      "label": "Button Text",
+      "default": "Shop Now"
+    },
+    {
+      "type": "url",
+      "id": "left_button_link",
+      "label": "Button Link",
+      "default": "/collections/all"
+    },
+    {
+      "type": "select",
+      "id": "button_font_family",
+      "label": "Button Font Family",
+      "options": [
+        {
+          "value": "-apple-system, sans-serif",
+          "label": "System Default"
+        },
+        {
+          "value": "Arial, sans-serif",
+          "label": "Arial"
+        }
+      ],
+      "default": "-apple-system, sans-serif"
+    },
+    {
+      "type": "range",
+      "id": "button_font_size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Button Font Size (Desktop)",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "button_font_size_mobile",
+      "min": 12,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "label": "Button Font Size (Mobile)",
+      "default": 12
+    },
+    {
+      "type": "select",
+      "id": "button_font_weight",
+      "label": "Button Font Weight",
+      "options": [
+        {
+          "value": "400",
+          "label": "Normal"
+        },
+        {
+          "value": "600",
+          "label": "Semi-Bold"
+        },
+        {
+          "value": "700",
+          "label": "Bold"
+        }
+      ],
+      "default": "600"
+    },
+    {
+      "type": "color",
+      "id": "button_bg_color",
+      "label": "Button Background Color",
+      "default": "#CC0000"
+    },
+    {
+      "type": "color",
+      "id": "button_bg_color_hover",
+      "label": "Button Hover Background Color",
+      "default": "#990000"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Button Text Color",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color_hover",
+      "label": "Button Hover Text Color",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "select",
+      "id": "button_text_transform",
+      "label": "Button Text Transform",
+      "options": [
+        {
+          "value": "none",
+          "label": "None"
+        },
+        {
+          "value": "uppercase",
+          "label": "Uppercase"
+        }
+      ],
+      "default": "uppercase"
+    },
+    {
+      "type": "range",
+      "id": "button_letter_spacing",
+      "min": 0,
+      "max": 3,
+      "step": 0.5,
+      "unit": "px",
+      "label": "Button Letter Spacing",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "button_padding_horizontal",
+      "min": 10,
+      "max": 50,
+      "step": 5,
+      "unit": "px",
+      "label": "Button Horizontal Padding (Desktop)",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "button_padding_vertical",
+      "min": 8,
+      "max": 30,
+      "step": 2,
+      "unit": "px",
+      "label": "Button Vertical Padding (Desktop)",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "button_padding_horizontal_mobile",
+      "min": 10,
+      "max": 40,
+      "step": 5,
+      "unit": "px",
+      "label": "Button Horizontal Padding (Mobile)",
+      "default": 15
+    },
+    {
+      "type": "range",
+      "id": "button_padding_vertical_mobile",
+      "min": 8,
+      "max": 24,
+      "step": 2,
+      "unit": "px",
+      "label": "Button Vertical Padding (Mobile)",
+      "default": 10
+    },
+    {
+      "type": "range",
+      "id": "button_border_width",
+      "min": 0,
+      "max": 3,
+      "step": 1,
+      "unit": "px",
+      "label": "Button Border Width",
+      "default": 0
+    },
+    {
+      "type": "color",
+      "id": "button_border_color",
+      "label": "Button Border Color",
+      "default": "#CC0000"
+    },
+    {
+      "type": "select",
+      "id": "button_hover_effect",
+      "label": "Button Hover Effect",
+      "options": [
+        {
+          "value": "scale(1.05)",
+          "label": "Scale Up"
+        },
+        {
+          "value": "scale(0.95)",
+          "label": "Scale Down"
+        },
+        {
+          "value": "none",
+          "label": "None"
+        }
+      ],
+      "default": "scale(1.05)"
+    },
+    {
+      "type": "select",
+      "id": "button_align",
+      "label": "Button Alignment",
+      "options": [
+        {
+          "value": "flex-start",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "flex-end",
+          "label": "Right"
+        }
+      ],
+      "default": "flex-start"
+    },
+    {
+      "type": "range",
+      "id": "button_order",
+      "min": 1,
+      "max": 3,
+      "step": 1,
+      "label": "Button Position Order (1=First, 2=Middle, 3=Last)",
+      "default": 3
+    },
+    {
+      "type": "header",
+      "content": "Right Panel - Background"
+    },
+    {
+      "type": "color",
+      "id": "right_bg_color",
+      "label": "Background Color",
+      "default": "#CC0000"
+    },
+    {
+      "type": "header",
+      "content": "Right Panel - Heading"
+    },
+    {
+      "type": "text",
+      "id": "right_heading",
+      "label": "Heading Text",
+      "default": "SEAT COVER"
+    },
+    {
+      "type": "header",
+      "content": "Right Panel - Subheading"
+    },
+    {
+      "type": "text",
+      "id": "right_subheading",
+      "label": "Subheading Text",
+      "default": "Car Seat Protectors with Comfortable Mesh Back"
+    },
+    {
+      "type": "header",
+      "content": "Right Panel - Button"
+    },
+    {
+      "type": "text",
+      "id": "right_button_text",
+      "label": "Button Text",
+      "default": "Shop Now"
+    },
+    {
+      "type": "url",
+      "id": "right_button_link",
+      "label": "Button Link",
+      "default": "/collections/all"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Split Hero Section"
+    }
+  ]
+}
+{% endschema %}

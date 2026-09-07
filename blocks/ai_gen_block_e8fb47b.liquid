@@ -1,0 +1,684 @@
+{% doc %}
+  @prompt
+    Create a responsive two-column promotional section matching the reference image, with a diagonal/slanted divider between the two panels.
+    
+    Each panel should have a heading, description, and button.
+    
+    Make everything customizable from the Shopify Theme Editor, including:
+    
+    Panel background colors
+    Heading text, color, font size, font weight, line height, and alignment
+    Description text, color, font size, font weight, and line height
+    Button text and link
+    Button background/text colors
+    Button font size and weight
+    Button padding, border radius, border color, and border width
+    Content padding and spacing
+    Section height and top/bottom spacing
+    
+    Allow separate settings for the left and right panels.
+    
+    On desktop, keep both panels side-by-side with the diagonal divider as shown. On mobile, stack them vertically.
+    
+    Use Shopify Theme Editor settings for all styling wherever possible. Do not hard-code colors, typography, spacing, or button styling.
+    
+    Keep the section fully responsive and compatible with the current Shopify theme.
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-dual-promo-{{ ai_gen_id }} {
+    display: block;
+    width: 100%;
+    margin-top: {{ block.settings.spacing_top }}px;
+    margin-bottom: {{ block.settings.spacing_bottom }}px;
+  }
+
+  .ai-dual-promo__container-{{ ai_gen_id }} {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    min-height: {{ block.settings.section_height }}px;
+    overflow: hidden;
+  }
+
+  .ai-dual-promo__panel-{{ ai_gen_id }} {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: {{ block.settings.left_content_alignment }};
+    padding: {{ block.settings.left_content_padding }}px;
+    text-align: {{ block.settings.left_content_alignment }};
+  }
+
+  .ai-dual-promo__panel--left-{{ ai_gen_id }} {
+    background-color: {{ block.settings.left_bg_color }};
+    align-items: {{ block.settings.left_content_alignment }};
+    text-align: {{ block.settings.left_content_alignment }};
+    clip-path: polygon(0 0, 100% 0, calc(100% - {{ block.settings.divider_angle }}px) 100%, 0 100%);
+    padding-right: calc({{ block.settings.left_content_padding }}px + {{ block.settings.divider_angle }}px);
+  }
+
+  .ai-dual-promo__panel--right-{{ ai_gen_id }} {
+    background-color: {{ block.settings.right_bg_color }};
+    align-items: {{ block.settings.right_content_alignment }};
+    text-align: {{ block.settings.right_content_alignment }};
+    padding-left: calc({{ block.settings.right_content_padding }}px + {{ block.settings.divider_angle }}px);
+  }
+
+  .ai-dual-promo__content-{{ ai_gen_id }} {
+    max-width: 100%;
+  }
+
+  .ai-dual-promo__heading-{{ ai_gen_id }} {
+    margin: 0 0 {{ block.settings.content_spacing }}px 0;
+    font-size: {{ block.settings.left_heading_size }}px;
+    font-weight: {{ block.settings.left_heading_weight }};
+    line-height: {{ block.settings.left_heading_line_height }};
+    color: {{ block.settings.left_heading_color }};
+  }
+
+  .ai-dual-promo__heading--right-{{ ai_gen_id }} {
+    font-size: {{ block.settings.right_heading_size }}px;
+    font-weight: {{ block.settings.right_heading_weight }};
+    line-height: {{ block.settings.right_heading_line_height }};
+    color: {{ block.settings.right_heading_color }};
+  }
+
+  .ai-dual-promo__description-{{ ai_gen_id }} {
+    margin: 0 0 {{ block.settings.content_spacing }}px 0;
+    font-size: {{ block.settings.left_desc_size }}px;
+    font-weight: {{ block.settings.left_desc_weight }};
+    line-height: {{ block.settings.left_desc_line_height }};
+    color: {{ block.settings.left_desc_color }};
+  }
+
+  .ai-dual-promo__description--right-{{ ai_gen_id }} {
+    font-size: {{ block.settings.right_desc_size }}px;
+    font-weight: {{ block.settings.right_desc_weight }};
+    line-height: {{ block.settings.right_desc_line_height }};
+    color: {{ block.settings.right_desc_color }};
+  }
+
+  .ai-dual-promo__button-{{ ai_gen_id }} {
+    display: inline-block;
+    padding: {{ block.settings.left_button_padding }}px {{ block.settings.left_button_padding | times: 2 }}px;
+    background-color: {{ block.settings.left_button_bg }};
+    color: {{ block.settings.left_button_color }};
+    font-size: {{ block.settings.left_button_font_size }}px;
+    font-weight: {{ block.settings.left_button_font_weight }};
+    border-radius: {{ block.settings.left_button_radius }}px;
+    border: {{ block.settings.left_button_border_width }}px solid {{ block.settings.left_button_border_color }};
+    text-decoration: none;
+    transition: opacity 0.3s ease;
+    cursor: pointer;
+  }
+
+  .ai-dual-promo__button-{{ ai_gen_id }}:hover {
+    opacity: 0.85;
+  }
+
+  .ai-dual-promo__button--right-{{ ai_gen_id }} {
+    padding: {{ block.settings.right_button_padding }}px {{ block.settings.right_button_padding | times: 2 }}px;
+    background-color: {{ block.settings.right_button_bg }};
+    color: {{ block.settings.right_button_color }};
+    font-size: {{ block.settings.right_button_font_size }}px;
+    font-weight: {{ block.settings.right_button_font_weight }};
+    border-radius: {{ block.settings.right_button_radius }}px;
+    border: {{ block.settings.right_button_border_width }}px solid {{ block.settings.right_button_border_color }};
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-dual-promo__container-{{ ai_gen_id }} {
+      grid-template-columns: 1fr;
+    }
+
+    .ai-dual-promo__panel--left-{{ ai_gen_id }} {
+      clip-path: none;
+      padding-right: {{ block.settings.left_content_padding }}px;
+    }
+
+    .ai-dual-promo__panel--right-{{ ai_gen_id }} {
+      padding-left: {{ block.settings.right_content_padding }}px;
+    }
+
+    .ai-dual-promo__heading-{{ ai_gen_id }} {
+      font-size: calc({{ block.settings.left_heading_size }}px * 0.8);
+    }
+
+    .ai-dual-promo__heading--right-{{ ai_gen_id }} {
+      font-size: calc({{ block.settings.right_heading_size }}px * 0.8);
+    }
+
+    .ai-dual-promo__description-{{ ai_gen_id }} {
+      font-size: calc({{ block.settings.left_desc_size }}px * 0.9);
+    }
+
+    .ai-dual-promo__description--right-{{ ai_gen_id }} {
+      font-size: calc({{ block.settings.right_desc_size }}px * 0.9);
+    }
+  }
+{% endstyle %}
+
+<dual-promo-{{ ai_gen_id }} class="ai-dual-promo-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-dual-promo__container-{{ ai_gen_id }}">
+    <div class="ai-dual-promo__panel-{{ ai_gen_id }} ai-dual-promo__panel--left-{{ ai_gen_id }}">
+      <div class="ai-dual-promo__content-{{ ai_gen_id }}">
+        {% if block.settings.left_heading != blank %}
+          <h2 class="ai-dual-promo__heading-{{ ai_gen_id }}">{{ block.settings.left_heading }}</h2>
+        {% endif %}
+        {% if block.settings.left_description != blank %}
+          <div class="ai-dual-promo__description-{{ ai_gen_id }}">{{ block.settings.left_description }}</div>
+        {% endif %}
+        {% if block.settings.left_button_label != blank %}
+          <a href="{{ block.settings.left_button_link }}" class="ai-dual-promo__button-{{ ai_gen_id }}">
+            {{ block.settings.left_button_label }}
+          </a>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="ai-dual-promo__panel-{{ ai_gen_id }} ai-dual-promo__panel--right-{{ ai_gen_id }}">
+      <div class="ai-dual-promo__content-{{ ai_gen_id }}">
+        {% if block.settings.right_heading != blank %}
+          <h2 class="ai-dual-promo__heading-{{ ai_gen_id }} ai-dual-promo__heading--right-{{ ai_gen_id }}">{{ block.settings.right_heading }}</h2>
+        {% endif %}
+        {% if block.settings.right_description != blank %}
+          <div class="ai-dual-promo__description-{{ ai_gen_id }} ai-dual-promo__description--right-{{ ai_gen_id }}">{{ block.settings.right_description }}</div>
+        {% endif %}
+        {% if block.settings.right_button_label != blank %}
+          <a href="{{ block.settings.right_button_link }}" class="ai-dual-promo__button-{{ ai_gen_id }} ai-dual-promo__button--right-{{ ai_gen_id }}">
+            {{ block.settings.right_button_label }}
+          </a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</dual-promo-{{ ai_gen_id }}>
+
+<script>
+(function() {
+  class DualPromo{{ ai_gen_id }} extends HTMLElement {
+    constructor() {
+      super();
+    }
+
+    connectedCallback() {
+    }
+  }
+
+  customElements.define('dual-promo-{{ ai_gen_id }}', DualPromo{{ ai_gen_id }});
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Dual promo section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section layout"
+    },
+    {
+      "type": "range",
+      "id": "section_height",
+      "min": 200,
+      "max": 800,
+      "step": 20,
+      "unit": "px",
+      "label": "Minimum height",
+      "default": 400
+    },
+    {
+      "type": "range",
+      "id": "spacing_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Top spacing",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "spacing_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom spacing",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "divider_angle",
+      "min": 0,
+      "max": 200,
+      "step": 10,
+      "unit": "px",
+      "label": "Diagonal divider angle",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "content_spacing",
+      "min": 8,
+      "max": 48,
+      "step": 4,
+      "unit": "px",
+      "label": "Content spacing",
+      "default": 20
+    },
+    {
+      "type": "header",
+      "content": "Left panel"
+    },
+    {
+      "type": "color",
+      "id": "left_bg_color",
+      "label": "Background",
+      "default": "#334FB4"
+    },
+    {
+      "type": "text",
+      "id": "left_heading",
+      "label": "Heading",
+      "default": "Summer Collection"
+    },
+    {
+      "type": "color",
+      "id": "left_heading_color",
+      "label": "Heading color",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "range",
+      "id": "left_heading_size",
+      "min": 16,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "label": "Heading size",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "left_heading_weight",
+      "min": 100,
+      "max": 900,
+      "step": 100,
+      "label": "Heading weight",
+      "default": 700
+    },
+    {
+      "type": "range",
+      "id": "left_heading_line_height",
+      "min": 1,
+      "max": 2,
+      "step": 0.1,
+      "label": "Heading line height",
+      "default": 1.2
+    },
+    {
+      "type": "textarea",
+      "id": "left_description",
+      "label": "Description",
+      "default": "Discover our latest styles perfect for the season"
+    },
+    {
+      "type": "color",
+      "id": "left_desc_color",
+      "label": "Description color",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "range",
+      "id": "left_desc_size",
+      "min": 12,
+      "max": 32,
+      "step": 1,
+      "unit": "px",
+      "label": "Description size",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "left_desc_weight",
+      "min": 100,
+      "max": 900,
+      "step": 100,
+      "label": "Description weight",
+      "default": 400
+    },
+    {
+      "type": "range",
+      "id": "left_desc_line_height",
+      "min": 1,
+      "max": 2,
+      "step": 0.1,
+      "label": "Description line height",
+      "default": 1.5
+    },
+    {
+      "type": "select",
+      "id": "left_content_alignment",
+      "label": "Content alignment",
+      "options": [
+        {
+          "value": "flex-start",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "flex-end",
+          "label": "Right"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "range",
+      "id": "left_content_padding",
+      "min": 20,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Content padding",
+      "default": 40
+    },
+    {
+      "type": "header",
+      "content": "Left panel button"
+    },
+    {
+      "type": "text",
+      "id": "left_button_label",
+      "label": "Button text",
+      "default": "Shop Now"
+    },
+    {
+      "type": "url",
+      "id": "left_button_link",
+      "label": "Button link"
+    },
+    {
+      "type": "color",
+      "id": "left_button_bg",
+      "label": "Background",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "left_button_color",
+      "label": "Text color",
+      "default": "#334FB4"
+    },
+    {
+      "type": "range",
+      "id": "left_button_font_size",
+      "min": 12,
+      "max": 28,
+      "step": 1,
+      "unit": "px",
+      "label": "Font size",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "left_button_font_weight",
+      "min": 100,
+      "max": 900,
+      "step": 100,
+      "label": "Font weight",
+      "default": 600
+    },
+    {
+      "type": "range",
+      "id": "left_button_padding",
+      "min": 8,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "label": "Padding",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "left_button_radius",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "label": "Border radius",
+      "default": 4
+    },
+    {
+      "type": "color",
+      "id": "left_button_border_color",
+      "label": "Border color",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "range",
+      "id": "left_button_border_width",
+      "min": 0,
+      "max": 8,
+      "step": 1,
+      "unit": "px",
+      "label": "Border width",
+      "default": 2
+    },
+    {
+      "type": "header",
+      "content": "Right panel"
+    },
+    {
+      "type": "color",
+      "id": "right_bg_color",
+      "label": "Background",
+      "default": "#121212"
+    },
+    {
+      "type": "text",
+      "id": "right_heading",
+      "label": "Heading",
+      "default": "New Arrivals"
+    },
+    {
+      "type": "color",
+      "id": "right_heading_color",
+      "label": "Heading color",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "range",
+      "id": "right_heading_size",
+      "min": 16,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "label": "Heading size",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "right_heading_weight",
+      "min": 100,
+      "max": 900,
+      "step": 100,
+      "label": "Heading weight",
+      "default": 700
+    },
+    {
+      "type": "range",
+      "id": "right_heading_line_height",
+      "min": 1,
+      "max": 2,
+      "step": 0.1,
+      "label": "Heading line height",
+      "default": 1.2
+    },
+    {
+      "type": "textarea",
+      "id": "right_description",
+      "label": "Description",
+      "default": "Shop the freshest looks from this week"
+    },
+    {
+      "type": "color",
+      "id": "right_desc_color",
+      "label": "Description color",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "range",
+      "id": "right_desc_size",
+      "min": 12,
+      "max": 32,
+      "step": 1,
+      "unit": "px",
+      "label": "Description size",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "right_desc_weight",
+      "min": 100,
+      "max": 900,
+      "step": 100,
+      "label": "Description weight",
+      "default": 400
+    },
+    {
+      "type": "range",
+      "id": "right_desc_line_height",
+      "min": 1,
+      "max": 2,
+      "step": 0.1,
+      "label": "Description line height",
+      "default": 1.5
+    },
+    {
+      "type": "select",
+      "id": "right_content_alignment",
+      "label": "Content alignment",
+      "options": [
+        {
+          "value": "flex-start",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "flex-end",
+          "label": "Right"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "range",
+      "id": "right_content_padding",
+      "min": 20,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Content padding",
+      "default": 40
+    },
+    {
+      "type": "header",
+      "content": "Right panel button"
+    },
+    {
+      "type": "text",
+      "id": "right_button_label",
+      "label": "Button text",
+      "default": "Explore"
+    },
+    {
+      "type": "url",
+      "id": "right_button_link",
+      "label": "Button link"
+    },
+    {
+      "type": "color",
+      "id": "right_button_bg",
+      "label": "Background",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "right_button_color",
+      "label": "Text color",
+      "default": "#121212"
+    },
+    {
+      "type": "range",
+      "id": "right_button_font_size",
+      "min": 12,
+      "max": 28,
+      "step": 1,
+      "unit": "px",
+      "label": "Font size",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "right_button_font_weight",
+      "min": 100,
+      "max": 900,
+      "step": 100,
+      "label": "Font weight",
+      "default": 600
+    },
+    {
+      "type": "range",
+      "id": "right_button_padding",
+      "min": 8,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "label": "Padding",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "right_button_radius",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "label": "Border radius",
+      "default": 4
+    },
+    {
+      "type": "color",
+      "id": "right_button_border_color",
+      "label": "Border color",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "range",
+      "id": "right_button_border_width",
+      "min": 0,
+      "max": 8,
+      "step": 1,
+      "unit": "px",
+      "label": "Border width",
+      "default": 2
+    }
+  ],
+  "presets": [
+    {
+      "name": "Dual promo section"
+    }
+  ]
+}
+{% endschema %}

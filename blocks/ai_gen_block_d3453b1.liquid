@@ -1,0 +1,295 @@
+{% doc %}
+  @prompt
+    create an infinite text mansory, which can move infinitely and has a text on it, and for the responsiveness the text size will be enlarged or small, the background color will also be changed (i can input it), and also the text i will input the text/s which will move infinitely, and the properties like font, color, size etc will be handled from the frontend
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-infinite-masonry-{{ ai_gen_id }} {
+    display: block;
+    width: {{ block.settings.desktop_width_percent }}%;
+    max-width: 100%;
+    overflow: hidden;
+    background-color: {{ block.settings.background_color }};
+    padding: {{ block.settings.padding_vertical }}px 0;
+    position: relative;
+  }
+
+  .ai-infinite-masonry__track-{{ ai_gen_id }} {
+    display: flex;
+    gap: {{ block.settings.gap }}px;
+    animation: ai-masonry-scroll-{{ ai_gen_id }} {{ block.settings.animation_duration }}s linear infinite;
+    will-change: transform;
+  }
+
+  .ai-infinite-masonry__track-{{ ai_gen_id }}:hover {
+    animation-play-state: paused;
+  }
+
+  .ai-infinite-masonry__item-{{ ai_gen_id }} {
+    flex-shrink: 0;
+    font-family: {{ block.settings.font_family.family }}, {{ block.settings.font_family.fallback_families }};
+    font-weight: {{ block.settings.font_family.weight }};
+    font-style: {{ block.settings.font_family.style }};
+    font-size: {{ block.settings.font_size }}px;
+    color: {{ block.settings.text_color }};
+    white-space: nowrap;
+    padding: {{ block.settings.item_padding_vertical }}px {{ block.settings.item_padding_horizontal }}px;
+    background-color: {{ block.settings.item_background_color }};
+    border-radius: {{ block.settings.item_border_radius }}px;
+  }
+
+  @keyframes ai-masonry-scroll-{{ ai_gen_id }} {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-50%);
+    }
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-infinite-masonry__item-{{ ai_gen_id }} {
+      font-size: {{ block.settings.font_size_mobile }}px;
+    }
+
+    .ai-infinite-masonry-{{ ai_gen_id }} {
+      padding: {{ block.settings.padding_vertical_mobile }}px 0;
+    }
+  }
+{% endstyle %}
+
+<infinite-text-masonry-{{ ai_gen_id }} class="ai-infinite-masonry-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-infinite-masonry__track-{{ ai_gen_id }}">
+    {% liquid
+      assign text_items = block.settings.text_items | split: ','
+      assign total_items = text_items.size
+    %}
+
+    {% if total_items > 0 %}
+      {% for i in (1..2) %}
+        {% for item in text_items %}
+          {% assign trimmed_item = item | strip %}
+          {% if trimmed_item != blank %}
+            <div class="ai-infinite-masonry__item-{{ ai_gen_id }}">
+              {{ trimmed_item }}
+            </div>
+          {% endif %}
+        {% endfor %}
+      {% endfor %}
+    {% else %}
+      {% for i in (1..2) %}
+        <div class="ai-infinite-masonry__item-{{ ai_gen_id }}">
+          Next, add your text items
+        </div>
+        <div class="ai-infinite-masonry__item-{{ ai_gen_id }}">
+          Separate with commas
+        </div>
+        <div class="ai-infinite-masonry__item-{{ ai_gen_id }}">
+          Your text here
+        </div>
+      {% endfor %}
+    {% endif %}
+  </div>
+</infinite-text-masonry-{{ ai_gen_id }}>
+
+<script>
+  (function() {
+    class InfiniteTextMasonry{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+      }
+
+      connectedCallback() {
+        this.track = this.querySelector('.ai-infinite-masonry__track-{{ ai_gen_id }}');
+        this.ensureSmoothLoop();
+      }
+
+      ensureSmoothLoop() {
+        if (!this.track) return;
+
+        const trackWidth = this.track.scrollWidth / 2;
+        const containerWidth = this.offsetWidth;
+
+        if (trackWidth < containerWidth * 2) {
+          const items = Array.from(this.track.children);
+          const halfLength = items.length / 2;
+
+          for (let i = 0; i < halfLength; i++) {
+            const clone = items[i].cloneNode(true);
+            this.track.appendChild(clone);
+          }
+
+          this.ensureSmoothLoop();
+        }
+      }
+    }
+
+    customElements.define('infinite-text-masonry-{{ ai_gen_id }}', InfiniteTextMasonry{{ ai_gen_id }});
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Infinite text masonry",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Text content"
+    },
+    {
+      "type": "textarea",
+      "id": "text_items",
+      "label": "Text items",
+      "info": "Separate multiple items with commas",
+      "default": "Quality Auto Parts, Fast Shipping, Trusted Service, Best Prices, Expert Support"
+    },
+    {
+      "type": "header",
+      "content": "Text style"
+    },
+    {
+      "type": "font_picker",
+      "id": "font_family",
+      "label": "Font",
+      "default": "assistant_n4"
+    },
+    {
+      "type": "range",
+      "id": "font_size",
+      "label": "Desktop font size",
+      "min": 14,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "font_size_mobile",
+      "label": "Mobile font size",
+      "min": 12,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#121212"
+    },
+    {
+      "type": "header",
+      "content": "Item style"
+    },
+    {
+      "type": "color",
+      "id": "item_background_color",
+      "label": "Item background color",
+      "default": "#F3F3F3"
+    },
+    {
+      "type": "range",
+      "id": "item_border_radius",
+      "label": "Item border radius",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "item_padding_horizontal",
+      "label": "Item horizontal padding",
+      "min": 8,
+      "max": 60,
+      "step": 4,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "item_padding_vertical",
+      "label": "Item vertical padding",
+      "min": 4,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "range",
+      "id": "desktop_width_percent",
+      "label": "Desktop width",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "padding_vertical",
+      "label": "Desktop vertical padding",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_vertical_mobile",
+      "label": "Mobile vertical padding",
+      "min": 0,
+      "max": 80,
+      "step": 4,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "gap",
+      "label": "Gap between items",
+      "min": 4,
+      "max": 40,
+      "step": 4,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "header",
+      "content": "Animation"
+    },
+    {
+      "type": "range",
+      "id": "animation_duration",
+      "label": "Animation duration",
+      "min": 10,
+      "max": 60,
+      "step": 5,
+      "unit": "s",
+      "default": 30,
+      "info": "Time for one complete cycle"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Infinite text masonry"
+    }
+  ]
+}
+{% endschema %}

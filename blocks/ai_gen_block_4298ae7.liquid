@@ -1,0 +1,459 @@
+{% doc %}
+  @prompt
+    Create a full-width responsive map section with no side margins.
+    
+    The section should display a map across the full browser width and allow me to add multiple location markers/pins.
+    
+    From the Shopify Theme Editor, let me control:
+    
+    Desktop map height
+    Mobile map height
+    Map location / embed URL
+    Multiple location markers
+    Marker title and optional link
+    Zoom level
+    Section top/bottom spacing
+    
+    Make the desktop and mobile heights completely independent, for example 450px desktop and 280px mobile.
+    
+    The map must remain fully responsive, fill 100% width, and not create horizontal scrolling.
+    
+    If using Google Maps, use an embed/API-based map rather than a static image so users can zoom, drag, and interact with it.
+    
+    Keep all styles scoped only to this section.
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-map-container-{{ ai_gen_id }} {
+    display: block;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    padding-top: {{ block.settings.spacing_top }}px;
+    padding-bottom: {{ block.settings.spacing_bottom }}px;
+    overflow: hidden;
+  }
+
+  .ai-map-wrapper-{{ ai_gen_id }} {
+    position: relative;
+    width: 100%;
+    height: {{ block.settings.desktop_height }}px;
+    margin: 0;
+    padding: 0;
+  }
+
+  .ai-map-iframe-{{ ai_gen_id }} {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+
+  .ai-map-placeholder-{{ ai_gen_id }} {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    background-color: #f4f4f4;
+    color: #666;
+    text-align: center;
+    padding: 40px 20px;
+  }
+
+  .ai-map-placeholder-{{ ai_gen_id }} svg {
+    width: 100px;
+    height: 100px;
+    margin-bottom: 20px;
+    opacity: 0.3;
+  }
+
+  .ai-map-placeholder-text-{{ ai_gen_id }} {
+    font-size: 14px;
+    max-width: 400px;
+  }
+
+  .ai-map-markers-{{ ai_gen_id }} {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    z-index: 10;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 8px;
+    padding: 16px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    max-width: 280px;
+  }
+
+  .ai-map-markers-title-{{ ai_gen_id }} {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: #121212;
+  }
+
+  .ai-map-marker-item-{{ ai_gen_id }} {
+    margin-bottom: 8px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #e0e0e0;
+  }
+
+  .ai-map-marker-item-{{ ai_gen_id }}:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+  }
+
+  .ai-map-marker-link-{{ ai_gen_id }} {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #121212;
+    text-decoration: none;
+    font-size: 14px;
+    transition: color 0.3s ease;
+  }
+
+  .ai-map-marker-link-{{ ai_gen_id }}:hover {
+    color: #334FB4;
+  }
+
+  .ai-map-marker-icon-{{ ai_gen_id }} {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+    color: #334FB4;
+  }
+
+  .ai-map-marker-text-{{ ai_gen_id }} {
+    color: #121212;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-map-wrapper-{{ ai_gen_id }} {
+      height: {{ block.settings.mobile_height }}px;
+    }
+
+    .ai-map-markers-{{ ai_gen_id }} {
+      top: 10px;
+      left: 10px;
+      padding: 12px;
+      max-width: calc(100% - 20px);
+    }
+
+    .ai-map-markers-title-{{ ai_gen_id }} {
+      font-size: 14px;
+      margin-bottom: 8px;
+    }
+
+    .ai-map-marker-link-{{ ai_gen_id }},
+    .ai-map-marker-text-{{ ai_gen_id }} {
+      font-size: 13px;
+    }
+  }
+{% endstyle %}
+
+<ai-map-{{ ai_gen_id }} class="ai-map-container-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-map-wrapper-{{ ai_gen_id }}">
+    {% if block.settings.map_url != blank %}
+      <iframe
+        class="ai-map-iframe-{{ ai_gen_id }}"
+        src="{{ block.settings.map_url }}"
+        allowfullscreen
+        loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade"
+        title="{{ block.settings.map_title }}"
+      ></iframe>
+
+      {% assign has_markers = false %}
+      {% for i in (1..5) %}
+        {% liquid
+          assign marker_enabled_key = 'marker_' | append: i | append: '_enabled'
+          assign marker_enabled = block.settings[marker_enabled_key]
+          if marker_enabled
+            assign has_markers = true
+            break
+          endif
+        %}
+      {% endfor %}
+
+      {% if has_markers and block.settings.show_markers %}
+        <div class="ai-map-markers-{{ ai_gen_id }}">
+          {% if block.settings.markers_title != blank %}
+            <div class="ai-map-markers-title-{{ ai_gen_id }}">{{ block.settings.markers_title }}</div>
+          {% endif %}
+
+          {% for i in (1..5) %}
+            {% liquid
+              assign marker_enabled_key = 'marker_' | append: i | append: '_enabled'
+              assign marker_title_key = 'marker_' | append: i | append: '_title'
+              assign marker_link_key = 'marker_' | append: i | append: '_link'
+
+              assign marker_enabled = block.settings[marker_enabled_key]
+              assign marker_title = block.settings[marker_title_key]
+              assign marker_link = block.settings[marker_link_key]
+            %}
+
+            {% if marker_enabled and marker_title != blank %}
+              <div class="ai-map-marker-item-{{ ai_gen_id }}">
+                {% if marker_link != blank %}
+                  <a href="{{ marker_link }}" class="ai-map-marker-link-{{ ai_gen_id }}">
+                    <svg class="ai-map-marker-icon-{{ ai_gen_id }}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                      <circle cx="12" cy="10" r="3"></circle>
+                    </svg>
+                    <span>{{ marker_title }}</span>
+                  </a>
+                {% else %}
+                  <div class="ai-map-marker-text-{{ ai_gen_id }}">
+                    <svg class="ai-map-marker-icon-{{ ai_gen_id }}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                      <circle cx="12" cy="10" r="3"></circle>
+                    </svg>
+                    <span>{{ marker_title }}</span>
+                  </div>
+                {% endif %}
+              </div>
+            {% endif %}
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% else %}
+      <div class="ai-map-placeholder-{{ ai_gen_id }}">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon>
+          <line x1="8" y1="2" x2="8" y2="18"></line>
+          <line x1="16" y1="6" x2="16" y2="22"></line>
+        </svg>
+        <div class="ai-map-placeholder-text-{{ ai_gen_id }}">
+          <strong>Add your map embed URL</strong>
+          <p style="margin-top: 8px; font-size: 12px;">Get the embed code from Google Maps, paste the src URL in the settings.</p>
+        </div>
+      </div>
+    {% endif %}
+  </div>
+</ai-map-{{ ai_gen_id }}>
+
+<script>
+  (function() {
+    class AiMap{{ai_gen_id}} extends HTMLElement {
+      constructor() {
+        super();
+      }
+
+      connectedCallback() {
+        this.iframe = this.querySelector('.ai-map-iframe-{{ ai_gen_id }}');
+        if (this.iframe) {
+          this.ensureResponsive();
+        }
+      }
+
+      ensureResponsive() {
+        this.iframe.style.width = '100%';
+        this.iframe.style.height = '100%';
+      }
+    }
+
+    customElements.define('ai-map-{{ ai_gen_id }}', AiMap{{ai_gen_id}});
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Interactive map",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Map settings"
+    },
+    {
+      "type": "text",
+      "id": "map_title",
+      "label": "Map title",
+      "default": "Store locations",
+      "info": "For accessibility"
+    },
+    {
+      "type": "text",
+      "id": "map_url",
+      "label": "Map embed URL",
+      "info": "Paste the src URL from Google Maps embed code. Example: https://www.google.com/maps/embed?pb=..."
+    },
+    {
+      "type": "range",
+      "id": "desktop_height",
+      "min": 200,
+      "max": 800,
+      "step": 10,
+      "unit": "px",
+      "label": "Desktop height",
+      "default": 450
+    },
+    {
+      "type": "range",
+      "id": "mobile_height",
+      "min": 150,
+      "max": 600,
+      "step": 10,
+      "unit": "px",
+      "label": "Mobile height",
+      "default": 280
+    },
+    {
+      "type": "header",
+      "content": "Location markers"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_markers",
+      "label": "Show location markers",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "markers_title",
+      "label": "Markers section title",
+      "default": "Our locations"
+    },
+    {
+      "type": "header",
+      "content": "Marker 1"
+    },
+    {
+      "type": "checkbox",
+      "id": "marker_1_enabled",
+      "label": "Enable marker 1",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "marker_1_title",
+      "label": "Location name",
+      "default": "Main Store"
+    },
+    {
+      "type": "url",
+      "id": "marker_1_link",
+      "label": "Location link"
+    },
+    {
+      "type": "header",
+      "content": "Marker 2"
+    },
+    {
+      "type": "checkbox",
+      "id": "marker_2_enabled",
+      "label": "Enable marker 2",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "marker_2_title",
+      "label": "Location name"
+    },
+    {
+      "type": "url",
+      "id": "marker_2_link",
+      "label": "Location link"
+    },
+    {
+      "type": "header",
+      "content": "Marker 3"
+    },
+    {
+      "type": "checkbox",
+      "id": "marker_3_enabled",
+      "label": "Enable marker 3",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "marker_3_title",
+      "label": "Location name"
+    },
+    {
+      "type": "url",
+      "id": "marker_3_link",
+      "label": "Location link"
+    },
+    {
+      "type": "header",
+      "content": "Marker 4"
+    },
+    {
+      "type": "checkbox",
+      "id": "marker_4_enabled",
+      "label": "Enable marker 4",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "marker_4_title",
+      "label": "Location name"
+    },
+    {
+      "type": "url",
+      "id": "marker_4_link",
+      "label": "Location link"
+    },
+    {
+      "type": "header",
+      "content": "Marker 5"
+    },
+    {
+      "type": "checkbox",
+      "id": "marker_5_enabled",
+      "label": "Enable marker 5",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "marker_5_title",
+      "label": "Location name"
+    },
+    {
+      "type": "url",
+      "id": "marker_5_link",
+      "label": "Location link"
+    },
+    {
+      "type": "header",
+      "content": "Section spacing"
+    },
+    {
+      "type": "range",
+      "id": "spacing_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Top spacing",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "spacing_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom spacing",
+      "default": 0
+    }
+  ],
+  "presets": [
+    {
+      "name": "Interactive map"
+    }
+  ]
+}
+{% endschema %}

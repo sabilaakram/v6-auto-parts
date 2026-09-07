@@ -1,0 +1,1465 @@
+{% doc %}
+  @prompt
+    Create a fully customizable Shopify announcement / benefits bar section similar to a premium ecommerce trust bar.
+    
+    The section must be full width and contain multiple horizontal icon boxes / benefit items. Each item should contain:
+    
+    An icon
+    Main heading/text
+    Optional sub-text
+    
+    I should be able to add, remove, duplicate, and reorder unlimited benefit/icon items from the Shopify Theme Editor using blocks.
+    
+    Section Settings
+    
+    Add frontend Theme Editor controls for:
+    
+    Full-width layout
+    Background color
+    Section height
+    Top and bottom padding
+    Left and right padding
+    Maximum content width if needed
+    Content alignment: Left / Center / Right
+    Horizontal gap between benefit items
+    Vertical alignment of all items
+    Optional top/bottom border
+    Individual Icon Box Settings
+    
+    Each block must allow me to customize:
+    
+    Upload/select an icon or SVG
+    Icon size
+    Icon position
+    Main text
+    Sub-text
+    Optional link
+    Individual alignment if required
+    Typography Controls
+    
+    Provide Theme Editor settings for both main text and sub-text:
+    
+    Text color
+    Font size
+    Font family using Shopify theme fonts
+    Font weight
+    Font style
+    Line height
+    Letter spacing
+    Text transformation/case:
+    Normal
+    Uppercase
+    Lowercase
+    Capitalize
+    
+    Main text and sub-text should be styled independently.
+    
+    Desktop Layout
+    
+    On desktop/tablet:
+    
+    Display all benefit/icon boxes horizontally in one row when space allows
+    Allow positioning/alignment as:
+    Left
+    Center
+    Right
+    Space-between
+    Space-around
+    Space-evenly
+    Keep icons and text vertically centered
+    Do not force equal-width blocks unless selected through a setting
+    
+    The layout should look similar to:
+    
+    [Icon] Free Delivery – For orders above £25
+    
+    [Icon] Klarna – Pay in 30 Days
+    
+    [Icon] Price Match – Promise
+    
+    Mobile Behaviour — Infinite Carousel
+    
+    On mobile devices, convert the benefit items into a smooth continuously looping infinite horizontal carousel / marquee.
+    
+    Requirements:
+    
+    Infinite seamless loop
+    No visible jump when restarting
+    Automatically duplicate items internally if required for seamless looping
+    Continuous smooth animation
+    Adjustable carousel speed from Theme Editor
+    Option to pause animation on hover for desktop if carousel is enabled there
+    No scrollbar
+    No pagination dots
+    No navigation arrows
+    Items must remain on a single horizontal line
+    Do not stack blocks vertically
+    Preserve the icon + main text + sub-text layout
+    
+    Add a mobile setting for:
+    
+    Carousel speed
+    Gap between items
+    Mobile section height
+    Mobile font sizes
+    Mobile icon size
+    Mobile horizontal padding
+    Responsive Requirements
+    
+    Make the section fully responsive for:
+    
+    Desktop
+    Tablet
+    Mobile
+    
+    Desktop and mobile settings should be independently adjustable wherever practical., th icon, main text and the sub text all will be in one row, not vertically stacked
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-benefit-bar-{{ ai_gen_id }} {
+    display: block;
+    width: 100%;
+    background-color: {{ block.settings.background_color }};
+    padding: {{ block.settings.padding_top }}px {{ block.settings.padding_horizontal }}px {{ block.settings.padding_bottom }}px {{ block.settings.padding_horizontal }}px;
+    border-top: {% if block.settings.show_border_top %}{{ block.settings.border_thickness }}px solid {{ block.settings.border_color }}{% else %}none{% endif %};
+    border-bottom: {% if block.settings.show_border_bottom %}{{ block.settings.border_thickness }}px solid {{ block.settings.border_color }}{% else %}none{% endif %};
+    overflow: hidden;
+  }
+
+  .ai-benefit-bar-container-{{ ai_gen_id }} {
+    max-width: {{ block.settings.max_content_width }}px;
+    margin: 0 auto;
+    min-height: {{ block.settings.section_height }}px;
+  }
+
+  .ai-benefit-bar-desktop-{{ ai_gen_id }} {
+    display: none;
+    align-items: {{ block.settings.vertical_alignment }};
+    {% if block.settings.desktop_layout == 'left' %}
+      justify-content: flex-start;
+    {% elsif block.settings.desktop_layout == 'center' %}
+      justify-content: center;
+    {% elsif block.settings.desktop_layout == 'right' %}
+      justify-content: flex-end;
+    {% elsif block.settings.desktop_layout == 'space-between' %}
+      justify-content: space-between;
+    {% elsif block.settings.desktop_layout == 'space-around' %}
+      justify-content: space-around;
+    {% elsif block.settings.desktop_layout == 'space-evenly' %}
+      justify-content: space-evenly;
+    {% endif %}
+    gap: {{ block.settings.horizontal_gap }}px;
+    flex-wrap: wrap;
+    min-height: {{ block.settings.section_height }}px;
+  }
+
+  .ai-benefit-bar-mobile-{{ ai_gen_id }} {
+    display: block;
+  }
+
+  .ai-benefit-bar-carousel-{{ ai_gen_id }} {
+    display: flex;
+    align-items: {{ block.settings.vertical_alignment }};
+    gap: {{ block.settings.mobile_gap }}px;
+    min-height: {{ block.settings.mobile_section_height }}px;
+    animation: ai-benefit-bar-scroll-{{ ai_gen_id }} {{ block.settings.carousel_speed }}s linear infinite;
+    width: fit-content;
+  }
+
+  .ai-benefit-bar-carousel-{{ ai_gen_id }}:hover {
+    {% if block.settings.pause_on_hover %}
+      animation-play-state: paused;
+    {% endif %}
+  }
+
+  @keyframes ai-benefit-bar-scroll-{{ ai_gen_id }} {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-50%);
+    }
+  }
+
+  .ai-benefit-item-{{ ai_gen_id }} {
+    display: flex;
+    align-items: {{ block.settings.item_vertical_alignment }};
+    gap: {{ block.settings.icon_text_gap }}px;
+    text-align: {{ block.settings.content_alignment }};
+    flex-shrink: 0;
+  }
+
+  .ai-benefit-item-icon-{{ ai_gen_id }} {
+    flex-shrink: 0;
+    width: {{ block.settings.icon_size }}px;
+    height: {{ block.settings.icon_size }}px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ai-benefit-item-icon-{{ ai_gen_id }} img,
+  .ai-benefit-item-icon-{{ ai_gen_id }} svg {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  .ai-benefit-item-content-{{ ai_gen_id }} {
+    display: flex;
+    align-items: {{ block.settings.item_vertical_alignment }};
+    gap: {{ block.settings.text_gap }}px;
+    flex-wrap: nowrap;
+  }
+
+  .ai-benefit-item-main-text-{{ ai_gen_id }} {
+    color: {{ block.settings.main_text_color }};
+    font-size: {{ block.settings.main_text_size }}px;
+    font-family: {{ block.settings.main_text_font.family }}, {{ block.settings.main_text_font.fallback_families }};
+    font-weight: {{ block.settings.main_text_font.weight }};
+    font-style: {{ block.settings.main_text_font_style }};
+    line-height: {{ block.settings.main_text_line_height }};
+    letter-spacing: {{ block.settings.main_text_letter_spacing }}px;
+    text-transform: {{ block.settings.main_text_transform }};
+    margin: 0;
+    white-space: nowrap;
+  }
+
+  .ai-benefit-item-sub-text-{{ ai_gen_id }} {
+    color: {{ block.settings.sub_text_color }};
+    font-size: {{ block.settings.sub_text_size }}px;
+    font-family: {{ block.settings.sub_text_font.family }}, {{ block.settings.sub_text_font.fallback_families }};
+    font-weight: {{ block.settings.sub_text_font.weight }};
+    font-style: {{ block.settings.sub_text_font_style }};
+    line-height: {{ block.settings.sub_text_line_height }};
+    letter-spacing: {{ block.settings.sub_text_letter_spacing }}px;
+    text-transform: {{ block.settings.sub_text_transform }};
+    margin: 0;
+    white-space: nowrap;
+  }
+
+  .ai-benefit-item-link-{{ ai_gen_id }} {
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    align-items: {{ block.settings.item_vertical_alignment }};
+    gap: {{ block.settings.icon_text_gap }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .ai-benefit-bar-{{ ai_gen_id }} {
+      padding: {{ block.settings.padding_top }}px {{ block.settings.padding_horizontal }}px {{ block.settings.padding_bottom }}px {{ block.settings.padding_horizontal }}px;
+    }
+
+    .ai-benefit-bar-desktop-{{ ai_gen_id }} {
+      display: flex;
+    }
+
+    .ai-benefit-bar-mobile-{{ ai_gen_id }} {
+      display: none;
+    }
+
+    .ai-benefit-item-icon-{{ ai_gen_id }} {
+      width: {{ block.settings.icon_size }}px;
+      height: {{ block.settings.icon_size }}px;
+    }
+
+    .ai-benefit-item-main-text-{{ ai_gen_id }} {
+      font-size: {{ block.settings.main_text_size }}px;
+    }
+
+    .ai-benefit-item-sub-text-{{ ai_gen_id }} {
+      font-size: {{ block.settings.sub_text_size }}px;
+    }
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-benefit-bar-{{ ai_gen_id }} {
+      padding: {{ block.settings.mobile_padding_vertical }}px {{ block.settings.mobile_padding_horizontal }}px;
+    }
+
+    .ai-benefit-bar-container-{{ ai_gen_id }} {
+      max-width: 100%;
+      min-height: {{ block.settings.mobile_section_height }}px;
+    }
+
+    .ai-benefit-bar-carousel-{{ ai_gen_id }} {
+      min-height: {{ block.settings.mobile_section_height }}px;
+    }
+
+    .ai-benefit-item-icon-{{ ai_gen_id }} {
+      width: {{ block.settings.mobile_icon_size }}px;
+      height: {{ block.settings.mobile_icon_size }}px;
+    }
+
+    .ai-benefit-item-main-text-{{ ai_gen_id }} {
+      font-size: {{ block.settings.mobile_main_text_size }}px;
+    }
+
+    .ai-benefit-item-sub-text-{{ ai_gen_id }} {
+      font-size: {{ block.settings.mobile_sub_text_size }}px;
+    }
+  }
+{% endstyle %}
+
+<benefit-bar-{{ ai_gen_id }} class="ai-benefit-bar-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-benefit-bar-container-{{ ai_gen_id }}">
+    <div class="ai-benefit-bar-desktop-{{ ai_gen_id }}">
+      {% if block.settings.item_1_main_text != blank or block.settings.item_1_icon != blank %}
+        {% if block.settings.item_1_link != blank %}
+          <a href="{{ block.settings.item_1_link }}" class="ai-benefit-item-link-{{ ai_gen_id }}">
+            <div class="ai-benefit-item-{{ ai_gen_id }}">
+              {% if block.settings.item_1_icon != blank %}
+                <div class="ai-benefit-item-icon-{{ ai_gen_id }}">
+                  <img
+                    src="{{ block.settings.item_1_icon | image_url: width: 200 }}"
+                    alt="{{ block.settings.item_1_main_text | escape }}"
+                    loading="lazy"
+                    width="200"
+                    height="200"
+                  >
+                </div>
+              {% endif %}
+              <div class="ai-benefit-item-content-{{ ai_gen_id }}">
+                {% if block.settings.item_1_main_text != blank %}
+                  <div class="ai-benefit-item-main-text-{{ ai_gen_id }}">{{ block.settings.item_1_main_text }}</div>
+                {% endif %}
+                {% if block.settings.item_1_sub_text != blank %}
+                  <div class="ai-benefit-item-sub-text-{{ ai_gen_id }}">{{ block.settings.item_1_sub_text }}</div>
+                {% endif %}
+              </div>
+            </div>
+          </a>
+        {% else %}
+          <div class="ai-benefit-item-{{ ai_gen_id }}">
+            {% if block.settings.item_1_icon != blank %}
+              <div class="ai-benefit-item-icon-{{ ai_gen_id }}">
+                <img
+                  src="{{ block.settings.item_1_icon | image_url: width: 200 }}"
+                  alt="{{ block.settings.item_1_main_text | escape }}"
+                  loading="lazy"
+                  width="200"
+                  height="200"
+                >
+              </div>
+            {% endif %}
+            <div class="ai-benefit-item-content-{{ ai_gen_id }}">
+              {% if block.settings.item_1_main_text != blank %}
+                <div class="ai-benefit-item-main-text-{{ ai_gen_id }}">{{ block.settings.item_1_main_text }}</div>
+              {% endif %}
+              {% if block.settings.item_1_sub_text != blank %}
+                <div class="ai-benefit-item-sub-text-{{ ai_gen_id }}">{{ block.settings.item_1_sub_text }}</div>
+              {% endif %}
+            </div>
+          </div>
+        {% endif %}
+      {% endif %}
+
+      {% if block.settings.item_2_main_text != blank or block.settings.item_2_icon != blank %}
+        {% if block.settings.item_2_link != blank %}
+          <a href="{{ block.settings.item_2_link }}" class="ai-benefit-item-link-{{ ai_gen_id }}">
+            <div class="ai-benefit-item-{{ ai_gen_id }}">
+              {% if block.settings.item_2_icon != blank %}
+                <div class="ai-benefit-item-icon-{{ ai_gen_id }}">
+                  <img
+                    src="{{ block.settings.item_2_icon | image_url: width: 200 }}"
+                    alt="{{ block.settings.item_2_main_text | escape }}"
+                    loading="lazy"
+                    width="200"
+                    height="200"
+                  >
+                </div>
+              {% endif %}
+              <div class="ai-benefit-item-content-{{ ai_gen_id }}">
+                {% if block.settings.item_2_main_text != blank %}
+                  <div class="ai-benefit-item-main-text-{{ ai_gen_id }}">{{ block.settings.item_2_main_text }}</div>
+                {% endif %}
+                {% if block.settings.item_2_sub_text != blank %}
+                  <div class="ai-benefit-item-sub-text-{{ ai_gen_id }}">{{ block.settings.item_2_sub_text }}</div>
+                {% endif %}
+              </div>
+            </div>
+          </a>
+        {% else %}
+          <div class="ai-benefit-item-{{ ai_gen_id }}">
+            {% if block.settings.item_2_icon != blank %}
+              <div class="ai-benefit-item-icon-{{ ai_gen_id }}">
+                <img
+                  src="{{ block.settings.item_2_icon | image_url: width: 200 }}"
+                  alt="{{ block.settings.item_2_main_text | escape }}"
+                  loading="lazy"
+                  width="200"
+                  height="200"
+                >
+              </div>
+            {% endif %}
+            <div class="ai-benefit-item-content-{{ ai_gen_id }}">
+              {% if block.settings.item_2_main_text != blank %}
+                <div class="ai-benefit-item-main-text-{{ ai_gen_id }}">{{ block.settings.item_2_main_text }}</div>
+              {% endif %}
+              {% if block.settings.item_2_sub_text != blank %}
+                <div class="ai-benefit-item-sub-text-{{ ai_gen_id }}">{{ block.settings.item_2_sub_text }}</div>
+              {% endif %}
+            </div>
+          </div>
+        {% endif %}
+      {% endif %}
+
+      {% if block.settings.item_3_main_text != blank or block.settings.item_3_icon != blank %}
+        {% if block.settings.item_3_link != blank %}
+          <a href="{{ block.settings.item_3_link }}" class="ai-benefit-item-link-{{ ai_gen_id }}">
+            <div class="ai-benefit-item-{{ ai_gen_id }}">
+              {% if block.settings.item_3_icon != blank %}
+                <div class="ai-benefit-item-icon-{{ ai_gen_id }}">
+                  <img
+                    src="{{ block.settings.item_3_icon | image_url: width: 200 }}"
+                    alt="{{ block.settings.item_3_main_text | escape }}"
+                    loading="lazy"
+                    width="200"
+                    height="200"
+                  >
+                </div>
+              {% endif %}
+              <div class="ai-benefit-item-content-{{ ai_gen_id }}">
+                {% if block.settings.item_3_main_text != blank %}
+                  <div class="ai-benefit-item-main-text-{{ ai_gen_id }}">{{ block.settings.item_3_main_text }}</div>
+                {% endif %}
+                {% if block.settings.item_3_sub_text != blank %}
+                  <div class="ai-benefit-item-sub-text-{{ ai_gen_id }}">{{ block.settings.item_3_sub_text }}</div>
+                {% endif %}
+              </div>
+            </div>
+          </a>
+        {% else %}
+          <div class="ai-benefit-item-{{ ai_gen_id }}">
+            {% if block.settings.item_3_icon != blank %}
+              <div class="ai-benefit-item-icon-{{ ai_gen_id }}">
+                <img
+                  src="{{ block.settings.item_3_icon | image_url: width: 200 }}"
+                  alt="{{ block.settings.item_3_main_text | escape }}"
+                  loading="lazy"
+                  width="200"
+                  height="200"
+                >
+              </div>
+            {% endif %}
+            <div class="ai-benefit-item-content-{{ ai_gen_id }}">
+              {% if block.settings.item_3_main_text != blank %}
+                <div class="ai-benefit-item-main-text-{{ ai_gen_id }}">{{ block.settings.item_3_main_text }}</div>
+              {% endif %}
+              {% if block.settings.item_3_sub_text != blank %}
+                <div class="ai-benefit-item-sub-text-{{ ai_gen_id }}">{{ block.settings.item_3_sub_text }}</div>
+              {% endif %}
+            </div>
+          </div>
+        {% endif %}
+      {% endif %}
+
+      {% if block.settings.item_4_main_text != blank or block.settings.item_4_icon != blank %}
+        {% if block.settings.item_4_link != blank %}
+          <a href="{{ block.settings.item_4_link }}" class="ai-benefit-item-link-{{ ai_gen_id }}">
+            <div class="ai-benefit-item-{{ ai_gen_id }}">
+              {% if block.settings.item_4_icon != blank %}
+                <div class="ai-benefit-item-icon-{{ ai_gen_id }}">
+                  <img
+                    src="{{ block.settings.item_4_icon | image_url: width: 200 }}"
+                    alt="{{ block.settings.item_4_main_text | escape }}"
+                    loading="lazy"
+                    width="200"
+                    height="200"
+                  >
+                </div>
+              {% endif %}
+              <div class="ai-benefit-item-content-{{ ai_gen_id }}">
+                {% if block.settings.item_4_main_text != blank %}
+                  <div class="ai-benefit-item-main-text-{{ ai_gen_id }}">{{ block.settings.item_4_main_text }}</div>
+                {% endif %}
+                {% if block.settings.item_4_sub_text != blank %}
+                  <div class="ai-benefit-item-sub-text-{{ ai_gen_id }}">{{ block.settings.item_4_sub_text }}</div>
+                {% endif %}
+              </div>
+            </div>
+          </a>
+        {% else %}
+          <div class="ai-benefit-item-{{ ai_gen_id }}">
+            {% if block.settings.item_4_icon != blank %}
+              <div class="ai-benefit-item-icon-{{ ai_gen_id }}">
+                <img
+                  src="{{ block.settings.item_4_icon | image_url: width: 200 }}"
+                  alt="{{ block.settings.item_4_main_text | escape }}"
+                  loading="lazy"
+                  width="200"
+                  height="200"
+                >
+              </div>
+            {% endif %}
+            <div class="ai-benefit-item-content-{{ ai_gen_id }}">
+              {% if block.settings.item_4_main_text != blank %}
+                <div class="ai-benefit-item-main-text-{{ ai_gen_id }}">{{ block.settings.item_4_main_text }}</div>
+              {% endif %}
+              {% if block.settings.item_4_sub_text != blank %}
+                <div class="ai-benefit-item-sub-text-{{ ai_gen_id }}">{{ block.settings.item_4_sub_text }}</div>
+              {% endif %}
+            </div>
+          </div>
+        {% endif %}
+      {% endif %}
+
+      {% if block.settings.item_5_main_text != blank or block.settings.item_5_icon != blank %}
+        {% if block.settings.item_5_link != blank %}
+          <a href="{{ block.settings.item_5_link }}" class="ai-benefit-item-link-{{ ai_gen_id }}">
+            <div class="ai-benefit-item-{{ ai_gen_id }}">
+              {% if block.settings.item_5_icon != blank %}
+                <div class="ai-benefit-item-icon-{{ ai_gen_id }}">
+                  <img
+                    src="{{ block.settings.item_5_icon | image_url: width: 200 }}"
+                    alt="{{ block.settings.item_5_main_text | escape }}"
+                    loading="lazy"
+                    width="200"
+                    height="200"
+                  >
+                </div>
+              {% endif %}
+              <div class="ai-benefit-item-content-{{ ai_gen_id }}">
+                {% if block.settings.item_5_main_text != blank %}
+                  <div class="ai-benefit-item-main-text-{{ ai_gen_id }}">{{ block.settings.item_5_main_text }}</div>
+                {% endif %}
+                {% if block.settings.item_5_sub_text != blank %}
+                  <div class="ai-benefit-item-sub-text-{{ ai_gen_id }}">{{ block.settings.item_5_sub_text }}</div>
+                {% endif %}
+              </div>
+            </div>
+          </a>
+        {% else %}
+          <div class="ai-benefit-item-{{ ai_gen_id }}">
+            {% if block.settings.item_5_icon != blank %}
+              <div class="ai-benefit-item-icon-{{ ai_gen_id }}">
+                <img
+                  src="{{ block.settings.item_5_icon | image_url: width: 200 }}"
+                  alt="{{ block.settings.item_5_main_text | escape }}"
+                  loading="lazy"
+                  width="200"
+                  height="200"
+                >
+              </div>
+            {% endif %}
+            <div class="ai-benefit-item-content-{{ ai_gen_id }}">
+              {% if block.settings.item_5_main_text != blank %}
+                <div class="ai-benefit-item-main-text-{{ ai_gen_id }}">{{ block.settings.item_5_main_text }}</div>
+              {% endif %}
+              {% if block.settings.item_5_sub_text != blank %}
+                <div class="ai-benefit-item-sub-text-{{ ai_gen_id }}">{{ block.settings.item_5_sub_text }}</div>
+              {% endif %}
+            </div>
+          </div>
+        {% endif %}
+      {% endif %}
+    </div>
+
+    <div class="ai-benefit-bar-mobile-{{ ai_gen_id }}">
+      <div class="ai-benefit-bar-carousel-{{ ai_gen_id }}">
+        {% for i in (1..2) %}
+          {% if block.settings.item_1_main_text != blank or block.settings.item_1_icon != blank %}
+            {% if block.settings.item_1_link != blank %}
+              <a href="{{ block.settings.item_1_link }}" class="ai-benefit-item-link-{{ ai_gen_id }}">
+                <div class="ai-benefit-item-{{ ai_gen_id }}">
+                  {% if block.settings.item_1_icon != blank %}
+                    <div class="ai-benefit-item-icon-{{ ai_gen_id }}">
+                      <img
+                        src="{{ block.settings.item_1_icon | image_url: width: 200 }}"
+                        alt="{{ block.settings.item_1_main_text | escape }}"
+                        loading="lazy"
+                        width="200"
+                        height="200"
+                      >
+                    </div>
+                  {% endif %}
+                  <div class="ai-benefit-item-content-{{ ai_gen_id }}">
+                    {% if block.settings.item_1_main_text != blank %}
+                      <div class="ai-benefit-item-main-text-{{ ai_gen_id }}">{{ block.settings.item_1_main_text }}</div>
+                    {% endif %}
+                    {% if block.settings.item_1_sub_text != blank %}
+                      <div class="ai-benefit-item-sub-text-{{ ai_gen_id }}">{{ block.settings.item_1_sub_text }}</div>
+                    {% endif %}
+                  </div>
+                </div>
+              </a>
+            {% else %}
+              <div class="ai-benefit-item-{{ ai_gen_id }}">
+                {% if block.settings.item_1_icon != blank %}
+                  <div class="ai-benefit-item-icon-{{ ai_gen_id }}">
+                    <img
+                      src="{{ block.settings.item_1_icon | image_url: width: 200 }}"
+                      alt="{{ block.settings.item_1_main_text | escape }}"
+                      loading="lazy"
+                      width="200"
+                      height="200"
+                    >
+                  </div>
+                {% endif %}
+                <div class="ai-benefit-item-content-{{ ai_gen_id }}">
+                  {% if block.settings.item_1_main_text != blank %}
+                    <div class="ai-benefit-item-main-text-{{ ai_gen_id }}">{{ block.settings.item_1_main_text }}</div>
+                  {% endif %}
+                  {% if block.settings.item_1_sub_text != blank %}
+                    <div class="ai-benefit-item-sub-text-{{ ai_gen_id }}">{{ block.settings.item_1_sub_text }}</div>
+                  {% endif %}
+                </div>
+              </div>
+            {% endif %}
+          {% endif %}
+
+          {% if block.settings.item_2_main_text != blank or block.settings.item_2_icon != blank %}
+            {% if block.settings.item_2_link != blank %}
+              <a href="{{ block.settings.item_2_link }}" class="ai-benefit-item-link-{{ ai_gen_id }}">
+                <div class="ai-benefit-item-{{ ai_gen_id }}">
+                  {% if block.settings.item_2_icon != blank %}
+                    <div class="ai-benefit-item-icon-{{ ai_gen_id }}">
+                      <img
+                        src="{{ block.settings.item_2_icon | image_url: width: 200 }}"
+                        alt="{{ block.settings.item_2_main_text | escape }}"
+                        loading="lazy"
+                        width="200"
+                        height="200"
+                      >
+                    </div>
+                  {% endif %}
+                  <div class="ai-benefit-item-content-{{ ai_gen_id }}">
+                    {% if block.settings.item_2_main_text != blank %}
+                      <div class="ai-benefit-item-main-text-{{ ai_gen_id }}">{{ block.settings.item_2_main_text }}</div>
+                    {% endif %}
+                    {% if block.settings.item_2_sub_text != blank %}
+                      <div class="ai-benefit-item-sub-text-{{ ai_gen_id }}">{{ block.settings.item_2_sub_text }}</div>
+                    {% endif %}
+                  </div>
+                </div>
+              </a>
+            {% else %}
+              <div class="ai-benefit-item-{{ ai_gen_id }}">
+                {% if block.settings.item_2_icon != blank %}
+                  <div class="ai-benefit-item-icon-{{ ai_gen_id }}">
+                    <img
+                      src="{{ block.settings.item_2_icon | image_url: width: 200 }}"
+                      alt="{{ block.settings.item_2_main_text | escape }}"
+                      loading="lazy"
+                      width="200"
+                      height="200"
+                    >
+                  </div>
+                {% endif %}
+                <div class="ai-benefit-item-content-{{ ai_gen_id }}">
+                  {% if block.settings.item_2_main_text != blank %}
+                    <div class="ai-benefit-item-main-text-{{ ai_gen_id }}">{{ block.settings.item_2_main_text }}</div>
+                  {% endif %}
+                  {% if block.settings.item_2_sub_text != blank %}
+                    <div class="ai-benefit-item-sub-text-{{ ai_gen_id }}">{{ block.settings.item_2_sub_text }}</div>
+                  {% endif %}
+                </div>
+              </div>
+            {% endif %}
+          {% endif %}
+
+          {% if block.settings.item_3_main_text != blank or block.settings.item_3_icon != blank %}
+            {% if block.settings.item_3_link != blank %}
+              <a href="{{ block.settings.item_3_link }}" class="ai-benefit-item-link-{{ ai_gen_id }}">
+                <div class="ai-benefit-item-{{ ai_gen_id }}">
+                  {% if block.settings.item_3_icon != blank %}
+                    <div class="ai-benefit-item-icon-{{ ai_gen_id }}">
+                      <img
+                        src="{{ block.settings.item_3_icon | image_url: width: 200 }}"
+                        alt="{{ block.settings.item_3_main_text | escape }}"
+                        loading="lazy"
+                        width="200"
+                        height="200"
+                      >
+                    </div>
+                  {% endif %}
+                  <div class="ai-benefit-item-content-{{ ai_gen_id }}">
+                    {% if block.settings.item_3_main_text != blank %}
+                      <div class="ai-benefit-item-main-text-{{ ai_gen_id }}">{{ block.settings.item_3_main_text }}</div>
+                    {% endif %}
+                    {% if block.settings.item_3_sub_text != blank %}
+                      <div class="ai-benefit-item-sub-text-{{ ai_gen_id }}">{{ block.settings.item_3_sub_text }}</div>
+                    {% endif %}
+                  </div>
+                </div>
+              </a>
+            {% else %}
+              <div class="ai-benefit-item-{{ ai_gen_id }}">
+                {% if block.settings.item_3_icon != blank %}
+                  <div class="ai-benefit-item-icon-{{ ai_gen_id }}">
+                    <img
+                      src="{{ block.settings.item_3_icon | image_url: width: 200 }}"
+                      alt="{{ block.settings.item_3_main_text | escape }}"
+                      loading="lazy"
+                      width="200"
+                      height="200"
+                    >
+                  </div>
+                {% endif %}
+                <div class="ai-benefit-item-content-{{ ai_gen_id }}">
+                  {% if block.settings.item_3_main_text != blank %}
+                    <div class="ai-benefit-item-main-text-{{ ai_gen_id }}">{{ block.settings.item_3_main_text }}</div>
+                  {% endif %}
+                  {% if block.settings.item_3_sub_text != blank %}
+                    <div class="ai-benefit-item-sub-text-{{ ai_gen_id }}">{{ block.settings.item_3_sub_text }}</div>
+                  {% endif %}
+                </div>
+              </div>
+            {% endif %}
+          {% endif %}
+
+          {% if block.settings.item_4_main_text != blank or block.settings.item_4_icon != blank %}
+            {% if block.settings.item_4_link != blank %}
+              <a href="{{ block.settings.item_4_link }}" class="ai-benefit-item-link-{{ ai_gen_id }}">
+                <div class="ai-benefit-item-{{ ai_gen_id }}">
+                  {% if block.settings.item_4_icon != blank %}
+                    <div class="ai-benefit-item-icon-{{ ai_gen_id }}">
+                      <img
+                        src="{{ block.settings.item_4_icon | image_url: width: 200 }}"
+                        alt="{{ block.settings.item_4_main_text | escape }}"
+                        loading="lazy"
+                        width="200"
+                        height="200"
+                      >
+                    </div>
+                  {% endif %}
+                  <div class="ai-benefit-item-content-{{ ai_gen_id }}">
+                    {% if block.settings.item_4_main_text != blank %}
+                      <div class="ai-benefit-item-main-text-{{ ai_gen_id }}">{{ block.settings.item_4_main_text }}</div>
+                    {% endif %}
+                    {% if block.settings.item_4_sub_text != blank %}
+                      <div class="ai-benefit-item-sub-text-{{ ai_gen_id }}">{{ block.settings.item_4_sub_text }}</div>
+                    {% endif %}
+                  </div>
+                </div>
+              </a>
+            {% else %}
+              <div class="ai-benefit-item-{{ ai_gen_id }}">
+                {% if block.settings.item_4_icon != blank %}
+                  <div class="ai-benefit-item-icon-{{ ai_gen_id }}">
+                    <img
+                      src="{{ block.settings.item_4_icon | image_url: width: 200 }}"
+                      alt="{{ block.settings.item_4_main_text | escape }}"
+                      loading="lazy"
+                      width="200"
+                      height="200"
+                    >
+                  </div>
+                {% endif %}
+                <div class="ai-benefit-item-content-{{ ai_gen_id }}">
+                  {% if block.settings.item_4_main_text != blank %}
+                    <div class="ai-benefit-item-main-text-{{ ai_gen_id }}">{{ block.settings.item_4_main_text }}</div>
+                  {% endif %}
+                  {% if block.settings.item_4_sub_text != blank %}
+                    <div class="ai-benefit-item-sub-text-{{ ai_gen_id }}">{{ block.settings.item_4_sub_text }}</div>
+                  {% endif %}
+                </div>
+              </div>
+            {% endif %}
+          {% endif %}
+
+          {% if block.settings.item_5_main_text != blank or block.settings.item_5_icon != blank %}
+            {% if block.settings.item_5_link != blank %}
+              <a href="{{ block.settings.item_5_link }}" class="ai-benefit-item-link-{{ ai_gen_id }}">
+                <div class="ai-benefit-item-{{ ai_gen_id }}">
+                  {% if block.settings.item_5_icon != blank %}
+                    <div class="ai-benefit-item-icon-{{ ai_gen_id }}">
+                      <img
+                        src="{{ block.settings.item_5_icon | image_url: width: 200 }}"
+                        alt="{{ block.settings.item_5_main_text | escape }}"
+                        loading="lazy"
+                        width="200"
+                        height="200"
+                      >
+                    </div>
+                  {% endif %}
+                  <div class="ai-benefit-item-content-{{ ai_gen_id }}">
+                    {% if block.settings.item_5_main_text != blank %}
+                      <div class="ai-benefit-item-main-text-{{ ai_gen_id }}">{{ block.settings.item_5_main_text }}</div>
+                    {% endif %}
+                    {% if block.settings.item_5_sub_text != blank %}
+                      <div class="ai-benefit-item-sub-text-{{ ai_gen_id }}">{{ block.settings.item_5_sub_text }}</div>
+                    {% endif %}
+                  </div>
+                </div>
+              </a>
+            {% else %}
+              <div class="ai-benefit-item-{{ ai_gen_id }}">
+                {% if block.settings.item_5_icon != blank %}
+                  <div class="ai-benefit-item-icon-{{ ai_gen_id }}">
+                    <img
+                      src="{{ block.settings.item_5_icon | image_url: width: 200 }}"
+                      alt="{{ block.settings.item_5_main_text | escape }}"
+                      loading="lazy"
+                      width="200"
+                      height="200"
+                    >
+                  </div>
+                {% endif %}
+                <div class="ai-benefit-item-content-{{ ai_gen_id }}">
+                  {% if block.settings.item_5_main_text != blank %}
+                    <div class="ai-benefit-item-main-text-{{ ai_gen_id }}">{{ block.settings.item_5_main_text }}</div>
+                  {% endif %}
+                  {% if block.settings.item_5_sub_text != blank %}
+                    <div class="ai-benefit-item-sub-text-{{ ai_gen_id }}">{{ block.settings.item_5_sub_text }}</div>
+                  {% endif %}
+                </div>
+              </div>
+            {% endif %}
+          {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</benefit-bar-{{ ai_gen_id }}>
+
+<script>
+  (function() {
+    class BenefitBar{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+      }
+
+      connectedCallback() {
+        this.setupCarousel();
+      }
+
+      setupCarousel() {
+        const carousel = this.querySelector('.ai-benefit-bar-carousel-{{ ai_gen_id }}');
+        if (!carousel) return;
+      }
+    }
+
+    customElements.define('benefit-bar-{{ ai_gen_id }}', BenefitBar{{ ai_gen_id }});
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Benefit bar",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#F3F3F3"
+    },
+    {
+      "type": "range",
+      "id": "section_height",
+      "label": "Desktop height",
+      "min": 40,
+      "max": 200,
+      "step": 10,
+      "unit": "px",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top padding",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 15
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 15
+    },
+    {
+      "type": "range",
+      "id": "padding_horizontal",
+      "label": "Horizontal padding",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "max_content_width",
+      "label": "Maximum content width",
+      "min": 600,
+      "max": 1600,
+      "step": 100,
+      "unit": "px",
+      "default": 1200
+    },
+    {
+      "type": "select",
+      "id": "content_alignment",
+      "label": "Content alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "select",
+      "id": "desktop_layout",
+      "label": "Desktop layout",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        },
+        {
+          "value": "space-between",
+          "label": "Space between"
+        },
+        {
+          "value": "space-around",
+          "label": "Space around"
+        },
+        {
+          "value": "space-evenly",
+          "label": "Space evenly"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "range",
+      "id": "horizontal_gap",
+      "label": "Desktop gap",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "select",
+      "id": "vertical_alignment",
+      "label": "Vertical alignment",
+      "options": [
+        {
+          "value": "flex-start",
+          "label": "Top"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "flex-end",
+          "label": "Bottom"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "header",
+      "content": "Border"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_border_top",
+      "label": "Show top border",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_border_bottom",
+      "label": "Show bottom border",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "border_thickness",
+      "label": "Border thickness",
+      "min": 1,
+      "max": 10,
+      "step": 1,
+      "unit": "px",
+      "default": 1
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "Border color",
+      "default": "#e0e0e0"
+    },
+    {
+      "type": "header",
+      "content": "Icon settings"
+    },
+    {
+      "type": "range",
+      "id": "icon_size",
+      "label": "Desktop icon size",
+      "min": 16,
+      "max": 80,
+      "step": 4,
+      "unit": "px",
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "icon_text_gap",
+      "label": "Icon to text gap",
+      "min": 4,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "text_gap",
+      "label": "Text spacing",
+      "min": 2,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "default": 6
+    },
+    {
+      "type": "select",
+      "id": "item_vertical_alignment",
+      "label": "Item vertical alignment",
+      "options": [
+        {
+          "value": "flex-start",
+          "label": "Top"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "flex-end",
+          "label": "Bottom"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "header",
+      "content": "Main text style"
+    },
+    {
+      "type": "color",
+      "id": "main_text_color",
+      "label": "Color",
+      "default": "#121212"
+    },
+    {
+      "type": "range",
+      "id": "main_text_size",
+      "label": "Desktop size",
+      "min": 10,
+      "max": 40,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "font_picker",
+      "id": "main_text_font",
+      "label": "Font family",
+      "default": "assistant_n4"
+    },
+    {
+      "type": "select",
+      "id": "main_text_font_style",
+      "label": "Font style",
+      "options": [
+        {
+          "value": "normal",
+          "label": "Normal"
+        },
+        {
+          "value": "italic",
+          "label": "Italic"
+        }
+      ],
+      "default": "normal"
+    },
+    {
+      "type": "range",
+      "id": "main_text_line_height",
+      "label": "Line height",
+      "min": 1,
+      "max": 2,
+      "step": 0.1,
+      "default": 1.4
+    },
+    {
+      "type": "range",
+      "id": "main_text_letter_spacing",
+      "label": "Letter spacing",
+      "min": 0,
+      "max": 5,
+      "step": 0.5,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "select",
+      "id": "main_text_transform",
+      "label": "Text transform",
+      "options": [
+        {
+          "value": "none",
+          "label": "Normal"
+        },
+        {
+          "value": "uppercase",
+          "label": "Uppercase"
+        },
+        {
+          "value": "lowercase",
+          "label": "Lowercase"
+        },
+        {
+          "value": "capitalize",
+          "label": "Capitalize"
+        }
+      ],
+      "default": "none"
+    },
+    {
+      "type": "header",
+      "content": "Sub-text style"
+    },
+    {
+      "type": "color",
+      "id": "sub_text_color",
+      "label": "Color",
+      "default": "#666666"
+    },
+    {
+      "type": "range",
+      "id": "sub_text_size",
+      "label": "Desktop size",
+      "min": 8,
+      "max": 30,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "font_picker",
+      "id": "sub_text_font",
+      "label": "Font family",
+      "default": "assistant_n4"
+    },
+    {
+      "type": "select",
+      "id": "sub_text_font_style",
+      "label": "Font style",
+      "options": [
+        {
+          "value": "normal",
+          "label": "Normal"
+        },
+        {
+          "value": "italic",
+          "label": "Italic"
+        }
+      ],
+      "default": "normal"
+    },
+    {
+      "type": "range",
+      "id": "sub_text_line_height",
+      "label": "Line height",
+      "min": 1,
+      "max": 2,
+      "step": 0.1,
+      "default": 1.3
+    },
+    {
+      "type": "range",
+      "id": "sub_text_letter_spacing",
+      "label": "Letter spacing",
+      "min": 0,
+      "max": 5,
+      "step": 0.5,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "select",
+      "id": "sub_text_transform",
+      "label": "Text transform",
+      "options": [
+        {
+          "value": "none",
+          "label": "Normal"
+        },
+        {
+          "value": "uppercase",
+          "label": "Uppercase"
+        },
+        {
+          "value": "lowercase",
+          "label": "Lowercase"
+        },
+        {
+          "value": "capitalize",
+          "label": "Capitalize"
+        }
+      ],
+      "default": "none"
+    },
+    {
+      "type": "header",
+      "content": "Mobile carousel"
+    },
+    {
+      "type": "range",
+      "id": "carousel_speed",
+      "label": "Carousel speed",
+      "min": 10,
+      "max": 100,
+      "step": 5,
+      "unit": "s",
+      "default": 30
+    },
+    {
+      "type": "checkbox",
+      "id": "pause_on_hover",
+      "label": "Pause on hover",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "mobile_gap",
+      "label": "Mobile gap",
+      "min": 10,
+      "max": 80,
+      "step": 5,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "mobile_section_height",
+      "label": "Mobile height",
+      "min": 40,
+      "max": 150,
+      "step": 10,
+      "unit": "px",
+      "default": 50
+    },
+    {
+      "type": "range",
+      "id": "mobile_padding_vertical",
+      "label": "Mobile vertical padding",
+      "min": 0,
+      "max": 50,
+      "step": 5,
+      "unit": "px",
+      "default": 10
+    },
+    {
+      "type": "range",
+      "id": "mobile_padding_horizontal",
+      "label": "Mobile horizontal padding",
+      "min": 0,
+      "max": 50,
+      "step": 5,
+      "unit": "px",
+      "default": 15
+    },
+    {
+      "type": "range",
+      "id": "mobile_icon_size",
+      "label": "Mobile icon size",
+      "min": 16,
+      "max": 60,
+      "step": 4,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "mobile_main_text_size",
+      "label": "Mobile main text size",
+      "min": 8,
+      "max": 30,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "mobile_sub_text_size",
+      "label": "Mobile sub-text size",
+      "min": 6,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 10
+    },
+    {
+      "type": "header",
+      "content": "Benefit item 1"
+    },
+    {
+      "type": "image_picker",
+      "id": "item_1_icon",
+      "label": "Icon"
+    },
+    {
+      "type": "text",
+      "id": "item_1_main_text",
+      "label": "Main text",
+      "default": "Free Delivery"
+    },
+    {
+      "type": "text",
+      "id": "item_1_sub_text",
+      "label": "Sub-text",
+      "default": "For orders above £25"
+    },
+    {
+      "type": "url",
+      "id": "item_1_link",
+      "label": "Link"
+    },
+    {
+      "type": "header",
+      "content": "Benefit item 2"
+    },
+    {
+      "type": "image_picker",
+      "id": "item_2_icon",
+      "label": "Icon"
+    },
+    {
+      "type": "text",
+      "id": "item_2_main_text",
+      "label": "Main text",
+      "default": "Klarna"
+    },
+    {
+      "type": "text",
+      "id": "item_2_sub_text",
+      "label": "Sub-text",
+      "default": "Pay in 30 Days"
+    },
+    {
+      "type": "url",
+      "id": "item_2_link",
+      "label": "Link"
+    },
+    {
+      "type": "header",
+      "content": "Benefit item 3"
+    },
+    {
+      "type": "image_picker",
+      "id": "item_3_icon",
+      "label": "Icon"
+    },
+    {
+      "type": "text",
+      "id": "item_3_main_text",
+      "label": "Main text",
+      "default": "Price Match"
+    },
+    {
+      "type": "text",
+      "id": "item_3_sub_text",
+      "label": "Sub-text",
+      "default": "Promise"
+    },
+    {
+      "type": "url",
+      "id": "item_3_link",
+      "label": "Link"
+    },
+    {
+      "type": "header",
+      "content": "Benefit item 4"
+    },
+    {
+      "type": "image_picker",
+      "id": "item_4_icon",
+      "label": "Icon"
+    },
+    {
+      "type": "text",
+      "id": "item_4_main_text",
+      "label": "Main text"
+    },
+    {
+      "type": "text",
+      "id": "item_4_sub_text",
+      "label": "Sub-text"
+    },
+    {
+      "type": "url",
+      "id": "item_4_link",
+      "label": "Link"
+    },
+    {
+      "type": "header",
+      "content": "Benefit item 5"
+    },
+    {
+      "type": "image_picker",
+      "id": "item_5_icon",
+      "label": "Icon"
+    },
+    {
+      "type": "text",
+      "id": "item_5_main_text",
+      "label": "Main text"
+    },
+    {
+      "type": "text",
+      "id": "item_5_sub_text",
+      "label": "Sub-text"
+    },
+    {
+      "type": "url",
+      "id": "item_5_link",
+      "label": "Link"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Benefit bar"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,1416 @@
+{% doc %}
+  @prompt
+    Create a responsive custom Shopify footer section with two main areas:
+    
+    A large colored footer panel
+    A black bottom copyright/payment bar
+    
+    The upper footer panel should have:
+    
+    Rounded corners
+    Full-width content inside a centered max-width container
+    A top navigation row
+    Social media icons on the right
+    A divider line
+    Four footer columns below
+    
+    Column examples:
+    
+    Support
+    Account
+    Quick Link
+    Information
+    
+    Each footer column should allow multiple links or text items.
+    
+    The Support column should support:
+    
+    Address
+    Email
+    Phone
+    Optional icons beside each item
+    
+    The top row should support:
+    
+    Footer navigation menu
+    Social icons such as YouTube, Facebook, Instagram
+    
+    The bottom black bar should contain:
+    
+    Copyright text on the left
+    Payment method icons on the right
+    
+    Make this section responsive for desktop, tablet, and mobile.
+    
+    On desktop:
+    
+    Show the four footer columns in one row
+    Keep copyright left and payment icons right
+    
+    On mobile:
+    
+    Stack footer columns vertically
+    Keep spacing compact
+    Center or left align items based on a Theme Editor setting
+    Allow the copyright and payment icons to stack
+    
+    Make these settings editable from the Shopify Theme Editor:
+    
+    Main footer background color
+    Bottom bar background color
+    Text color
+    Link color
+    Hover color
+    Heading color
+    Border/divider color
+    Border radius
+    Section width
+    Max content width
+    Top/bottom padding
+    Column gap
+    Font size
+    Font family
+    Font weight
+    Text alignment
+    
+    Use Shopify menu selectors for navigation and footer link groups.
+    
+    Use image pickers or SVG/icon options for:
+    
+    Social media icons
+    Support icons
+    Payment method icons
+    
+    Build with Liquid, CSS, and minimal vanilla JavaScript only.
+    
+    Do not use external libraries.
+    
+    Keep all styles scoped to this section.
+    
+    Do not overcomplicate the code., Modify the existing footer section only. Do not create a new footer and do not replace the current section structure.
+    
+    Match the reference design much more closely.
+    
+    Main Footer Panel
+    
+    Change the large upper footer panel to:
+    
+    Deep red background
+    White text
+    Rounded corners
+    Centered inside the page with left and right margins
+    Compact vertical height
+    Remove the very light grey background
+    
+    Add a decorative center notch/cut shape at the top edge of the red panel, similar to an inward trapezoid cut. Keep it responsive.
+    
+    Make the notch decorative only and do not affect content positioning.
+    
+    Top Row Inside Red Panel
+    
+    Add a top row inside the red panel:
+    
+    Left side:
+    
+    Horizontal footer navigation menu
+    
+    Right side:
+    
+    Social icons
+    
+    Example navigation:
+    
+    Home
+    About Us
+    Shop
+    Video
+    News
+    Contact
+    
+    Add social icons:
+    
+    YouTube
+    Facebook
+    Instagram
+    
+    Add a thin subtle divider line below this top row.
+    
+    Make both the menu and social links fully functional.
+    
+    Add Theme Editor controls for:
+    
+    Navigation menu selector
+    Navigation font family
+    Font size
+    Font weight
+    Text color
+    Hover color
+    Menu gap
+    Social icon size
+    Social icon color
+    Social icon spacing
+    Divider color
+    Footer Columns
+    
+    Keep four columns:
+    
+    Support
+    Account
+    Quick Link
+    Information
+    
+    Reduce the excessive vertical empty space.
+    
+    Align all four columns toward the top.
+    
+    Make the layout compact like the reference.
+    
+    The Support column should contain:
+    
+    Address with location icon
+    Email with mail icon
+    Phone with phone icon
+    
+    Account column should support links such as:
+    
+    My Account
+    Login / Register
+    Cart
+    My Wishlist
+    
+    Quick Link column should support:
+    
+    FAQ
+    Contact
+    Privacy Policy
+    Terms Of Use
+    
+    Information column should support:
+    
+    Community Guidelines
+    Track My Order
+    Return Policy
+    
+    Use Shopify menu selectors for Account, Quick Link and Information wherever possible.
+    
+    Typography
+    
+    Make column headings white and slightly larger than links.
+    
+    Add Theme Editor settings for:
+    
+    Heading font family
+    Heading font size
+    Heading font weight
+    Heading text transform
+    Link font family
+    Link font size
+    Link font weight
+    Link color
+    Link hover color
+    Line height
+    Column gap
+    Row gap
+    Bottom Black Bar
+    
+    Keep a separate black bar below the red panel.
+    
+    Left side:
+    
+    Copyright text
+    
+    Right side:
+    
+    Payment / trust logos
+    
+    Keep the content aligned to the same maximum width as the red footer panel.
+    
+    Add Theme Editor controls for:
+    
+    Bottom bar background color
+    Copyright text color
+    Copyright font size
+    Copyright alignment
+    Payment icon height
+    Payment icon gap
+    
+    Allow payment icons to be managed from Theme Editor.
+    
+    Overall Width and Spacing
+    
+    Add frontend settings for:
+    
+    Footer max width
+    Side margins
+    Red panel padding top
+    Red panel padding bottom
+    Red panel left/right padding
+    Border radius
+    Column spacing
+    Top navigation row height
+    Bottom bar height
+    
+    Default desktop layout should be visually compact and close to the reference design.
+    
+    Mobile
+    
+    On mobile:
+    
+    Hide or wrap the top navigation neatly
+    Keep social icons visible
+    Stack footer columns vertically
+    Allow accordion mode for Account, Quick Link and Information
+    Keep Support visible
+    Stack copyright and payment icons if needed
+    
+    Add separate mobile controls for:
+    
+    Padding
+    Font sizes
+    Column spacing
+    Icon sizes
+    
+    Preserve all current functionality and modify the current footer only.
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-footer-{{ ai_gen_id }} {
+    display: block;
+    width: 100%;
+  }
+
+  .ai-footer-wrapper-{{ ai_gen_id }} {
+    max-width: {{ block.settings.footer_max_width }}px;
+    margin: 0 auto;
+    padding: 0 {{ block.settings.side_margin }}px;
+  }
+
+  .ai-footer-main-{{ ai_gen_id }} {
+    position: relative;
+    background-color: {{ block.settings.main_bg_color }};
+    border-radius: {{ block.settings.border_radius }}px;
+    padding: {{ block.settings.panel_padding_top }}px {{ block.settings.panel_padding_horizontal }}px {{ block.settings.panel_padding_bottom }}px;
+  }
+
+  .ai-footer-main-{{ ai_gen_id }}::before {
+    content: '';
+    position: absolute;
+    top: -{{ block.settings.notch_size }}px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: {{ block.settings.notch_size }}px solid transparent;
+    border-right: {{ block.settings.notch_size }}px solid transparent;
+    border-bottom: {{ block.settings.notch_size }}px solid {{ block.settings.main_bg_color }};
+  }
+
+  .ai-footer-top-row-{{ ai_gen_id }} {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: {{ block.settings.top_row_bottom_margin }}px;
+    gap: 20px;
+    min-height: {{ block.settings.top_row_height }}px;
+  }
+
+  .ai-footer-nav-{{ ai_gen_id }} {
+    display: flex;
+    gap: {{ block.settings.nav_gap }}px;
+    flex-wrap: wrap;
+  }
+
+  .ai-footer-nav-{{ ai_gen_id }} a {
+    color: {{ block.settings.nav_text_color }};
+    text-decoration: none;
+    font-size: {{ block.settings.nav_font_size }}px;
+    font-family: {{ block.settings.nav_font_family.family }}, {{ block.settings.nav_font_family.fallback_families }};
+    font-weight: {{ block.settings.nav_font_weight }};
+    transition: color 0.3s ease;
+  }
+
+  .ai-footer-nav-{{ ai_gen_id }} a:hover {
+    color: {{ block.settings.nav_hover_color }};
+  }
+
+  .ai-footer-social-{{ ai_gen_id }} {
+    display: flex;
+    gap: {{ block.settings.social_icon_spacing }}px;
+    align-items: center;
+  }
+
+  .ai-footer-social-icon-{{ ai_gen_id }} {
+    width: {{ block.settings.social_icon_size }}px;
+    height: {{ block.settings.social_icon_size }}px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ai-footer-social-icon-{{ ai_gen_id }} svg {
+    width: 100%;
+    height: 100%;
+    fill: {{ block.settings.social_icon_color }};
+    transition: fill 0.3s ease;
+  }
+
+  .ai-footer-social-icon-{{ ai_gen_id }}:hover svg {
+    fill: {{ block.settings.nav_hover_color }};
+  }
+
+  .ai-footer-divider-{{ ai_gen_id }} {
+    height: 1px;
+    background-color: {{ block.settings.divider_color }};
+    margin-bottom: {{ block.settings.divider_bottom_margin }}px;
+  }
+
+  .ai-footer-columns-{{ ai_gen_id }} {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: {{ block.settings.column_spacing }}px;
+    align-items: start;
+  }
+
+  .ai-footer-column-{{ ai_gen_id }} {
+    text-align: {{ block.settings.text_alignment }};
+  }
+
+  .ai-footer-column-heading-{{ ai_gen_id }} {
+    color: {{ block.settings.heading_color }};
+    font-size: {{ block.settings.heading_font_size }}px;
+    font-family: {{ block.settings.heading_font_family.family }}, {{ block.settings.heading_font_family.fallback_families }};
+    font-weight: {{ block.settings.heading_font_weight }};
+    text-transform: {{ block.settings.heading_text_transform }};
+    margin: 0 0 {{ block.settings.heading_margin_bottom }}px 0;
+  }
+
+  .ai-footer-column-links-{{ ai_gen_id }} {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .ai-footer-column-links-{{ ai_gen_id }} li {
+    margin-bottom: {{ block.settings.link_row_gap }}px;
+  }
+
+  .ai-footer-column-links-{{ ai_gen_id }} a {
+    color: {{ block.settings.link_color }};
+    text-decoration: none;
+    font-size: {{ block.settings.link_font_size }}px;
+    font-family: {{ block.settings.link_font_family.family }}, {{ block.settings.link_font_family.fallback_families }};
+    font-weight: {{ block.settings.link_font_weight }};
+    line-height: {{ block.settings.link_line_height }};
+    transition: color 0.3s ease;
+  }
+
+  .ai-footer-column-links-{{ ai_gen_id }} a:hover {
+    color: {{ block.settings.link_hover_color }};
+  }
+
+  .ai-footer-support-item-{{ ai_gen_id }} {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: {{ block.settings.link_row_gap }}px;
+    justify-content: {% if block.settings.text_alignment == 'center' %}center{% elsif block.settings.text_alignment == 'right' %}flex-end{% else %}flex-start{% endif %};
+  }
+
+  .ai-footer-support-icon-{{ ai_gen_id }} {
+    width: {{ block.settings.support_icon_size }}px;
+    height: {{ block.settings.support_icon_size }}px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 2px;
+  }
+
+  .ai-footer-support-icon-{{ ai_gen_id }} svg {
+    width: 100%;
+    height: 100%;
+    stroke: {{ block.settings.support_icon_color }};
+  }
+
+  .ai-footer-support-text-{{ ai_gen_id }} {
+    color: {{ block.settings.link_color }};
+    font-size: {{ block.settings.link_font_size }}px;
+    font-family: {{ block.settings.link_font_family.family }}, {{ block.settings.link_font_family.fallback_families }};
+    font-weight: {{ block.settings.link_font_weight }};
+    line-height: {{ block.settings.link_line_height }};
+  }
+
+  .ai-footer-support-text-{{ ai_gen_id }} a {
+    color: {{ block.settings.link_color }};
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+
+  .ai-footer-support-text-{{ ai_gen_id }} a:hover {
+    color: {{ block.settings.link_hover_color }};
+  }
+
+  .ai-footer-bottom-bar-{{ ai_gen_id }} {
+    background-color: {{ block.settings.bottom_bar_bg_color }};
+    padding: {{ block.settings.bottom_bar_height }}px 0;
+  }
+
+  .ai-footer-bottom-container-{{ ai_gen_id }} {
+    max-width: {{ block.settings.footer_max_width }}px;
+    margin: 0 auto;
+    padding: 0 {{ block.settings.side_margin }}px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .ai-footer-copyright-{{ ai_gen_id }} {
+    color: {{ block.settings.copyright_text_color }};
+    font-size: {{ block.settings.copyright_font_size }}px;
+    text-align: {{ block.settings.copyright_alignment }};
+  }
+
+  .ai-footer-payment-icons-{{ ai_gen_id }} {
+    display: flex;
+    gap: {{ block.settings.payment_icon_gap }}px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .ai-footer-payment-icon-{{ ai_gen_id }} {
+    height: {{ block.settings.payment_icon_height }}px;
+    width: auto;
+  }
+
+  @media screen and (max-width: 989px) {
+    .ai-footer-columns-{{ ai_gen_id }} {
+      grid-template-columns: repeat(2, 1fr);
+      gap: {{ block.settings.mobile_column_spacing }}px;
+    }
+
+    .ai-footer-top-row-{{ ai_gen_id }} {
+      flex-wrap: wrap;
+    }
+
+    .ai-footer-nav-{{ ai_gen_id }} {
+      gap: {{ block.settings.mobile_nav_gap }}px;
+    }
+
+    .ai-footer-main-{{ ai_gen_id }} {
+      padding: {{ block.settings.mobile_panel_padding_top }}px {{ block.settings.mobile_panel_padding_horizontal }}px {{ block.settings.mobile_panel_padding_bottom }}px;
+    }
+
+    .ai-footer-nav-{{ ai_gen_id }} a {
+      font-size: {{ block.settings.mobile_nav_font_size }}px;
+    }
+
+    .ai-footer-social-icon-{{ ai_gen_id }} {
+      width: {{ block.settings.mobile_social_icon_size }}px;
+      height: {{ block.settings.mobile_social_icon_size }}px;
+    }
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-footer-columns-{{ ai_gen_id }} {
+      grid-template-columns: 1fr;
+      gap: {{ block.settings.mobile_column_spacing }}px;
+    }
+
+    .ai-footer-nav-{{ ai_gen_id }} {
+      width: 100%;
+      display: {% if block.settings.mobile_hide_nav %}none{% else %}flex{% endif %};
+      flex-direction: column;
+      gap: {{ block.settings.mobile_nav_gap }}px;
+    }
+
+    .ai-footer-bottom-container-{{ ai_gen_id }} {
+      flex-direction: column;
+      text-align: center;
+      gap: 15px;
+    }
+
+    .ai-footer-copyright-{{ ai_gen_id }} {
+      text-align: center;
+    }
+
+    .ai-footer-payment-icons-{{ ai_gen_id }} {
+      justify-content: center;
+    }
+
+    .ai-footer-column-heading-{{ ai_gen_id }} {
+      font-size: {{ block.settings.mobile_heading_font_size }}px;
+    }
+
+    .ai-footer-column-links-{{ ai_gen_id }} a {
+      font-size: {{ block.settings.mobile_link_font_size }}px;
+    }
+
+    .ai-footer-support-text-{{ ai_gen_id }} {
+      font-size: {{ block.settings.mobile_link_font_size }}px;
+    }
+  }
+{% endstyle %}
+
+<footer-custom-{{ ai_gen_id }} class="ai-footer-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-footer-wrapper-{{ ai_gen_id }}">
+    <div class="ai-footer-main-{{ ai_gen_id }}">
+      <div class="ai-footer-top-row-{{ ai_gen_id }}">
+        <nav class="ai-footer-nav-{{ ai_gen_id }}">
+          {% if block.settings.footer_menu != blank %}
+            {% for link in block.settings.footer_menu.links %}
+              <a href="{{ link.url }}">{{ link.title }}</a>
+            {% endfor %}
+          {% endif %}
+        </nav>
+
+        <div class="ai-footer-social-{{ ai_gen_id }}">
+          {% if block.settings.youtube_url != blank %}
+            <a href="{{ block.settings.youtube_url }}" class="ai-footer-social-icon-{{ ai_gen_id }}" aria-label="YouTube" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+              </svg>
+            </a>
+          {% endif %}
+
+          {% if block.settings.facebook_url != blank %}
+            <a href="{{ block.settings.facebook_url }}" class="ai-footer-social-icon-{{ ai_gen_id }}" aria-label="Facebook" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+              </svg>
+            </a>
+          {% endif %}
+
+          {% if block.settings.instagram_url != blank %}
+            <a href="{{ block.settings.instagram_url }}" class="ai-footer-social-icon-{{ ai_gen_id }}" aria-label="Instagram" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 0C8.74 0 8.333.015 7.053.072 5.775.132 4.905.333 4.14.63c-.789.306-1.459.717-2.126 1.384S.935 3.35.63 4.14C.333 4.905.131 5.775.072 7.053.012 8.333 0 8.74 0 12s.015 3.667.072 4.947c.06 1.277.261 2.148.558 2.913.306.788.717 1.459 1.384 2.126.667.666 1.336 1.079 2.126 1.384.766.296 1.636.499 2.913.558C8.333 23.988 8.74 24 12 24s3.667-.015 4.947-.072c1.277-.06 2.148-.262 2.913-.558.788-.306 1.459-.718 2.126-1.384.666-.667 1.079-1.335 1.384-2.126.296-.765.499-1.636.558-2.913.06-1.28.072-1.687.072-4.947s-.015-3.667-.072-4.947c-.06-1.277-.262-2.149-.558-2.913-.306-.789-.718-1.459-1.384-2.126C21.319 1.347 20.651.935 19.86.63c-.765-.297-1.636-.499-2.913-.558C15.667.012 15.26 0 12 0zm0 2.16c3.203 0 3.585.016 4.85.071 1.17.055 1.805.249 2.227.415.562.217.96.477 1.382.896.419.42.679.819.896 1.381.164.422.36 1.057.413 2.227.057 1.266.07 1.646.07 4.85s-.015 3.585-.074 4.85c-.061 1.17-.256 1.805-.421 2.227-.224.562-.479.96-.899 1.382-.419.419-.824.679-1.38.896-.42.164-1.065.36-2.235.413-1.274.057-1.649.07-4.859.07-3.211 0-3.586-.015-4.859-.074-1.171-.061-1.816-.256-2.236-.421-.569-.224-.96-.479-1.379-.899-.421-.419-.69-.824-.9-1.38-.165-.42-.359-1.065-.42-2.235-.045-1.26-.061-1.649-.061-4.844 0-3.196.016-3.586.061-4.861.061-1.17.255-1.814.42-2.234.21-.57.479-.96.9-1.381.419-.419.81-.689 1.379-.898.42-.166 1.051-.361 2.221-.421 1.275-.045 1.65-.06 4.859-.06l.045.03zm0 3.678c-3.405 0-6.162 2.76-6.162 6.162 0 3.405 2.76 6.162 6.162 6.162 3.405 0 6.162-2.76 6.162-6.162 0-3.405-2.76-6.162-6.162-6.162zM12 16c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4zm7.846-10.405c0 .795-.646 1.44-1.44 1.44-.795 0-1.44-.646-1.44-1.44 0-.794.646-1.439 1.44-1.439.793-.001 1.44.645 1.44 1.439z"/>
+              </svg>
+            </a>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="ai-footer-divider-{{ ai_gen_id }}"></div>
+
+      <div class="ai-footer-columns-{{ ai_gen_id }}">
+        <div class="ai-footer-column-{{ ai_gen_id }}">
+          <h3 class="ai-footer-column-heading-{{ ai_gen_id }}">{{ block.settings.column_1_heading }}</h3>
+          <div class="ai-footer-support-{{ ai_gen_id }}">
+            {% if block.settings.support_address != blank %}
+              <div class="ai-footer-support-item-{{ ai_gen_id }}">
+                {% if block.settings.show_support_icons %}
+                  <div class="ai-footer-support-icon-{{ ai_gen_id }}">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke-width="2">
+                      <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                      <circle cx="12" cy="10" r="3"></circle>
+                    </svg>
+                  </div>
+                {% endif %}
+                <div class="ai-footer-support-text-{{ ai_gen_id }}">{{ block.settings.support_address }}</div>
+              </div>
+            {% endif %}
+
+            {% if block.settings.support_email != blank %}
+              <div class="ai-footer-support-item-{{ ai_gen_id }}">
+                {% if block.settings.show_support_icons %}
+                  <div class="ai-footer-support-icon-{{ ai_gen_id }}">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke-width="2">
+                      <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                      <polyline points="22,6 12,13 2,6"></polyline>
+                    </svg>
+                  </div>
+                {% endif %}
+                <div class="ai-footer-support-text-{{ ai_gen_id }}">
+                  <a href="mailto:{{ block.settings.support_email }}">{{ block.settings.support_email }}</a>
+                </div>
+              </div>
+            {% endif %}
+
+            {% if block.settings.support_phone != blank %}
+              <div class="ai-footer-support-item-{{ ai_gen_id }}">
+                {% if block.settings.show_support_icons %}
+                  <div class="ai-footer-support-icon-{{ ai_gen_id }}">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke-width="2">
+                      <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                    </svg>
+                  </div>
+                {% endif %}
+                <div class="ai-footer-support-text-{{ ai_gen_id }}">
+                  <a href="tel:{{ block.settings.support_phone }}">{{ block.settings.support_phone }}</a>
+                </div>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="ai-footer-column-{{ ai_gen_id }}">
+          <h3 class="ai-footer-column-heading-{{ ai_gen_id }}">{{ block.settings.column_2_heading }}</h3>
+          <ul class="ai-footer-column-links-{{ ai_gen_id }}">
+            {% if block.settings.column_2_menu != blank %}
+              {% for link in block.settings.column_2_menu.links %}
+                <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+              {% endfor %}
+            {% endif %}
+          </ul>
+        </div>
+
+        <div class="ai-footer-column-{{ ai_gen_id }}">
+          <h3 class="ai-footer-column-heading-{{ ai_gen_id }}">{{ block.settings.column_3_heading }}</h3>
+          <ul class="ai-footer-column-links-{{ ai_gen_id }}">
+            {% if block.settings.column_3_menu != blank %}
+              {% for link in block.settings.column_3_menu.links %}
+                <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+              {% endfor %}
+            {% endif %}
+          </ul>
+        </div>
+
+        <div class="ai-footer-column-{{ ai_gen_id }}">
+          <h3 class="ai-footer-column-heading-{{ ai_gen_id }}">{{ block.settings.column_4_heading }}</h3>
+          <ul class="ai-footer-column-links-{{ ai_gen_id }}">
+            {% if block.settings.column_4_menu != blank %}
+              {% for link in block.settings.column_4_menu.links %}
+                <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+              {% endfor %}
+            {% endif %}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ai-footer-bottom-bar-{{ ai_gen_id }}">
+    <div class="ai-footer-bottom-container-{{ ai_gen_id }}">
+      <div class="ai-footer-copyright-{{ ai_gen_id }}">
+        {{ block.settings.copyright_text }}
+      </div>
+
+      <div class="ai-footer-payment-icons-{{ ai_gen_id }}">
+        {% if block.settings.payment_visa %}
+          <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 32'%3E%3Crect width='48' height='32' rx='4' fill='%23fff'/%3E%3Cpath fill='%231434CB' d='M19.8 21.3l1.9-11.8h3l-1.9 11.8h-3zm13.7-11.5c-.6-.2-1.5-.5-2.6-.5-2.9 0-4.9 1.5-4.9 3.7 0 1.6 1.5 2.5 2.6 3 1.1.5 1.5.9 1.5 1.4 0 .7-.9 1.1-1.7 1.1-1.1 0-1.7-.2-2.7-.6l-.4-.2-.4 2.4c.7.3 2 .6 3.3.6 3.1 0 5.1-1.5 5.1-3.8 0-1.3-.8-2.2-2.5-3-1-.5-1.6-.9-1.6-1.4 0-.5.5-1 1.6-1 .9 0 1.6.2 2.1.4l.3.1.3-2.2zm6.8-1.3l-2.4 11.8h-2.7l.4-1.8c-.9 1.1-2.2 1.8-3.9 1.8-1.8 0-3.2-1.5-3.2-3.8 0-3.5 2.4-6.1 5-6.1 1.5 0 2.3.7 2.6 1.2l1-3.1h3.2zm-3.9 7.5c0-.9-.6-1.6-1.6-1.6-1.3 0-2.3 1.2-2.3 2.8 0 .9.6 1.6 1.6 1.6 1.3 0 2.3-1.2 2.3-2.8zm-17.5-7.5l-3 8.1-.3-1.6c-.5-1.8-2.2-3.7-4.1-4.7l2.7 9.8h3.2l4.8-11.6h-3.3z'/%3E%3Cpath fill='%23F6AC1D' d='M13.2 9.5H8.5L8.4 10c3.6.9 6 3.1 7 5.7l-1-5c-.2-.8-.7-1.1-1.4-1.2z'/%3E%3C/svg%3E" alt="Visa" class="ai-footer-payment-icon-{{ ai_gen_id }}">
+        {% endif %}
+        {% if block.settings.payment_mastercard %}
+          <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 32'%3E%3Crect width='48' height='32' rx='4' fill='%23fff'/%3E%3Ccircle cx='18' cy='16' r='9' fill='%23EB001B'/%3E%3Ccircle cx='30' cy='16' r='9' fill='%23F79E1B'/%3E%3Cpath fill='%23FF5F00' d='M24 9.3c-1.8 1.6-3 4-3 6.7s1.2 5.1 3 6.7c1.8-1.6 3-4 3-6.7s-1.2-5.1-3-6.7z'/%3E%3C/svg%3E" alt="Mastercard" class="ai-footer-payment-icon-{{ ai_gen_id }}">
+        {% endif %}
+        {% if block.settings.payment_amex %}
+          <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 32'%3E%3Crect width='48' height='32' rx='4' fill='%23006FCF'/%3E%3Cpath fill='%23fff' d='M11.5 14.5l-1.2 2.8h2.4l-1.2-2.8zm12.2 0l-1.2 2.8h2.4l-1.2-2.8zm-13.9 5.4l.6-1.4h3.2l.6 1.4h2.2l-3.4-7.8h-2.1l-3.4 7.8h2.3zm12.2 0l.6-1.4h3.2l.6 1.4h2.2l-3.4-7.8h-2.1l-3.4 7.8h2.3zm-14.4-1.1l2.6-6.7h2.8l1.3 4.4 1.3-4.4h2.8l-2.6 6.7v1.1h-2.2v-1.1l-2.6-6.7h2.2z'/%3E%3C/svg%3E" alt="American Express" class="ai-footer-payment-icon-{{ ai_gen_id }}">
+        {% endif %}
+        {% if block.settings.payment_paypal %}
+          <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 32'%3E%3Crect width='48' height='32' rx='4' fill='%23fff'/%3E%3Cpath fill='%23003087' d='M19.8 10.2c.3-1.8-.1-3-1.1-4-1.1-1.1-3.1-1.6-5.5-1.6h-7.3c-.5 0-.9.4-1 .8L1.5 22.6c-.1.3.2.6.5.6h3.6l.9-5.7-.1.3c.2-.5.6-.8 1-.8h2.1c4.1 0 7.3-1.7 8.2-6.5.1-.2.1-.4.1-.6v-.7zm-1.2 1.6c-.9 4.8-4.1 6.5-8.2 6.5H8.3l1.4-8.8c.1-.3.3-.5.6-.5h.5c1.3 0 2.5 0 3.1.8.4.4.5 1 .4 1.8.1.3.1.7.1 1.2z'/%3E%3Cpath fill='%23009CDE' d='M19.8 10.2c.3-1.8-.1-3-1.1-4-1.1-1.1-3.1-1.6-5.5-1.6h-7.3c-.5 0-.9.4-1 .8L1.5 22.6c-.1.3.2.6.5.6h3.6l.9-5.7 1.4-8.8c.1-.3.3-.5.6-.5h.5c1.3 0 2.5 0 3.1.8.4.4.5 1 .4 1.8.1.3.1.7.1 1.2v.7c.2 1.8.8 3 1.8 3.8.9.8 2.2 1.1 3.8 1.1h1.1c.4 0 .8-.3.9-.7.3-1.4.9-4.8 1.6-7.7z'/%3E%3C/svg%3E" alt="PayPal" class="ai-footer-payment-icon-{{ ai_gen_id }}">
+        {% endif %}
+        {% if block.settings.payment_apple_pay %}
+          <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 32'%3E%3Crect width='48' height='32' rx='4' fill='%23000'/%3E%3Cpath fill='%23fff' d='M11.7 12.1c-.5.5-1.2.8-2 .8-.1-1.1.3-2 .8-2.7.5-.6 1.3-.9 2.1-.9.1 1-.3 2-.9 2.8zm.9 1.4c-1.2-.1-2.2.7-2.8.7s-1.5-.6-2.4-.6c-1.3 0-2.4.7-3 1.8-1.3 2.2-.3 5.5.9 7.3.6.9 1.3 1.9 2.3 1.8.9 0 1.3-.6 2.4-.6s1.5.6 2.4.6c1 0 1.6-.8 2.2-1.7.7-1 1-2 1-2.1 0 0-2-.8-2-3-.1-1.8 1.5-2.7 1.5-2.8-.9-1.2-2.2-1.3-2.5-1.4zm8.9-2.3v12.2h1.9v-4.2h2.6c2.4 0 4.1-1.6 4.1-4s-1.6-4-4-4h-4.6zm1.9 1.6h2.1c1.7 0 2.6.9 2.6 2.4s-.9 2.5-2.6 2.5h-2.1v-4.9zm10.2 10.6c1.2 0 2.3-.6 2.8-1.5h.1v1.4h1.8v-7.9h-1.8v4.6c0 1.4-.7 2.2-1.9 2.2-1.1 0-1.7-.8-1.7-2v-4.8h-1.9v5.1c0 2 1.1 3 2.6 3zm6.1-8.1c0 .7.5 1.1 1.5 1.1l2 .1c2 .1 3.1 1 3.1 2.7 0 1.7-1.3 2.9-3.2 2.9-1.8 0-3-.9-3.1-2.3h-1.8c.1 2.1 1.7 3.7 4.9 3.7 2.9 0 5-1.5 5-3.8 0-1.8-1.1-2.9-3.1-3l-2-.1c-1.1-.1-1.6-.4-1.6-1s.6-1 1.5-1c1 0 1.7.5 1.8 1.3h1.8c-.1-1.8-1.6-3.1-3.7-3.1-2.2 0-3.6 1.2-3.6 3z'/%3E%3C/svg%3E" alt="Apple Pay" class="ai-footer-payment-icon-{{ ai_gen_id }}">
+        {% endif %}
+        {% if block.settings.payment_google_pay %}
+          <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 32'%3E%3Crect width='48' height='32' rx='4' fill='%23fff'/%3E%3Cpath fill='%235F6368' d='M21.8 18.5v-4.4h7c.1.4.1.8.1 1.3 0 4-2.7 6.8-7.1 6.8-4.1 0-7.4-3.3-7.4-7.4s3.3-7.4 7.4-7.4c2 0 3.7.7 5 2.1l-2 2c-.8-.8-2-1.4-3.4-1.4-2.9 0-5.2 2.4-5.2 5.3s2.3 5.3 5.2 5.3c2.6 0 4.3-1.5 4.7-3.7h-4.7v-2.5h7.4c.1.4.1.8.1 1.3 0 4-2.7 6.8-7.1 6.8zm13.5-4.4c0 2.5-1.9 4.3-4.3 4.3s-4.3-1.8-4.3-4.3c0-2.5 1.9-4.3 4.3-4.3s4.3 1.8 4.3 4.3zm-2 0c0-1.6-1.1-2.7-2.3-2.7s-2.3 1.1-2.3 2.7c0 1.6 1.1 2.7 2.3 2.7s2.3-1.1 2.3-2.7zm10.5 0c0 2.5-1.9 4.3-4.3 4.3s-4.3-1.8-4.3-4.3c0-2.5 1.9-4.3 4.3-4.3s4.3 1.8 4.3 4.3zm-2 0c0-1.6-1.1-2.7-2.3-2.7s-2.3 1.1-2.3 2.7c0 1.6 1.1 2.7 2.3 2.7s2.3-1.1 2.3-2.7z'/%3E%3C/svg%3E" alt="Google Pay" class="ai-footer-payment-icon-{{ ai_gen_id }}">
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</footer-custom-{{ ai_gen_id }}>
+
+<script>
+  (function() {
+    class FooterCustom{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+      }
+      connectedCallback() {
+      }
+    }
+    customElements.define('footer-custom-{{ ai_gen_id }}', FooterCustom{{ ai_gen_id }});
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Custom footer",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Layout and spacing"
+    },
+    {
+      "type": "range",
+      "id": "footer_max_width",
+      "label": "Footer max width",
+      "min": 800,
+      "max": 1600,
+      "step": 50,
+      "unit": "px",
+      "default": 1400
+    },
+    {
+      "type": "range",
+      "id": "side_margin",
+      "label": "Side margin",
+      "min": 10,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "panel_padding_top",
+      "label": "Panel top padding",
+      "min": 10,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 30
+    },
+    {
+      "type": "range",
+      "id": "panel_padding_bottom",
+      "label": "Panel bottom padding",
+      "min": 10,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 30
+    },
+    {
+      "type": "range",
+      "id": "panel_padding_horizontal",
+      "label": "Panel horizontal padding",
+      "min": 10,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "border_radius",
+      "label": "Border radius",
+      "min": 0,
+      "max": 50,
+      "step": 5,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "column_spacing",
+      "label": "Column spacing",
+      "min": 10,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 30
+    },
+    {
+      "type": "header",
+      "content": "Top decorative notch"
+    },
+    {
+      "type": "range",
+      "id": "notch_size",
+      "label": "Notch size",
+      "min": 0,
+      "max": 50,
+      "step": 5,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "main_bg_color",
+      "label": "Main background",
+      "default": "#8B1A1A"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "link_color",
+      "label": "Link",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "link_hover_color",
+      "label": "Link hover",
+      "default": "#CCCCCC"
+    },
+    {
+      "type": "color",
+      "id": "divider_color",
+      "label": "Divider",
+      "default": "rgba(255,255,255,0.2)"
+    },
+    {
+      "type": "header",
+      "content": "Top navigation row"
+    },
+    {
+      "type": "link_list",
+      "id": "footer_menu",
+      "label": "Navigation menu"
+    },
+    {
+      "type": "range",
+      "id": "top_row_height",
+      "label": "Row height",
+      "min": 20,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "top_row_bottom_margin",
+      "label": "Bottom margin",
+      "min": 10,
+      "max": 60,
+      "step": 5,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "divider_bottom_margin",
+      "label": "Divider bottom margin",
+      "min": 10,
+      "max": 60,
+      "step": 5,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "font_picker",
+      "id": "nav_font_family",
+      "label": "Navigation font",
+      "default": "assistant_n4"
+    },
+    {
+      "type": "range",
+      "id": "nav_font_size",
+      "label": "Navigation font size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "select",
+      "id": "nav_font_weight",
+      "label": "Navigation font weight",
+      "options": [
+        {"value": "300", "label": "Light"},
+        {"value": "400", "label": "Normal"},
+        {"value": "500", "label": "Medium"},
+        {"value": "600", "label": "Semi-bold"},
+        {"value": "700", "label": "Bold"}
+      ],
+      "default": "400"
+    },
+    {
+      "type": "color",
+      "id": "nav_text_color",
+      "label": "Navigation text",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "nav_hover_color",
+      "label": "Navigation hover",
+      "default": "#CCCCCC"
+    },
+    {
+      "type": "range",
+      "id": "nav_gap",
+      "label": "Navigation gap",
+      "min": 10,
+      "max": 50,
+      "step": 5,
+      "unit": "px",
+      "default": 25
+    },
+    {
+      "type": "header",
+      "content": "Social media"
+    },
+    {
+      "type": "url",
+      "id": "youtube_url",
+      "label": "YouTube URL"
+    },
+    {
+      "type": "url",
+      "id": "facebook_url",
+      "label": "Facebook URL"
+    },
+    {
+      "type": "url",
+      "id": "instagram_url",
+      "label": "Instagram URL"
+    },
+    {
+      "type": "range",
+      "id": "social_icon_size",
+      "label": "Icon size",
+      "min": 16,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "color",
+      "id": "social_icon_color",
+      "label": "Icon color",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "range",
+      "id": "social_icon_spacing",
+      "label": "Icon spacing",
+      "min": 5,
+      "max": 30,
+      "step": 5,
+      "unit": "px",
+      "default": 15
+    },
+    {
+      "type": "header",
+      "content": "Column headings"
+    },
+    {
+      "type": "font_picker",
+      "id": "heading_font_family",
+      "label": "Font",
+      "default": "assistant_n4"
+    },
+    {
+      "type": "range",
+      "id": "heading_font_size",
+      "label": "Font size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "select",
+      "id": "heading_font_weight",
+      "label": "Font weight",
+      "options": [
+        {"value": "400", "label": "Normal"},
+        {"value": "500", "label": "Medium"},
+        {"value": "600", "label": "Semi-bold"},
+        {"value": "700", "label": "Bold"}
+      ],
+      "default": "600"
+    },
+    {
+      "type": "select",
+      "id": "heading_text_transform",
+      "label": "Text transform",
+      "options": [
+        {"value": "none", "label": "None"},
+        {"value": "uppercase", "label": "Uppercase"},
+        {"value": "capitalize", "label": "Capitalize"}
+      ],
+      "default": "uppercase"
+    },
+    {
+      "type": "range",
+      "id": "heading_margin_bottom",
+      "label": "Bottom margin",
+      "min": 5,
+      "max": 30,
+      "step": 5,
+      "unit": "px",
+      "default": 15
+    },
+    {
+      "type": "header",
+      "content": "Column links"
+    },
+    {
+      "type": "font_picker",
+      "id": "link_font_family",
+      "label": "Font",
+      "default": "assistant_n4"
+    },
+    {
+      "type": "range",
+      "id": "link_font_size",
+      "label": "Font size",
+      "min": 10,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "select",
+      "id": "link_font_weight",
+      "label": "Font weight",
+      "options": [
+        {"value": "300", "label": "Light"},
+        {"value": "400", "label": "Normal"},
+        {"value": "500", "label": "Medium"}
+      ],
+      "default": "400"
+    },
+    {
+      "type": "range",
+      "id": "link_line_height",
+      "label": "Line height",
+      "min": 1,
+      "max": 2,
+      "step": 0.1,
+      "default": 1.5
+    },
+    {
+      "type": "range",
+      "id": "link_row_gap",
+      "label": "Row gap",
+      "min": 5,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "select",
+      "id": "text_alignment",
+      "label": "Text alignment",
+      "options": [
+        {"value": "left", "label": "Left"},
+        {"value": "center", "label": "Center"}
+      ],
+      "default": "left"
+    },
+    {
+      "type": "header",
+      "content": "Support column"
+    },
+    {
+      "type": "text",
+      "id": "column_1_heading",
+      "label": "Heading",
+      "default": "Support"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_support_icons",
+      "label": "Show icons",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "support_icon_size",
+      "label": "Icon size",
+      "min": 14,
+      "max": 28,
+      "step": 2,
+      "unit": "px",
+      "default": 18
+    },
+    {
+      "type": "color",
+      "id": "support_icon_color",
+      "label": "Icon color",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "textarea",
+      "id": "support_address",
+      "label": "Address",
+      "default": "123 Example Street, London, UK"
+    },
+    {
+      "type": "text",
+      "id": "support_email",
+      "label": "Email",
+      "default": "support@example.com"
+    },
+    {
+      "type": "text",
+      "id": "support_phone",
+      "label": "Phone",
+      "default": "+44 123 456 7890"
+    },
+    {
+      "type": "header",
+      "content": "Account column"
+    },
+    {
+      "type": "text",
+      "id": "column_2_heading",
+      "label": "Heading",
+      "default": "Account"
+    },
+    {
+      "type": "link_list",
+      "id": "column_2_menu",
+      "label": "Menu"
+    },
+    {
+      "type": "header",
+      "content": "Quick link column"
+    },
+    {
+      "type": "text",
+      "id": "column_3_heading",
+      "label": "Heading",
+      "default": "Quick link"
+    },
+    {
+      "type": "link_list",
+      "id": "column_3_menu",
+      "label": "Menu"
+    },
+    {
+      "type": "header",
+      "content": "Information column"
+    },
+    {
+      "type": "text",
+      "id": "column_4_heading",
+      "label": "Heading",
+      "default": "Information"
+    },
+    {
+      "type": "link_list",
+      "id": "column_4_menu",
+      "label": "Menu"
+    },
+    {
+      "type": "header",
+      "content": "Bottom bar"
+    },
+    {
+      "type": "color",
+      "id": "bottom_bar_bg_color",
+      "label": "Background",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "bottom_bar_height",
+      "label": "Height padding",
+      "min": 10,
+      "max": 50,
+      "step": 5,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "text",
+      "id": "copyright_text",
+      "label": "Copyright text",
+      "default": "© 2026 Your Store. All rights reserved."
+    },
+    {
+      "type": "color",
+      "id": "copyright_text_color",
+      "label": "Copyright color",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "range",
+      "id": "copyright_font_size",
+      "label": "Copyright font size",
+      "min": 10,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "default": 13
+    },
+    {
+      "type": "select",
+      "id": "copyright_alignment",
+      "label": "Copyright alignment",
+      "options": [
+        {"value": "left", "label": "Left"},
+        {"value": "center", "label": "Center"}
+      ],
+      "default": "left"
+    },
+    {
+      "type": "header",
+      "content": "Payment icons"
+    },
+    {
+      "type": "range",
+      "id": "payment_icon_height",
+      "label": "Icon height",
+      "min": 16,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "payment_icon_gap",
+      "label": "Icon gap",
+      "min": 5,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 10
+    },
+    {
+      "type": "checkbox",
+      "id": "payment_visa",
+      "label": "Visa",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "payment_mastercard",
+      "label": "Mastercard",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "payment_amex",
+      "label": "American Express",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "payment_paypal",
+      "label": "PayPal",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "payment_apple_pay",
+      "label": "Apple Pay",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "payment_google_pay",
+      "label": "Google Pay",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Mobile settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "mobile_hide_nav",
+      "label": "Hide navigation on mobile",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "mobile_panel_padding_top",
+      "label": "Mobile panel top padding",
+      "min": 10,
+      "max": 60,
+      "step": 5,
+      "unit": "px",
+      "default": 25
+    },
+    {
+      "type": "range",
+      "id": "mobile_panel_padding_bottom",
+      "label": "Mobile panel bottom padding",
+      "min": 10,
+      "max": 60,
+      "step": 5,
+      "unit": "px",
+      "default": 25
+    },
+    {
+      "type": "range",
+      "id": "mobile_panel_padding_horizontal",
+      "label": "Mobile panel horizontal padding",
+      "min": 10,
+      "max": 50,
+      "step": 5,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "mobile_column_spacing",
+      "label": "Mobile column spacing",
+      "min": 15,
+      "max": 50,
+      "step": 5,
+      "unit": "px",
+      "default": 25
+    },
+    {
+      "type": "range",
+      "id": "mobile_nav_font_size",
+      "label": "Mobile navigation font size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "mobile_nav_gap",
+      "label": "Mobile navigation gap",
+      "min": 5,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 10
+    },
+    {
+      "type": "range",
+      "id": "mobile_heading_font_size",
+      "label": "Mobile heading font size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 15
+    },
+    {
+      "type": "range",
+      "id": "mobile_link_font_size",
+      "label": "Mobile link font size",
+      "min": 10,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "default": 13
+    },
+    {
+      "type": "range",
+      "id": "mobile_social_icon_size",
+      "label": "Mobile social icon size",
+      "min": 16,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "default": 22
+    }
+  ],
+  "presets": [
+    {
+      "name": "Custom footer"
+    }
+  ]
+}
+{% endschema %}

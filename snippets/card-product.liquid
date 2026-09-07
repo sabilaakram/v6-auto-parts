@@ -1,0 +1,370 @@
+{% comment %}
+  Renders a product card - Redesigned for V6 Auto Parts
+
+  Accepts:
+  - card_product: {Object} Product Liquid object (optional)
+  - media_aspect_ratio: {String} Size of the product image card. Values are "square" and "portrait". Default is "square" (optional)
+  - image_shape: {String} Image mask to apply to the product image card. Values are "arch", "blob", "chevronleft", "chevronright", "diamond", "parallelogram", and "round". (optional)
+  - show_secondary_image: {Boolean} Show the secondary image on hover. Default: false (optional)
+  - show_vendor: {Boolean} Show the product vendor. Default: false
+  - show_rating: {Boolean} Show the product rating. Default: true
+  - extend_height: {Boolean} Card height extends to available container space. Default: false (optional)
+  - lazy_load: {Boolean} Image should be lazy loaded. Default: true (optional)
+  - quick_add: {Boolean} Show the quick add button. Default: true
+  - section_id: {String} The ID of the section that contains this card.
+  - placeholder_image: {String} The placeholder image to use when no product exists. Default: 'product-apparel-2' (optional)
+
+  Usage:
+  {% render 'card-product', show_vendor: section.settings.show_vendor %}
+{% endcomment %}
+
+<style>
+  .product-card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    border: 1px solid #f0f0f0;
+    padding: 15px;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+    background: #ffffff;
+    position: relative;
+  }
+
+  .product-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  .product-card__image-wrapper {
+    position: relative;
+    width: 100%;
+    margin-bottom: 15px;
+    overflow: hidden;
+    background: #f9f9f9;
+    border-radius: 4px;
+    aspect-ratio: 1;
+  }
+
+  .product-card__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+  }
+
+  .product-card:hover .product-card__image {
+    transform: scale(1.05);
+  }
+
+  .product-card__wishlist {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: white;
+    border: none;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .product-card__wishlist:hover {
+    transform: scale(1.1);
+    background: #f0f0f0;
+  }
+
+  .product-card__content {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    gap: 10px;
+  }
+
+  .product-card__title {
+    font-size: {{ section.settings.product_title_size }}px;
+    font-weight: {{ section.settings.product_title_weight }};
+    color: {{ section.settings.product_title_color }};
+    margin: 0;
+    line-height: 1.4;
+    font-family: {{ section.settings.product_title_font }};
+    text-decoration: none;
+    display: block;
+    min-height: 40px;
+    overflow: hidden;
+  }
+
+  .product-card__title a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .product-card__title a:hover {
+    text-decoration: underline;
+  }
+
+  .product-card__rating {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: {{ section.settings.rating_size }}px;
+  }
+
+  .product-card__stars {
+    display: flex;
+    gap: 2px;
+    color: {{ section.settings.rating_color }};
+  }
+
+  .product-card__star {
+    font-size: {{ section.settings.rating_size }}px;
+  }
+
+  .product-card__rating-text {
+    font-size: {{ section.settings.rating_size }}px;
+    color: {{ section.settings.rating_text_color }};
+    margin: 0;
+  }
+
+  .product-card__price-wrapper {
+    margin: 8px 0;
+  }
+
+  .product-card__price {
+    font-size: {{ section.settings.product_price_size }}px;
+    font-weight: {{ section.settings.product_price_weight }};
+    color: {{ section.settings.product_price_color }};
+    margin: 0;
+    font-family: {{ section.settings.product_price_font }};
+  }
+
+  .product-card__price--compare {
+    text-decoration: line-through;
+    color: {{ section.settings.product_price_compare_color }};
+    font-size: 0.9em;
+    margin-right: 8px;
+  }
+
+  .product-card__sale-badge {
+    background: {{ section.settings.sale_badge_color }};
+    color: white;
+    padding: 4px 8px;
+    border-radius: 3px;
+    font-size: 12px;
+    font-weight: 600;
+    display: inline-block;
+    margin-left: 8px;
+  }
+
+  .product-card__button-wrapper {
+    margin-top: auto;
+    padding-top: 12px;
+  }
+
+  .product-card__button {
+    width: 100%;
+    padding: {{ section.settings.button_padding_vertical }}px {{ section.settings.button_padding_horizontal }}px;
+    background-color: {{ section.settings.button_bg_color }};
+    color: {{ section.settings.button_text_color }};
+    border: none;
+    border-radius: {{ section.settings.button_border_radius }}px;
+    font-size: {{ section.settings.button_font_size }}px;
+    font-weight: {{ section.settings.button_font_weight }};
+    font-family: {{ section.settings.button_font_family }};
+    cursor: pointer;
+    text-transform: {{ section.settings.button_text_transform }};
+    letter-spacing: {{ section.settings.button_letter_spacing }}px;
+    transition: all 0.3s ease;
+    text-align: center;
+    text-decoration: none;
+    display: block;
+  }
+
+  .product-card__button:hover {
+    background-color: {{ section.settings.button_bg_color_hover }};
+    color: {{ section.settings.button_text_color_hover }};
+    transform: {{ section.settings.button_hover_effect }};
+  }
+
+  .product-card__button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+
+  .product-card__vendor {
+    font-size: {{ section.settings.vendor_size }}px;
+    color: {{ section.settings.vendor_color }};
+    margin: 0;
+    text-transform: {{ section.settings.vendor_text_transform }};
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .product-card {
+      padding: 12px;
+    }
+
+    .product-card__title {
+      font-size: {{ section.settings.product_title_size_mobile }}px;
+    }
+
+    .product-card__price {
+      font-size: {{ section.settings.product_price_size_mobile }}px;
+    }
+
+    .product-card__button {
+      padding: {{ section.settings.button_padding_vertical_mobile }}px {{ section.settings.button_padding_horizontal_mobile }}px;
+      font-size: {{ section.settings.button_font_size_mobile }}px;
+    }
+
+    .product-card__image-wrapper {
+      margin-bottom: 12px;
+    }
+
+    .product-card__content {
+      gap: 8px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .product-card {
+      padding: 10px;
+    }
+
+    .product-card__image-wrapper {
+      aspect-ratio: auto;
+      height: 200px;
+    }
+
+    .product-card__wishlist {
+      width: 30px;
+      height: 30px;
+      font-size: 16px;
+    }
+  }
+</style>
+
+{%- if card_product and card_product != empty -%}
+  <div class="product-card">
+    <!-- Image Section -->
+    <div class="product-card__image-wrapper">
+      {% if card_product.featured_media %}
+        <img
+          src="{{ card_product.featured_media | image_url: width: 500 }}"
+          alt="{{ card_product.featured_media.alt | escape }}"
+          class="product-card__image"
+          {% unless lazy_load == false %}
+            loading="lazy"
+          {% endunless %}
+          width="{{ card_product.featured_media.width }}"
+          height="{{ card_product.featured_media.height }}"
+        >
+      {% else %}
+        <div style="width: 100%; height: 100%; background: #f0f0f0; display: flex; align-items: center; justify-content: center;">
+          {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+        </div>
+      {% endif %}
+
+      <!-- Wishlist Button -->
+      <button class="product-card__wishlist" aria-label="Add to wishlist" title="Add to wishlist">
+        🤍
+      </button>
+    </div>
+
+    <!-- Content Section -->
+    <div class="product-card__content">
+      <!-- Vendor -->
+      {% if show_vendor and card_product.vendor %}
+        <p class="product-card__vendor">{{ card_product.vendor }}</p>
+      {% endif %}
+
+      <!-- Title -->
+      <h3 class="product-card__title">
+        <a href="{{ card_product.url }}">{{ card_product.title | escape }}</a>
+      </h3>
+
+      <!-- Rating -->
+      {% if show_rating and card_product.metafields.reviews.rating.value != blank %}
+        <div class="product-card__rating">
+          <div class="product-card__stars">
+            {% assign rating_value = card_product.metafields.reviews.rating.value | floor %}
+            {% for i in (1..5) %}
+              {% if i <= rating_value %}
+                <span class="product-card__star">★</span>
+              {% else %}
+                <span class="product-card__star" style="opacity: 0.3;">★</span>
+              {% endif %}
+            {% endfor %}
+          </div>
+          <span class="product-card__rating-text">
+            ({{ card_product.metafields.reviews.rating_count }})
+          </span>
+        </div>
+      {% endif %}
+
+      <!-- Price -->
+      <div class="product-card__price-wrapper">
+        {% if card_product.compare_at_price > card_product.price %}
+          <span class="product-card__price--compare">{{ card_product.compare_at_price | money }}</span>
+          <span class="product-card__sale-badge">{{ section.settings.sale_label | default: 'SALE' }}</span>
+        {% endif %}
+        <p class="product-card__price">{{ card_product.price | money }}</p>
+      </div>
+    </div>
+
+    <!-- Button Section -->
+    <div class="product-card__button-wrapper">
+      {% if quick_add %}
+        {% if card_product.variants_count == 1 %}
+          <form method="post" action="/cart/add" class="product-card__form">
+            <input type="hidden" name="id" value="{{ card_product.selected_or_first_available_variant.id }}">
+            <button 
+              type="submit" 
+              class="product-card__button"
+              {% unless card_product.available %}disabled{% endunless %}
+            >
+              {% if card_product.available %}
+                {{ section.settings.add_to_cart_text | default: 'Add to Cart' }}
+              {% else %}
+                {{ section.settings.sold_out_text | default: 'Sold Out' }}
+              {% endif %}
+            </button>
+          </form>
+        {% else %}
+          <a href="{{ card_product.url }}" class="product-card__button">
+            {{ section.settings.view_options_text | default: 'Choose Options' }}
+          </a>
+        {% endif %}
+      {% else %}
+        <a href="{{ card_product.url }}" class="product-card__button">
+          {{ section.settings.view_product_text | default: 'View Product' }}
+        </a>
+      {% endif %}
+    </div>
+  </div>
+
+{%- else -%}
+  <!-- Placeholder Card -->
+  <div class="product-card">
+    <div class="product-card__image-wrapper" style="background: #f0f0f0;">
+      {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+    </div>
+    <div class="product-card__content">
+      <h3 class="product-card__title">
+        <a href="#">Product Title</a>
+      </h3>
+      <p class="product-card__price">$0.00</p>
+    </div>
+    <div class="product-card__button-wrapper">
+      <button class="product-card__button" disabled>Add to Cart</button>
+    </div>
+  </div>
+{%- endif -%}
+
+

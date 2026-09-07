@@ -1,0 +1,791 @@
+{% doc %}
+  @prompt
+    Create a responsive “Why Choose Us / Professional Support” feature section with a dark background and decorative angled/notched white shapes at the top and bottom, similar to an automotive/e-commerce style.
+    
+    Add a small upper heading, a large centered main heading, and below it a dynamic feature grid.
+    
+    Each feature should be added as a Shopify block, so I can increase, decrease, remove, and reorder the number of items from the Theme Editor.
+    
+    Each feature block must include:
+    
+    Upload/select SVG icon
+    Feature title
+    Short description
+    Icon background color
+    Icon size
+    Icon circle size
+    Title and description styling
+    
+    Make the grid responsive and automatically adjust depending on the number of blocks:
+    
+    Desktop: configurable 2, 3, or 4 columns
+    Tablet: 2 columns
+    Mobile: 1 or 2 columns selectable from Theme Editor
+    
+    Allow me to control from the Shopify Theme Editor:
+    
+    Section background color
+    Small heading text, color, font family, size, weight, letter spacing
+    Main heading text, font family, size, weight, line height, color
+    Heading alignment and spacing
+    Grid gap
+    Section height/padding
+    Number of desktop/mobile columns
+    Feature title and description typography
+    Icon colors, sizes, and spacing
+    
+    SVG icons must be uploaded individually for each block from the Theme Editor, not hard-coded.
+    
+    Keep all styling scoped only to this section, make it fully responsive, and ensure adding more feature blocks does not break the layout., for the main container dont add the tilted lines, use a simple straight lines
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-why-choose-us-{{ ai_gen_id }} {
+    display: block;
+    position: relative;
+    background-color: {{ block.settings.section_bg_color }};
+    padding: {{ block.settings.section_padding_top }}px 0 {{ block.settings.section_padding_bottom }}px 0;
+    width: {{ block.settings.desktop_width_percent }}%;
+  }
+
+  .ai-why-choose-us-{{ ai_gen_id }}::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: {{ block.settings.border_thickness }}px;
+    background-color: {{ block.settings.border_color }};
+    z-index: 1;
+  }
+
+  .ai-why-choose-us-{{ ai_gen_id }}::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: {{ block.settings.border_thickness }}px;
+    background-color: {{ block.settings.border_color }};
+    z-index: 1;
+  }
+
+  .ai-why-choose-us-container-{{ ai_gen_id }} {
+    max-width: {{ block.settings.max_width }}px;
+    margin: 0 auto;
+    padding: 0 20px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .ai-why-choose-us-header-{{ ai_gen_id }} {
+    text-align: {{ block.settings.heading_alignment }};
+    margin-bottom: {{ block.settings.heading_bottom_spacing }}px;
+  }
+
+  .ai-why-choose-us-small-heading-{{ ai_gen_id }} {
+    color: {{ block.settings.small_heading_color }};
+    font-family: {{ block.settings.small_heading_font.family }}, {{ block.settings.small_heading_font.fallback_families }};
+    font-weight: {{ block.settings.small_heading_font.weight }};
+    font-size: {{ block.settings.small_heading_size }}px;
+    letter-spacing: {{ block.settings.small_heading_letter_spacing }}px;
+    text-transform: uppercase;
+    margin: 0 0 {{ block.settings.small_heading_bottom_margin }}px 0;
+  }
+
+  .ai-why-choose-us-main-heading-{{ ai_gen_id }} {
+    color: {{ block.settings.main_heading_color }};
+    font-family: {{ block.settings.main_heading_font.family }}, {{ block.settings.main_heading_font.fallback_families }};
+    font-weight: {{ block.settings.main_heading_font.weight }};
+    font-size: {{ block.settings.main_heading_size }}px;
+    line-height: {{ block.settings.main_heading_line_height }};
+    margin: 0;
+  }
+
+  .ai-why-choose-us-grid-{{ ai_gen_id }} {
+    display: grid;
+    grid-template-columns: repeat({{ block.settings.columns_desktop }}, 1fr);
+    gap: {{ block.settings.grid_gap }}px;
+    margin: 0 auto;
+  }
+
+  .ai-why-choose-us-feature-{{ ai_gen_id }} {
+    text-align: center;
+    padding: {{ block.settings.feature_padding }}px;
+  }
+
+  .ai-why-choose-us-icon-wrapper-{{ ai_gen_id }} {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: {{ block.settings.icon_bottom_spacing }}px;
+  }
+
+  .ai-why-choose-us-icon-circle-{{ ai_gen_id }} {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: {{ block.settings.icon_circle_size }}px;
+    height: {{ block.settings.icon_circle_size }}px;
+    background-color: {{ block.settings.icon_bg_color }};
+    border-radius: 50%;
+    transition: transform 0.3s ease;
+  }
+
+  .ai-why-choose-us-feature-{{ ai_gen_id }}:hover .ai-why-choose-us-icon-circle-{{ ai_gen_id }} {
+    transform: scale(1.05);
+  }
+
+  .ai-why-choose-us-icon-{{ ai_gen_id }} {
+    width: {{ block.settings.icon_size }}px;
+    height: {{ block.settings.icon_size }}px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ai-why-choose-us-icon-{{ ai_gen_id }} svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  .ai-why-choose-us-feature-title-{{ ai_gen_id }} {
+    color: {{ block.settings.title_color }};
+    font-family: {{ block.settings.title_font.family }}, {{ block.settings.title_font.fallback_families }};
+    font-weight: {{ block.settings.title_font.weight }};
+    font-size: {{ block.settings.title_size }}px;
+    margin: 0 0 {{ block.settings.title_bottom_spacing }}px 0;
+  }
+
+  .ai-why-choose-us-feature-description-{{ ai_gen_id }} {
+    color: {{ block.settings.description_color }};
+    font-family: {{ block.settings.description_font.family }}, {{ block.settings.description_font.fallback_families }};
+    font-weight: {{ block.settings.description_font.weight }};
+    font-size: {{ block.settings.description_size }}px;
+    line-height: {{ block.settings.description_line_height }};
+    margin: 0;
+  }
+
+  @media screen and (max-width: 989px) {
+    .ai-why-choose-us-grid-{{ ai_gen_id }} {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .ai-why-choose-us-main-heading-{{ ai_gen_id }} {
+      font-size: calc({{ block.settings.main_heading_size }}px * 0.8);
+    }
+
+    .ai-why-choose-us-small-heading-{{ ai_gen_id }} {
+      font-size: calc({{ block.settings.small_heading_size }}px * 0.9);
+    }
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-why-choose-us-grid-{{ ai_gen_id }} {
+      grid-template-columns: repeat({{ block.settings.columns_mobile }}, 1fr);
+    }
+
+    .ai-why-choose-us-{{ ai_gen_id }} {
+      padding: {{ block.settings.section_padding_top | times: 0.7 }}px 0 {{ block.settings.section_padding_bottom | times: 0.7 }}px 0;
+      width: 100%;
+    }
+
+    .ai-why-choose-us-main-heading-{{ ai_gen_id }} {
+      font-size: calc({{ block.settings.main_heading_size }}px * 0.6);
+    }
+
+    .ai-why-choose-us-small-heading-{{ ai_gen_id }} {
+      font-size: calc({{ block.settings.small_heading_size }}px * 0.8);
+    }
+
+    .ai-why-choose-us-feature-{{ ai_gen_id }} {
+      padding: {{ block.settings.feature_padding | times: 0.7 }}px;
+    }
+
+    .ai-why-choose-us-icon-circle-{{ ai_gen_id }} {
+      width: calc({{ block.settings.icon_circle_size }}px * 0.8);
+      height: calc({{ block.settings.icon_circle_size }}px * 0.8);
+    }
+
+    .ai-why-choose-us-icon-{{ ai_gen_id }} {
+      width: calc({{ block.settings.icon_size }}px * 0.8);
+      height: calc({{ block.settings.icon_size }}px * 0.8);
+    }
+  }
+{% endstyle %}
+
+<why-choose-us-{{ ai_gen_id }} class="ai-why-choose-us-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-why-choose-us-container-{{ ai_gen_id }}">
+    <div class="ai-why-choose-us-header-{{ ai_gen_id }}">
+      {% if block.settings.small_heading != blank %}
+        <div class="ai-why-choose-us-small-heading-{{ ai_gen_id }}">
+          {{ block.settings.small_heading }}
+        </div>
+      {% endif %}
+
+      {% if block.settings.main_heading != blank %}
+        <h2 class="ai-why-choose-us-main-heading-{{ ai_gen_id }}">
+          {{ block.settings.main_heading }}
+        </h2>
+      {% endif %}
+    </div>
+
+    <div class="ai-why-choose-us-grid-{{ ai_gen_id }}">
+      {% for i in (1..4) %}
+        {% liquid
+          assign feature_enabled_key = 'feature_' | append: i | append: '_enabled'
+          assign feature_icon_key = 'feature_' | append: i | append: '_icon'
+          assign feature_title_key = 'feature_' | append: i | append: '_title'
+          assign feature_desc_key = 'feature_' | append: i | append: '_description'
+
+          assign feature_enabled = block.settings[feature_enabled_key]
+          assign feature_icon = block.settings[feature_icon_key]
+          assign feature_title = block.settings[feature_title_key]
+          assign feature_desc = block.settings[feature_desc_key]
+        %}
+
+        {% if feature_enabled %}
+          <div class="ai-why-choose-us-feature-{{ ai_gen_id }}" data-feature-id="{{ i }}">
+            <div class="ai-why-choose-us-icon-wrapper-{{ ai_gen_id }}">
+              <div class="ai-why-choose-us-icon-circle-{{ ai_gen_id }}">
+                <div class="ai-why-choose-us-icon-{{ ai_gen_id }}">
+                  {% if feature_icon != blank %}
+                    {{ feature_icon }}
+                  {% else %}
+                    <svg viewBox="0 0 24 24" fill="none" stroke="{{ block.settings.title_color }}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                      <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                    </svg>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+
+            {% if feature_title != blank %}
+              <h3 class="ai-why-choose-us-feature-title-{{ ai_gen_id }}">
+                {{ feature_title }}
+              </h3>
+            {% endif %}
+
+            {% if feature_desc != blank %}
+              <div class="ai-why-choose-us-feature-description-{{ ai_gen_id }}">
+                {{ feature_desc }}
+              </div>
+            {% endif %}
+          </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+</why-choose-us-{{ ai_gen_id }}>
+
+<script>
+  (function() {
+    class WhyChooseUs{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+      }
+
+      connectedCallback() {
+        this.initializeFeatures();
+      }
+
+      initializeFeatures() {
+        const features = this.querySelectorAll('.ai-why-choose-us-feature-{{ ai_gen_id }}');
+        
+        features.forEach((feature, index) => {
+          feature.style.opacity = '0';
+          feature.style.transform = 'translateY(20px)';
+          feature.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+          
+          setTimeout(() => {
+            feature.style.opacity = '1';
+            feature.style.transform = 'translateY(0)';
+          }, index * 100);
+        });
+      }
+    }
+
+    customElements.define('why-choose-us-{{ ai_gen_id }}', WhyChooseUs{{ ai_gen_id }});
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Why choose us",
+  "tag": null,
+  "class": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section style"
+    },
+    {
+      "type": "color",
+      "id": "section_bg_color",
+      "label": "Background color",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "Border color",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "range",
+      "id": "border_thickness",
+      "min": 1,
+      "max": 10,
+      "step": 1,
+      "unit": "px",
+      "label": "Border thickness",
+      "default": 3
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "min": 1000,
+      "max": 1600,
+      "step": 100,
+      "unit": "px",
+      "label": "Maximum width",
+      "default": 1200
+    },
+    {
+      "type": "range",
+      "id": "section_padding_top",
+      "min": 40,
+      "max": 200,
+      "step": 10,
+      "unit": "px",
+      "label": "Top padding",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "section_padding_bottom",
+      "min": 40,
+      "max": 200,
+      "step": 10,
+      "unit": "px",
+      "label": "Bottom padding",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "desktop_width_percent",
+      "label": "Desktop width",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    },
+    {
+      "type": "header",
+      "content": "Small heading"
+    },
+    {
+      "type": "text",
+      "id": "small_heading",
+      "label": "Text",
+      "default": "Why Choose Us"
+    },
+    {
+      "type": "font_picker",
+      "id": "small_heading_font",
+      "label": "Font",
+      "default": "assistant_n4"
+    },
+    {
+      "type": "range",
+      "id": "small_heading_size",
+      "min": 10,
+      "max": 30,
+      "step": 1,
+      "unit": "px",
+      "label": "Size",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "small_heading_letter_spacing",
+      "min": 0,
+      "max": 5,
+      "step": 0.5,
+      "unit": "px",
+      "label": "Letter spacing",
+      "default": 2
+    },
+    {
+      "type": "color",
+      "id": "small_heading_color",
+      "label": "Color",
+      "default": "#999999"
+    },
+    {
+      "type": "range",
+      "id": "small_heading_bottom_margin",
+      "min": 5,
+      "max": 40,
+      "step": 5,
+      "unit": "px",
+      "label": "Bottom margin",
+      "default": 10
+    },
+    {
+      "type": "header",
+      "content": "Main heading"
+    },
+    {
+      "type": "text",
+      "id": "main_heading",
+      "label": "Text",
+      "default": "Professional Support & Quality Service"
+    },
+    {
+      "type": "font_picker",
+      "id": "main_heading_font",
+      "label": "Font",
+      "default": "assistant_n4"
+    },
+    {
+      "type": "range",
+      "id": "main_heading_size",
+      "min": 20,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "label": "Size",
+      "default": 42
+    },
+    {
+      "type": "range",
+      "id": "main_heading_line_height",
+      "min": 1,
+      "max": 2,
+      "step": 0.1,
+      "label": "Line height",
+      "default": 1.2
+    },
+    {
+      "type": "color",
+      "id": "main_heading_color",
+      "label": "Color",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "select",
+      "id": "heading_alignment",
+      "label": "Alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "range",
+      "id": "heading_bottom_spacing",
+      "min": 20,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Bottom spacing",
+      "default": 60
+    },
+    {
+      "type": "header",
+      "content": "Grid layout"
+    },
+    {
+      "type": "select",
+      "id": "columns_desktop",
+      "label": "Desktop columns",
+      "options": [
+        {
+          "value": "2",
+          "label": "2"
+        },
+        {
+          "value": "3",
+          "label": "3"
+        },
+        {
+          "value": "4",
+          "label": "4"
+        }
+      ],
+      "default": "3"
+    },
+    {
+      "type": "select",
+      "id": "columns_mobile",
+      "label": "Mobile columns",
+      "options": [
+        {
+          "value": "1",
+          "label": "1"
+        },
+        {
+          "value": "2",
+          "label": "2"
+        }
+      ],
+      "default": "1"
+    },
+    {
+      "type": "range",
+      "id": "grid_gap",
+      "min": 10,
+      "max": 80,
+      "step": 5,
+      "unit": "px",
+      "label": "Gap between items",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "feature_padding",
+      "min": 0,
+      "max": 50,
+      "step": 5,
+      "unit": "px",
+      "label": "Feature padding",
+      "default": 20
+    },
+    {
+      "type": "header",
+      "content": "Icon style"
+    },
+    {
+      "type": "range",
+      "id": "icon_size",
+      "min": 20,
+      "max": 80,
+      "step": 5,
+      "unit": "px",
+      "label": "Icon size",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "icon_circle_size",
+      "min": 60,
+      "max": 150,
+      "step": 5,
+      "unit": "px",
+      "label": "Icon circle size",
+      "default": 90
+    },
+    {
+      "type": "color",
+      "id": "icon_bg_color",
+      "label": "Circle background",
+      "default": "#2a2a2a"
+    },
+    {
+      "type": "range",
+      "id": "icon_bottom_spacing",
+      "min": 10,
+      "max": 50,
+      "step": 5,
+      "unit": "px",
+      "label": "Icon bottom spacing",
+      "default": 20
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "font_picker",
+      "id": "title_font",
+      "label": "Title font",
+      "default": "assistant_n4"
+    },
+    {
+      "type": "range",
+      "id": "title_size",
+      "min": 14,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "label": "Title size",
+      "default": 20
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Title color",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "range",
+      "id": "title_bottom_spacing",
+      "min": 5,
+      "max": 40,
+      "step": 5,
+      "unit": "px",
+      "label": "Title bottom spacing",
+      "default": 15
+    },
+    {
+      "type": "font_picker",
+      "id": "description_font",
+      "label": "Description font",
+      "default": "assistant_n4"
+    },
+    {
+      "type": "range",
+      "id": "description_size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Description size",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "description_line_height",
+      "min": 1,
+      "max": 2,
+      "step": 0.1,
+      "label": "Description line height",
+      "default": 1.6
+    },
+    {
+      "type": "color",
+      "id": "description_color",
+      "label": "Description color",
+      "default": "#cccccc"
+    },
+    {
+      "type": "header",
+      "content": "Feature 1"
+    },
+    {
+      "type": "checkbox",
+      "id": "feature_1_enabled",
+      "label": "Enable feature 1",
+      "default": true
+    },
+    {
+      "type": "html",
+      "id": "feature_1_icon",
+      "label": "SVG icon code"
+    },
+    {
+      "type": "text",
+      "id": "feature_1_title",
+      "label": "Title",
+      "default": "Expert Support"
+    },
+    {
+      "type": "textarea",
+      "id": "feature_1_description",
+      "label": "Description",
+      "default": "Our team is here to help you find the right parts."
+    },
+    {
+      "type": "header",
+      "content": "Feature 2"
+    },
+    {
+      "type": "checkbox",
+      "id": "feature_2_enabled",
+      "label": "Enable feature 2",
+      "default": true
+    },
+    {
+      "type": "html",
+      "id": "feature_2_icon",
+      "label": "SVG icon code"
+    },
+    {
+      "type": "text",
+      "id": "feature_2_title",
+      "label": "Title",
+      "default": "Fast Delivery"
+    },
+    {
+      "type": "textarea",
+      "id": "feature_2_description",
+      "label": "Description",
+      "default": "Quick shipping on all orders across the UK."
+    },
+    {
+      "type": "header",
+      "content": "Feature 3"
+    },
+    {
+      "type": "checkbox",
+      "id": "feature_3_enabled",
+      "label": "Enable feature 3",
+      "default": true
+    },
+    {
+      "type": "html",
+      "id": "feature_3_icon",
+      "label": "SVG icon code"
+    },
+    {
+      "type": "text",
+      "id": "feature_3_title",
+      "label": "Title",
+      "default": "Quality Parts"
+    },
+    {
+      "type": "textarea",
+      "id": "feature_3_description",
+      "label": "Description",
+      "default": "Only genuine and certified automotive parts."
+    },
+    {
+      "type": "header",
+      "content": "Feature 4"
+    },
+    {
+      "type": "checkbox",
+      "id": "feature_4_enabled",
+      "label": "Enable feature 4",
+      "default": false
+    },
+    {
+      "type": "html",
+      "id": "feature_4_icon",
+      "label": "SVG icon code"
+    },
+    {
+      "type": "text",
+      "id": "feature_4_title",
+      "label": "Title",
+      "default": "Best Prices"
+    },
+    {
+      "type": "textarea",
+      "id": "feature_4_description",
+      "label": "Description",
+      "default": "Competitive pricing on all our products."
+    }
+  ],
+  "presets": [
+    {
+      "name": "Why choose us"
+    }
+  ]
+}
+{% endschema %}
