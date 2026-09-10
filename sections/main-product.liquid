@@ -396,6 +396,8 @@
                   {%- endif -%}
                 {%- when 'ai_specification' -%}
                   {% render 'ai-specification', block: block %}
+                {%- when 'ai_custom_specs' -%}
+                  {% render 'ai-custom-specs', block: block %}
                 {%- when 'ai_feature_grid' -%}
                   {% render 'ai-feature-grid', block: block %}
                 {%- when 'ai_compatibility_table' -%}
@@ -2364,6 +2366,70 @@
           "default": "t:sections.main-product.blocks.icon_with_text.settings.heading_3.default",
           "label": "t:sections.main-product.blocks.icon_with_text.settings.heading_3.label",
           "info": "t:sections.main-product.blocks.icon_with_text.settings.heading.info"
+        }
+      ]
+    },
+    {
+      "type": "ai_custom_specs",
+      "name": "Custom specifications",
+      "settings": [
+        {
+          "type": "header",
+          "content": "Heading"
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Specifications"
+        },
+        {
+          "type": "header",
+          "content": "Data source"
+        },
+        {
+          "type": "text",
+          "id": "metafield_key",
+          "label": "Metafield (namespace.key)",
+          "info": "A multi-line text metafield on this product. One \"Label: Value\" pair per line — any labels, any number of rows, different per product. No theme changes needed to add or change rows. Example:\nBrand: V6 Auto Parts Ltd\nFits: Hyundai Accent II LC, Atos MX, Coupe II GK\nReference OE/OEM Number: 35310-22600, 9260930006\nFuel Type: Petrol\nWarranty: 10 Years\nCountry of Origin: United Kingdom"
+        },
+        {
+          "type": "header",
+          "content": "Table style"
+        },
+        {
+          "type": "font_picker",
+          "id": "table_font",
+          "label": "Font",
+          "default": "inter_n4"
+        },
+        {
+          "type": "range",
+          "id": "table_font_size",
+          "min": 10,
+          "max": 20,
+          "step": 1,
+          "unit": "px",
+          "label": "Font size",
+          "default": 14
+        },
+        {
+          "type": "color",
+          "id": "label_color",
+          "label": "Label column color",
+          "default": "#5c5c5c"
+        },
+        {
+          "type": "color",
+          "id": "value_color",
+          "label": "Value color",
+          "default": "#111111"
+        },
+        {
+          "type": "color",
+          "id": "divider_color",
+          "label": "Divider color",
+          "default": "#e5e5e5"
         }
       ]
     },

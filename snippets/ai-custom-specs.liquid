@@ -1,0 +1,132 @@
+{% comment %}
+  Renders the "Custom specifications" local block on the product page: a
+  free-form two-column (Label | Value) table parsed from a single multi-line
+  text product metafield (namespace.key). Unlike the "Specification" block,
+  rows are NOT fixed in the theme editor — each product can have as many rows
+  as it needs, with whatever labels it needs, just by editing its metafield in
+  Admin. Hidden entirely if the metafield is blank on this product.
+
+  Metafield format — one "Label: Value" pair per line. Example:
+    Brand: V6 Auto Parts Ltd
+    Fits: Hyundai Accent II LC, Atos MX, Coupe II GK, Elantra III XD Matrix
+    Reference OE/OEM Number: 35310-22600, 9260930006, 0280157175
+    Fuel Type: Petrol
+    Warranty: 10 Years
+    Country of Origin: United Kingdom
+
+  Accepts:
+  - block: {Object} the "ai_custom_specs" block from main-product.liquid
+
+  Usage:
+  {% render 'ai-custom-specs', block: block %}
+{% endcomment %}
+
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% liquid
+  assign mf_value = blank
+  assign raw_key = block.settings.metafield_key
+  if raw_key != blank
+    assign parts = raw_key | strip | split: '.'
+    if parts.size == 2
+      assign mf_value = product.metafields[parts[0]][parts[1]].value
+    endif
+  endif
+%}
+
+{% capture newline %}
+{% endcapture %}
+
+{% if mf_value != blank %}
+  {% liquid
+    assign lines = mf_value | strip | split: newline
+  %}
+
+  {% style %}
+    .ai-custom-specs-{{ ai_gen_id }} {
+      margin: 24px 0;
+    }
+
+    .ai-custom-specs__table-wrap-{{ ai_gen_id }} {
+      border: 1px solid {{ block.settings.divider_color | default: '#e5e5e5' }};
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    .ai-custom-specs__table-{{ ai_gen_id }} {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: {{ block.settings.table_font.family }}, {{ block.settings.table_font.fallback_families }};
+      font-weight: {{ block.settings.table_font.weight }};
+      font-style: {{ block.settings.table_font.style }};
+      font-size: {{ block.settings.table_font_size }}px;
+    }
+
+    .ai-custom-specs__table-{{ ai_gen_id }} tr + tr {
+      border-top: 1px solid {{ block.settings.divider_color | default: '#e5e5e5' }};
+    }
+
+    .ai-custom-specs__table-{{ ai_gen_id }} th,
+    .ai-custom-specs__table-{{ ai_gen_id }} td {
+      text-align: left;
+      padding: 12px 20px;
+      vertical-align: top;
+    }
+
+    .ai-custom-specs__table-{{ ai_gen_id }} th {
+      width: 35%;
+      font-weight: 600;
+      color: {{ block.settings.label_color }};
+      background: #fafafa;
+    }
+
+    .ai-custom-specs__table-{{ ai_gen_id }} td {
+      color: {{ block.settings.value_color }};
+    }
+
+    @media screen and (max-width: 480px) {
+      .ai-custom-specs__table-{{ ai_gen_id }},
+      .ai-custom-specs__table-{{ ai_gen_id }} tbody,
+      .ai-custom-specs__table-{{ ai_gen_id }} tr,
+      .ai-custom-specs__table-{{ ai_gen_id }} th,
+      .ai-custom-specs__table-{{ ai_gen_id }} td {
+        display: block;
+        width: auto;
+      }
+
+      .ai-custom-specs__table-{{ ai_gen_id }} th,
+      .ai-custom-specs__table-{{ ai_gen_id }} td {
+        padding: 8px 14px;
+      }
+    }
+  {% endstyle %}
+
+  <div class="ai-custom-specs-{{ ai_gen_id }} ai-section-narrow quick-add-hidden" {{ block.shopify_attributes }}>
+    {% if block.settings.heading != blank %}
+      <h2 class="ai-section-heading">{{ block.settings.heading }}</h2>
+    {% endif %}
+    <div class="ai-custom-specs__table-wrap-{{ ai_gen_id }}">
+      <table class="ai-custom-specs__table-{{ ai_gen_id }}">
+        <tbody>
+          {% for line in lines %}
+            {% assign trimmed_line = line | strip %}
+            {% if trimmed_line != blank %}
+              {% liquid
+                assign label_parts = trimmed_line | split: ':'
+                assign row_label = label_parts[0] | strip
+                assign label_prefix = row_label | append: ':'
+                assign row_value = trimmed_line | remove_first: label_prefix | strip
+              %}
+              {% if row_value != blank %}
+                <tr>
+                  <th scope="row">{{ row_label }}</th>
+                  <td>{{ row_value }}</td>
+                </tr>
+              {% endif %}
+            {% endif %}
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+{% endif %}
