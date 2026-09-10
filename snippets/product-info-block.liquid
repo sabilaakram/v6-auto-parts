@@ -126,6 +126,8 @@
     {%- endif -%}
   {%- when 'ai_specification' -%}
     {% render 'ai-specification', block: block %}
+  {%- when 'ai_custom_specs' -%}
+    {% render 'ai-custom-specs', block: block %}
   {%- when 'ai_feature_grid' -%}
     {% render 'ai-feature-grid', block: block %}
   {%- when 'ai_compatibility_table' -%}
