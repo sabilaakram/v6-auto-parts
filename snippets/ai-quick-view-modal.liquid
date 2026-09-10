@@ -1,0 +1,71 @@
+{% comment %}
+  Renders a "quick view" popup for a product, using Dawn's native quick-add-modal /
+  modal-dialog infrastructure (assets/quick-add.js, assets/global.js). Opened by a
+  <modal-opener data-modal="#{{ modal_id }}"> wrapping a button with a data-product-url
+  attribute (see snippets/card-product.liquid).
+
+  The calling section must load quick-add.css, quick-add.js and product-form.js once.
+
+  Accepts:
+  - product: {Object} Product Liquid object
+  - modal_id: {String} Unique id for this modal instance (e.g. "QuickView-123-template--xyz")
+  - skip_styles: {Boolean} Skip emitting the <style> block (pass true on every call after the first)
+
+  Usage:
+  {% render 'ai-quick-view-modal', product: product, modal_id: modal_id %}
+{% endcomment %}
+
+{%- unless skip_styles -%}
+<style>
+  /* Cursor-tracking zoom on hover inside the quick view popup */
+  .ai-quick-view-modal .product__media-item {
+    overflow: hidden;
+  }
+
+  .ai-quick-view-modal .product__media-item img {
+    transition: transform 0.25s ease, transform-origin 0.05s linear;
+    transform-origin: center center;
+  }
+
+  .ai-quick-view-modal .product__media-item:hover img {
+    transform: scale(2);
+  }
+</style>
+<script>
+  (function () {
+    if (window.__aiQuickViewZoomBound) return;
+    window.__aiQuickViewZoomBound = true;
+
+    document.addEventListener('mousemove', function (event) {
+      const mediaItem = event.target.closest('.ai-quick-view-modal .product__media-item');
+      if (!mediaItem) return;
+      const img = mediaItem.querySelector('img');
+      if (!img) return;
+      const rect = mediaItem.getBoundingClientRect();
+      const x = ((event.clientX - rect.left) / rect.width) * 100;
+      const y = ((event.clientY - rect.top) / rect.height) * 100;
+      img.style.transformOrigin = x + '% ' + y + '%';
+    });
+  })();
+</script>
+{%- endunless -%}
+
+<quick-add-modal id="{{ modal_id }}" class="quick-add-modal ai-quick-view-modal">
+  <div
+    role="dialog"
+    aria-label="{{ product.title | escape }}"
+    aria-modal="true"
+    class="quick-add-modal__content global-settings-popup ai-quick-view-modal__content"
+    tabindex="-1"
+  >
+    <button
+      id="ModalClose-{{ modal_id }}"
+      type="button"
+      class="quick-add-modal__toggle ai-quick-view-modal__close"
+      aria-label="{{ 'accessibility.close' | t }}"
+    >
+      {{ 'icon-close.svg' | inline_asset_content }}
+    </button>
+    <div id="QuickAddInfo-{{ modal_id }}" class="quick-add-modal__content-info"></div>
+  </div>
+</quick-add-modal>

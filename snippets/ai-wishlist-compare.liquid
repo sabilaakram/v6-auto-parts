@@ -1,0 +1,124 @@
+{% comment %}
+  Renders the "Wishlist + compare buttons" local block: two small icon
+  buttons next to Add to Cart. Wishlist shares the same "v6-wishlist"
+  localStorage list used by the product cards elsewhere in the theme, so
+  toggling it here stays in sync with the collection/homepage cards. Compare
+  uses its own "v6-compare" list the same way (a lightweight per-visitor
+  toggle — no dedicated compare page is built yet).
+
+  Accepts:
+  - block: {Object} the "ai_wishlist_compare" block from main-product.liquid
+
+  Usage:
+  {% render 'ai-wishlist-compare', block: block %}
+{% endcomment %}
+
+{% if block.settings.show_wishlist or block.settings.show_compare %}
+  {% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+  {% style %}
+    .ai-wishlist-compare-{{ ai_gen_id }} {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 12px 0 0 0;
+    }
+
+    .ai-wishlist-compare__button-{{ ai_gen_id }} {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 1px solid #d7d7d7;
+      background: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      padding: 0;
+    }
+
+    .ai-wishlist-compare__button-{{ ai_gen_id }} svg {
+      width: 18px;
+      height: 18px;
+      fill: none;
+      stroke: #686868;
+      stroke-width: 1.8;
+      transition: fill 0.2s ease, stroke 0.2s ease;
+    }
+
+    .ai-wishlist-compare__button-{{ ai_gen_id }}.is-active svg {
+      fill: #a50000;
+      stroke: #a50000;
+    }
+  {% endstyle %}
+
+  <div class="ai-wishlist-compare-{{ ai_gen_id }} quick-add-hidden" {{ block.shopify_attributes }}>
+    {% if block.settings.show_wishlist %}
+      <button
+        type="button"
+        class="ai-wishlist-compare__button-{{ ai_gen_id }}"
+        data-wishlist-toggle
+        data-product-id="{{ product.id }}"
+        aria-label="Add to wishlist"
+      >
+        {{ 'icon-heart.svg' | inline_asset_content }}
+      </button>
+    {% endif %}
+    {% if block.settings.show_compare %}
+      <button
+        type="button"
+        class="ai-wishlist-compare__button-{{ ai_gen_id }}"
+        data-compare-toggle
+        data-product-id="{{ product.id }}"
+        aria-label="Add to compare"
+      >
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M7 4v13M7 17l-3-3M7 17l3-3M17 20V7M17 7l-3 3M17 7l3 3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    {% endif %}
+  </div>
+
+  <script>
+    (function () {
+      if (window.__aiWishlistCompareBound) return;
+      window.__aiWishlistCompareBound = true;
+
+      function toggleList(storageKey, attribute) {
+        var saved = [];
+        try {
+          saved = JSON.parse(localStorage.getItem(storageKey) || '[]');
+        } catch (e) {
+          saved = [];
+        }
+
+        document.querySelectorAll('[' + attribute + ']').forEach(function (button) {
+          var id = button.getAttribute('data-product-id');
+          if (saved.indexOf(id) !== -1) button.classList.add('is-active');
+
+          button.addEventListener('click', function () {
+            button.classList.toggle('is-active');
+            var isActive = button.classList.contains('is-active');
+            var list = [];
+            try {
+              list = JSON.parse(localStorage.getItem(storageKey) || '[]');
+            } catch (e) {
+              list = [];
+            }
+            if (isActive) {
+              if (list.indexOf(id) === -1) list.push(id);
+            } else {
+              list = list.filter(function (item) {
+                return item !== id;
+              });
+            }
+            try {
+              localStorage.setItem(storageKey, JSON.stringify(list));
+            } catch (e) {}
+          });
+        });
+      }
+
+      toggleList('v6-wishlist', 'data-wishlist-toggle');
+      toggleList('v6-compare', 'data-compare-toggle');
+    })();
+  </script>
+{% endif %}

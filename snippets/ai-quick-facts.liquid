@@ -1,0 +1,130 @@
+{% comment %}
+  Renders the "Quick facts" local block: up to 4 small bordered info boxes
+  (SKU / Brand / Country / Part Number by default). Box 1 falls back to the
+  selected variant's SKU, box 2 to the product vendor, unless overridden by a
+  metafield. Each box hides itself when it has no value.
+
+  Accepts:
+  - block: {Object} the "ai_quick_facts" block from main-product.liquid
+
+  Usage:
+  {% render 'ai-quick-facts', block: block %}
+{% endcomment %}
+
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% liquid
+  assign variant = product.selected_or_first_available_variant
+
+  assign box_1_value = blank
+  if block.settings.box_1_use_sku
+    assign box_1_value = variant.sku
+  endif
+  if box_1_value == blank and block.settings.box_1_metafield_key != blank
+    assign parts = block.settings.box_1_metafield_key | strip | split: '.'
+    if parts.size == 2
+      assign box_1_value = product.metafields[parts[0]][parts[1]].value
+    endif
+  endif
+
+  assign box_2_value = blank
+  if block.settings.box_2_use_vendor
+    assign box_2_value = product.vendor
+  endif
+  if box_2_value == blank and block.settings.box_2_metafield_key != blank
+    assign parts = block.settings.box_2_metafield_key | strip | split: '.'
+    if parts.size == 2
+      assign box_2_value = product.metafields[parts[0]][parts[1]].value
+    endif
+  endif
+
+  assign box_3_value = blank
+  if block.settings.box_3_metafield_key != blank
+    assign parts = block.settings.box_3_metafield_key | strip | split: '.'
+    if parts.size == 2
+      assign box_3_value = product.metafields[parts[0]][parts[1]].value
+    endif
+  endif
+
+  assign box_4_value = blank
+  if block.settings.box_4_metafield_key != blank
+    assign parts = block.settings.box_4_metafield_key | strip | split: '.'
+    if parts.size == 2
+      assign box_4_value = product.metafields[parts[0]][parts[1]].value
+    endif
+  endif
+
+  assign has_any_box = false
+  if block.settings.box_1_enabled and box_1_value != blank
+    assign has_any_box = true
+  endif
+  if block.settings.box_2_enabled and box_2_value != blank
+    assign has_any_box = true
+  endif
+  if block.settings.box_3_enabled and box_3_value != blank
+    assign has_any_box = true
+  endif
+  if block.settings.box_4_enabled and box_4_value != blank
+    assign has_any_box = true
+  endif
+%}
+
+{% if has_any_box %}
+  {% style %}
+    .ai-quick-facts-{{ ai_gen_id }} {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin: 16px 0;
+    }
+
+    .ai-quick-facts__box-{{ ai_gen_id }} {
+      border: 1px solid #e5e5e5;
+      border-radius: 4px;
+      padding: 10px 14px;
+    }
+
+    .ai-quick-facts__label-{{ ai_gen_id }} {
+      display: block;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      color: #999999;
+      margin-bottom: 3px;
+    }
+
+    .ai-quick-facts__value-{{ ai_gen_id }} {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: #111111;
+    }
+  {% endstyle %}
+
+  <div class="ai-quick-facts-{{ ai_gen_id }} quick-add-hidden" {{ block.shopify_attributes }}>
+    {% if block.settings.box_1_enabled and box_1_value != blank %}
+      <div class="ai-quick-facts__box-{{ ai_gen_id }}">
+        <span class="ai-quick-facts__label-{{ ai_gen_id }}">{{ block.settings.box_1_label }}</span>
+        <span class="ai-quick-facts__value-{{ ai_gen_id }}">{{ box_1_value }}</span>
+      </div>
+    {% endif %}
+    {% if block.settings.box_2_enabled and box_2_value != blank %}
+      <div class="ai-quick-facts__box-{{ ai_gen_id }}">
+        <span class="ai-quick-facts__label-{{ ai_gen_id }}">{{ block.settings.box_2_label }}</span>
+        <span class="ai-quick-facts__value-{{ ai_gen_id }}">{{ box_2_value }}</span>
+      </div>
+    {% endif %}
+    {% if block.settings.box_3_enabled and box_3_value != blank %}
+      <div class="ai-quick-facts__box-{{ ai_gen_id }}">
+        <span class="ai-quick-facts__label-{{ ai_gen_id }}">{{ block.settings.box_3_label }}</span>
+        <span class="ai-quick-facts__value-{{ ai_gen_id }}">{{ box_3_value }}</span>
+      </div>
+    {% endif %}
+    {% if block.settings.box_4_enabled and box_4_value != blank %}
+      <div class="ai-quick-facts__box-{{ ai_gen_id }}">
+        <span class="ai-quick-facts__label-{{ ai_gen_id }}">{{ block.settings.box_4_label }}</span>
+        <span class="ai-quick-facts__value-{{ ai_gen_id }}">{{ box_4_value }}</span>
+      </div>
+    {% endif %}
+  </div>
+{% endif %}

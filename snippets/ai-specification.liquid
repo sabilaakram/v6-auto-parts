@@ -1,0 +1,167 @@
+{% comment %}
+  Renders the "Specification" local block on the product page as a two-column
+  table (Spec | Value). Each row pulls its value from a product metafield
+  (entered by the merchant as namespace.key, e.g. custom.brand). A row — and
+  its label — is only rendered when that metafield has a value on the current
+  product. The whole block (including its heading) is hidden if no row has data.
+
+  Rows can optionally be split into two labeled groups (e.g. "General" /
+  "Dimensions"), each introduced by a full-width shaded row, via
+  block.settings.group_1_label / group_2_label / group_2_start_row.
+
+  Accepts:
+  - block: {Object} the "ai_specification" block from main-product.liquid
+
+  Usage:
+  {% render 'ai-specification', block: block %}
+{% endcomment %}
+
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+{% assign group_2_start_row = block.settings.group_2_start_row | default: 6 %}
+
+{% liquid
+  assign has_any_row = false
+  assign group_2_has_row = false
+  for i in (1..8)
+    assign enabled_key = 'row_' | append: i | append: '_enabled'
+    assign key_key = 'row_' | append: i | append: '_metafield_key'
+    assign raw_key = block.settings[key_key]
+    if block.settings[enabled_key] and raw_key != blank
+      assign parts = raw_key | strip | split: '.'
+      if parts.size == 2
+        assign mf_value = product.metafields[parts[0]][parts[1]].value
+        if mf_value != blank
+          assign has_any_row = true
+          if i >= group_2_start_row
+            assign group_2_has_row = true
+          endif
+        endif
+      endif
+    endif
+  endfor
+%}
+
+{% if has_any_row %}
+  {% liquid
+    assign show_groups = false
+    if block.settings.group_2_label != blank and group_2_has_row
+      assign show_groups = true
+    endif
+  %}
+
+  {% style %}
+    .ai-specification-{{ ai_gen_id }} {
+      margin: 24px 0;
+    }
+
+    .ai-specification__table-wrap-{{ ai_gen_id }} {
+      border: 1px solid {{ block.settings.divider_color | default: '#e5e5e5' }};
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    .ai-specification__table-{{ ai_gen_id }} {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: {{ block.settings.table_font.family }}, {{ block.settings.table_font.fallback_families }};
+      font-weight: {{ block.settings.table_font.weight }};
+      font-style: {{ block.settings.table_font.style }};
+      font-size: {{ block.settings.table_font_size }}px;
+    }
+
+    .ai-specification__table-{{ ai_gen_id }} tr + tr {
+      border-top: 1px solid {{ block.settings.divider_color | default: '#e5e5e5' }};
+    }
+
+    .ai-specification__table-{{ ai_gen_id }} th,
+    .ai-specification__table-{{ ai_gen_id }} td {
+      text-align: left;
+      padding: 12px 20px;
+      vertical-align: top;
+    }
+
+    .ai-specification__table-{{ ai_gen_id }} th {
+      width: 35%;
+      font-weight: 600;
+      color: {{ block.settings.label_color }};
+      background: #fafafa;
+    }
+
+    .ai-specification__table-{{ ai_gen_id }} td {
+      color: {{ block.settings.value_color }};
+    }
+
+    .ai-specification__group-{{ ai_gen_id }} td {
+      padding: 9px 20px;
+      background: {{ block.settings.divider_color | default: '#e5e5e5' }};
+      color: {{ block.settings.label_color }};
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 0.9em;
+      letter-spacing: 0.03em;
+    }
+
+    .ai-specification__group-{{ ai_gen_id }}:first-child td {
+      border-top: none;
+    }
+
+    @media screen and (max-width: 480px) {
+      .ai-specification__table-{{ ai_gen_id }},
+      .ai-specification__table-{{ ai_gen_id }} tbody,
+      .ai-specification__table-{{ ai_gen_id }} tr,
+      .ai-specification__table-{{ ai_gen_id }} th,
+      .ai-specification__table-{{ ai_gen_id }} td {
+        display: block;
+        width: auto;
+      }
+
+      .ai-specification__table-{{ ai_gen_id }} th,
+      .ai-specification__table-{{ ai_gen_id }} td {
+        padding: 8px 14px;
+      }
+    }
+  {% endstyle %}
+
+  <div class="ai-specification-{{ ai_gen_id }} ai-section-narrow quick-add-hidden" {{ block.shopify_attributes }}>
+    {% if block.settings.heading != blank %}
+      <h2 class="ai-section-heading">{{ block.settings.heading }}</h2>
+    {% endif %}
+    <div class="ai-specification__table-wrap-{{ ai_gen_id }}">
+      <table class="ai-specification__table-{{ ai_gen_id }}">
+        <tbody>
+          {% if show_groups and block.settings.group_1_label != blank %}
+            <tr class="ai-specification__group-{{ ai_gen_id }}">
+              <td colspan="2">{{ block.settings.group_1_label }}</td>
+            </tr>
+          {% endif %}
+          {% for i in (1..8) %}
+            {% liquid
+              assign enabled_key = 'row_' | append: i | append: '_enabled'
+              assign label_key = 'row_' | append: i | append: '_label'
+              assign key_key = 'row_' | append: i | append: '_metafield_key'
+              assign raw_key = block.settings[key_key]
+              assign row_value = blank
+              if block.settings[enabled_key] and raw_key != blank
+                assign parts = raw_key | strip | split: '.'
+                if parts.size == 2
+                  assign row_value = product.metafields[parts[0]][parts[1]].value
+                endif
+              endif
+            %}
+            {% if show_groups and i == group_2_start_row %}
+              <tr class="ai-specification__group-{{ ai_gen_id }}">
+                <td colspan="2">{{ block.settings.group_2_label }}</td>
+              </tr>
+            {% endif %}
+            {% if row_value != blank %}
+              <tr>
+                <th scope="row">{{ block.settings[label_key] }}</th>
+                <td>{{ row_value }}</td>
+              </tr>
+            {% endif %}
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+{% endif %}

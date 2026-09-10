@@ -18,42 +18,129 @@
       padding-bottom: {{ section.settings.padding_bottom }}px;
     }
   }
+
+  #shopify-section-{{ section.id }} .related-products.page-width {
+    max-width: none;
+    width: 100%;
+    padding-left: 80px;
+    padding-right: 80px;
+    box-sizing: border-box;
+  }
+
+  @media screen and (max-width: 989px) {
+    #shopify-section-{{ section.id }} .related-products.page-width {
+      padding-left: 40px;
+      padding-right: 40px;
+    }
+  }
+
+  @media screen and (max-width: 749px) {
+    #shopify-section-{{ section.id }} .related-products.page-width {
+      padding-left: 20px;
+      padding-right: 20px;
+    }
+  }
 {%- endstyle -%}
 
 <div class="color-{{ section.settings.color_scheme }} gradient">
-  <product-recommendations
-    class="related-products page-width section-{{ section.id }}-padding isolate{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
-    data-url="{{ routes.product_recommendations_url }}?limit={{ section.settings.products_to_show }}"
-    data-section-id="{{ section.id }}"
-    data-product-id="{{ product.id }}"
-  >
-    {% if recommendations.performed and recommendations.products_count > 0 %}
-      <h2 class="related-products__heading inline-richtext {{ section.settings.heading_size }}">
-        {{ section.settings.heading }}
-      </h2>
-      <ul
-        class="grid product-grid grid--{{ section.settings.columns_desktop }}-col-desktop grid--{{ section.settings.columns_mobile }}-col-tablet-down"
-        role="list"
-      >
+  {% if section.settings.source == 'shopify' %}
+    <product-recommendations
+      class="related-products page-width section-{{ section.id }}-padding isolate{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
+      data-url="{{ routes.product_recommendations_url }}?limit={{ section.settings.products_to_show }}"
+      data-section-id="{{ section.id }}"
+      data-product-id="{{ product.id }}"
+    >
+      {% if recommendations.performed and recommendations.products_count > 0 %}
+        <h2 class="related-products__heading inline-richtext {{ section.settings.heading_size }}">
+          {{ section.settings.heading }}
+        </h2>
+        <ul
+          class="grid product-grid grid--{{ section.settings.columns_desktop }}-col-desktop grid--{{ section.settings.columns_mobile }}-col-tablet-down"
+          role="list"
+        >
+          {% assign skip_card_product_styles = false %}
+          {% for recommendation in recommendations.products %}
+            <li class="grid__item">
+              {% render 'card-product',
+                card_product: recommendation,
+                media_aspect_ratio: section.settings.image_ratio,
+                image_shape: section.settings.image_shape,
+                show_secondary_image: section.settings.show_secondary_image,
+                show_vendor: section.settings.show_vendor,
+                show_rating: section.settings.show_rating,
+                skip_styles: skip_card_product_styles,
+                product_view_context: 'recommendation'
+              %}
+            </li>
+            {%- assign skip_card_product_styles = true -%}
+          {% endfor %}
+        </ul>
+      {% endif %}
+    </product-recommendations>
+  {% else %}
+    {% comment %} "collection" or "vendor" source: server-rendered, no AJAX round-trip {% endcomment %}
+    {% liquid
+      assign source_collection = product.collections.first
+    %}
+    {% if source_collection %}
+      <div class="related-products page-width section-{{ section.id }}-padding isolate{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}">
+        {% assign picked_ids = '' %}
         {% assign skip_card_product_styles = false %}
-        {% for recommendation in recommendations.products %}
-          <li class="grid__item">
-            {% render 'card-product',
-              card_product: recommendation,
-              media_aspect_ratio: section.settings.image_ratio,
-              image_shape: section.settings.image_shape,
-              show_secondary_image: section.settings.show_secondary_image,
-              show_vendor: section.settings.show_vendor,
-              show_rating: section.settings.show_rating,
-              skip_styles: skip_card_product_styles,
-              product_view_context: 'recommendation'
-            %}
-          </li>
-          {%- assign skip_card_product_styles = true -%}
-        {% endfor %}
-      </ul>
+        {% capture picked_html %}
+          {% assign picked_count = 0 %}
+          {% if section.settings.source == 'vendor' %}
+            {% for candidate in source_collection.products %}
+              {% if picked_count < section.settings.products_to_show %}
+                {% if candidate.id != product.id and candidate.vendor == product.vendor %}
+                  <li class="grid__item">
+                    {% render 'card-product',
+                      card_product: candidate,
+                      show_vendor: section.settings.show_vendor,
+                      show_rating: section.settings.show_rating,
+                      skip_styles: skip_card_product_styles,
+                      product_view_context: 'recommendation'
+                    %}
+                  </li>
+                  {%- assign skip_card_product_styles = true -%}
+                  {% assign picked_count = picked_count | plus: 1 %}
+                  {% assign picked_ids = picked_ids | append: candidate.id | append: ',' %}
+                {% endif %}
+              {% endif %}
+            {% endfor %}
+          {% endif %}
+          {% for candidate in source_collection.products %}
+            {% if picked_count < section.settings.products_to_show %}
+              {% assign candidate_id_str = candidate.id | append: ',' %}
+              {% unless picked_ids contains candidate_id_str or candidate.id == product.id %}
+                <li class="grid__item">
+                  {% render 'card-product',
+                    card_product: candidate,
+                    show_vendor: section.settings.show_vendor,
+                    show_rating: section.settings.show_rating,
+                    skip_styles: skip_card_product_styles,
+                    product_view_context: 'recommendation'
+                  %}
+                </li>
+                {%- assign skip_card_product_styles = true -%}
+                {% assign picked_count = picked_count | plus: 1 %}
+              {% endunless %}
+            {% endif %}
+          {% endfor %}
+        {% endcapture %}
+        {% if picked_html != blank %}
+          <h2 class="related-products__heading inline-richtext {{ section.settings.heading_size }}">
+            {{ section.settings.heading }}
+          </h2>
+          <ul
+            class="grid product-grid grid--{{ section.settings.columns_desktop }}-col-desktop grid--{{ section.settings.columns_mobile }}-col-tablet-down"
+            role="list"
+          >
+            {{ picked_html }}
+          </ul>
+        {% endif %}
+      </div>
     {% endif %}
-  </product-recommendations>
+  {% endif %}
   {% if section.settings.image_shape == 'arch' %}
     {{ 'mask-arch.svg' | inline_asset_content }}
   {%- endif -%}
@@ -102,6 +189,17 @@
       ],
       "default": "h1",
       "label": "t:sections.all.heading_size.label"
+    },
+    {
+      "type": "select",
+      "id": "source",
+      "label": "Based on",
+      "options": [
+        { "value": "shopify", "label": "Shopify recommendations" },
+        { "value": "collection", "label": "Same category (collection)" },
+        { "value": "vendor", "label": "Same brand (vendor), same category" }
+      ],
+      "default": "collection"
     },
     {
       "type": "range",

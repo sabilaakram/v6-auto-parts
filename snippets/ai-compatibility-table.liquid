@@ -1,0 +1,250 @@
+{% comment %}
+  Renders the "Compatibility table" local block on the product page: a table
+  parsed from a multi-line-text product metafield (namespace.key), paginated
+  client-side (N rows per page, configurable). Hidden entirely if the
+  metafield is blank on this product.
+
+  Metafield format — first line is the column headers (comma-separated),
+  every line after that is one row (comma-separated cells). Example:
+    Make,Model,Year,Engine
+    Toyota,Yaris,2005-2011,1.3L Petrol
+    Toyota,Vitz,2005-2011,1.0L Petrol
+
+  Accepts:
+  - block: {Object} the "ai_compatibility_table" block from main-product.liquid
+
+  Usage:
+  {% render 'ai-compatibility-table', block: block %}
+{% endcomment %}
+
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% liquid
+  assign mf_value = blank
+  assign raw_key = block.settings.metafield_key
+  if raw_key != blank
+    assign parts = raw_key | strip | split: '.'
+    if parts.size == 2
+      assign mf_value = product.metafields[parts[0]][parts[1]].value
+    endif
+  endif
+%}
+
+{% capture newline %}
+{% endcapture %}
+
+{% if mf_value != blank %}
+  {% liquid
+    assign lines = mf_value | strip | split: newline
+    assign header_cells = lines[0] | split: ','
+    assign rows_per_page = block.settings.rows_per_page | default: 20
+
+    assign total_rows = 0
+    for line in lines
+      unless forloop.first
+        assign trimmed_line = line | strip
+        if trimmed_line != blank
+          assign total_rows = total_rows | plus: 1
+        endif
+      endunless
+    endfor
+  %}
+
+  {% style %}
+    .ai-compat-{{ ai_gen_id }} {
+      margin: 24px 0;
+    }
+
+    .ai-compat__heading-{{ ai_gen_id }} {
+      font-size: 20px;
+      font-weight: 700;
+      color: #111111;
+      margin: 0 0 4px 0;
+    }
+
+    .ai-compat__subheading-{{ ai_gen_id }} {
+      font-size: 13px;
+      color: #777777;
+      margin: 0 0 16px 0;
+    }
+
+    .ai-compat__table-wrap-{{ ai_gen_id }} {
+      width: 100%;
+      overflow-x: auto;
+      border: 1px solid {{ block.settings.divider_color }};
+      border-radius: 6px;
+    }
+
+    .ai-compat__table-{{ ai_gen_id }} tbody tr:nth-child(even) {
+      background: #fafafa;
+    }
+
+    .ai-compat__table-{{ ai_gen_id }} {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: {{ block.settings.table_font.family }}, {{ block.settings.table_font.fallback_families }};
+      font-weight: {{ block.settings.table_font.weight }};
+      font-style: {{ block.settings.table_font.style }};
+      font-size: {{ block.settings.table_font_size }}px;
+      white-space: nowrap;
+    }
+
+    .ai-compat__table-{{ ai_gen_id }} th,
+    .ai-compat__table-{{ ai_gen_id }} td {
+      text-align: left;
+      padding: 10px 16px;
+      border-bottom: 1px solid {{ block.settings.divider_color }};
+    }
+
+    .ai-compat__table-{{ ai_gen_id }} thead th {
+      background: {{ block.settings.header_bg_color }};
+      color: {{ block.settings.header_text_color }};
+      font-weight: 600;
+      position: sticky;
+      top: 0;
+    }
+
+    .ai-compat__table-{{ ai_gen_id }} tbody td {
+      color: {{ block.settings.row_text_color }};
+    }
+
+    .ai-compat__table-{{ ai_gen_id }} tbody tr[hidden] {
+      display: none;
+    }
+
+    .ai-compat__pagination-{{ ai_gen_id }} {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      margin-top: 16px;
+      flex-wrap: wrap;
+    }
+
+    .ai-compat__page-button-{{ ai_gen_id }} {
+      min-width: 32px;
+      height: 32px;
+      padding: 0 8px;
+      border: 1px solid {{ block.settings.divider_color }};
+      background: #ffffff;
+      border-radius: 4px;
+      cursor: pointer;
+      font-family: {{ block.settings.table_font.family }}, {{ block.settings.table_font.fallback_families }};
+      font-size: 13px;
+      color: {{ block.settings.row_text_color }};
+    }
+
+    .ai-compat__page-button-{{ ai_gen_id }}.is-active {
+      background: #a50000;
+      border-color: #a50000;
+      color: #ffffff;
+    }
+
+    .ai-compat__page-button-{{ ai_gen_id }}:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+  {% endstyle %}
+
+  <div class="ai-compat-{{ ai_gen_id }} quick-add-hidden" {{ block.shopify_attributes }}>
+    {% if block.settings.heading != blank %}
+      <h2 class="ai-compat__heading-{{ ai_gen_id }}">{{ block.settings.heading }}</h2>
+    {% endif %}
+    <p class="ai-compat__subheading-{{ ai_gen_id }}">
+      This part is compatible with {{ total_rows }} vehicle{% if total_rows != 1 %}s{% endif %}.
+    </p>
+
+    <ai-compat-table-{{ ai_gen_id }} data-rows-per-page="{{ rows_per_page }}">
+      <div class="ai-compat__table-wrap-{{ ai_gen_id }}">
+        <table class="ai-compat__table-{{ ai_gen_id }}">
+          <thead>
+            <tr>
+              {% for cell in header_cells %}
+                <th>{{ cell | strip }}</th>
+              {% endfor %}
+            </tr>
+          </thead>
+          <tbody data-compat-body>
+            {% assign row_index = 0 %}
+            {% for line in lines %}
+              {% unless forloop.first %}
+                {% assign trimmed_line = line | strip %}
+                {% if trimmed_line != blank %}
+                  {% assign cells = trimmed_line | split: ',' %}
+                  <tr data-row-index="{{ row_index }}">
+                    {% for cell in cells %}
+                      <td>{{ cell | strip }}</td>
+                    {% endfor %}
+                  </tr>
+                  {% assign row_index = row_index | plus: 1 %}
+                {% endif %}
+              {% endunless %}
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <div class="ai-compat__pagination-{{ ai_gen_id }}" data-compat-pagination></div>
+    </ai-compat-table-{{ ai_gen_id }}>
+  </div>
+
+  <script>
+    (function () {
+      var tagName = 'ai-compat-table-{{ ai_gen_id }}';
+      if (customElements.get(tagName)) return;
+
+      customElements.define(tagName, class extends HTMLElement {
+        connectedCallback() {
+          this.rowsPerPage = parseInt(this.dataset.rowsPerPage, 10) || 20;
+          this.body = this.querySelector('[data-compat-body]');
+          this.pagination = this.querySelector('[data-compat-pagination]');
+          this.rows = Array.prototype.slice.call(this.body.querySelectorAll('tr'));
+          this.totalPages = Math.max(1, Math.ceil(this.rows.length / this.rowsPerPage));
+          this.currentPage = 1;
+          this.renderPage(1);
+        }
+
+        renderPage(page) {
+          this.currentPage = Math.min(Math.max(page, 1), this.totalPages);
+
+          this.rows.forEach(function (row, index) {
+            var rowPage = Math.floor(index / this.rowsPerPage) + 1;
+            row.hidden = rowPage !== this.currentPage;
+          }, this);
+
+          this.renderPagination();
+        }
+
+        renderPagination() {
+          this.pagination.innerHTML = '';
+          if (this.totalPages <= 1) return;
+
+          var makeButton = function (label, page, disabled, active) {
+            var button = document.createElement('button');
+            button.type = 'button';
+            button.className = 'ai-compat__page-button-{{ ai_gen_id }}' + (active ? ' is-active' : '');
+            button.textContent = label;
+            button.setAttribute('aria-label', typeof label === 'string' && label.length > 1 ? 'Page ' + label : label === '‹' ? 'Previous page' : 'Next page');
+            if (disabled) button.disabled = true;
+            button.addEventListener('click', function () {
+              this.renderPage(page);
+              this.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }.bind(this));
+            return button;
+          }.bind(this);
+
+          if (this.currentPage > 1) {
+            this.pagination.appendChild(makeButton('‹', this.currentPage - 1, false, false));
+          }
+
+          for (var i = 1; i <= this.totalPages; i++) {
+            this.pagination.appendChild(makeButton(String(i), i, false, i === this.currentPage));
+          }
+
+          if (this.currentPage < this.totalPages) {
+            this.pagination.appendChild(makeButton('›', this.currentPage + 1, false, false));
+          }
+        }
+      });
+    })();
+  </script>
+{% endif %}

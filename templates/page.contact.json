@@ -1,25 +1,224 @@
 {
   "sections": {
-    "main": {
-      "type": "main-page",
-      "settings": {
-        "padding_top": 36,
-        "padding_bottom": 36
-      }
+    "hero_section": {
+      "type": "_blocks",
+      "blocks": {
+        "ai_gen_block_5b8e2f1_hero": {
+          "type": "ai_gen_block_5b8e2f1",
+          "settings": {
+            "image_position": "right",
+            "mobile_image_position": "below",
+            "vertical_alignment": "center",
+            "container_width_percent": 90,
+            "content_max_width": 1500,
+            "column_gap": 40,
+            "column_gap_mobile": 24,
+            "background_color": "#ffffff",
+            "section_padding_top": 50,
+            "section_padding_bottom": 0,
+            "section_padding_top_mobile": 28,
+            "section_padding_bottom_mobile": 0,
+            "eyebrow_text": "",
+            "heading_text": "Contact Us",
+            "heading_font": "assistant_n7",
+            "heading_color": "#121212",
+            "heading_size": 44,
+            "heading_size_mobile": 30,
+            "heading_line_height": 1.1,
+            "heading_letter_spacing": 1,
+            "heading_case": "uppercase",
+            "heading_spacing_bottom": 16,
+            "subheading_text": "",
+            "image_alt": "Contact V6 Auto Parts",
+            "image_aspect_ratio": "auto",
+            "image_fit": "cover",
+            "image_radius": 0
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": ["ai_gen_block_5b8e2f1_hero"],
+      "name": "Contact hero",
+      "settings": {}
     },
-    "form": {
-      "type": "contact-form",
-      "settings": {
-        "heading": "",
-        "heading_size": "h1",
-        "color_scheme": "scheme-1",
-        "padding_top": 36,
-        "padding_bottom": 36
-      }
+    "info_grid_section": {
+      "type": "_blocks",
+      "blocks": {
+        "ai_gen_block_3a7d9c6_info": {
+          "type": "ai_gen_block_3a7d9c6",
+          "settings": {
+            "background_color": "#ffffff",
+            "divider_color": "#e5e5e5",
+            "divider_width": 1,
+            "container_width_percent": 90,
+            "content_max_width": 1500,
+            "columns_desktop": 3,
+            "columns_mobile": 1,
+            "column_gap": 40,
+            "column_gap_mobile": 24,
+            "icon_gap": 16,
+            "section_padding_top": 40,
+            "section_padding_bottom": 40,
+            "section_padding_top_mobile": 28,
+            "section_padding_bottom_mobile": 28,
+            "icon_bg_color": "#fdeaea",
+            "icon_color": "#a50000",
+            "icon_circle_size": 44,
+            "icon_size": 20,
+            "title_font": "assistant_n7",
+            "title_color": "#121212",
+            "title_size": 15,
+            "title_size_mobile": 14,
+            "title_case": "uppercase",
+            "title_spacing_bottom": 8,
+            "body_font": "assistant_n4",
+            "body_color": "#5c5c5c",
+            "body_size": 14,
+            "body_size_mobile": 13,
+            "body_line_height": 1.5,
+            "body_paragraph_spacing": 10,
+            "item_1_enabled": true,
+            "item_1_title": "Store Location",
+            "item_1_body": "<p>V6 Auto Parts Ltd<br>104 Nechells Place, Birmingham, B7 5AB</p>",
+            "item_2_enabled": true,
+            "item_2_title": "Get In Touch With Us",
+            "item_2_body": "<p>Hotline<br>07308 675129</p><p>Email<br>v6ceo@aol.com</p>",
+            "item_3_enabled": true,
+            "item_3_title": "Opening Hours",
+            "item_3_body": "<p>Monday to Friday<br>9am - 5pm</p><p>Saturday &amp; Sunday<br>10am - 6pm</p>",
+            "item_4_enabled": false
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": ["ai_gen_block_3a7d9c6_info"],
+      "name": "Contact info grid",
+      "settings": {}
+    },
+    "map_section": {
+      "type": "_blocks",
+      "blocks": {
+        "ai_gen_block_4298ae7_map": {
+          "type": "ai_gen_block_4298ae7",
+          "settings": {
+            "map_title": "Store locations",
+            "map_url": "https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d9716.880023853211!2d-1.866977!3d52.493257!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4870bb28a9231cbf%3A0x6d49d4971741d959!2sV6%20AUTO%20PARTS!5e0!3m2!1sen!2suk!4v1788434505013!5m2!1sen!2suk",
+            "desktop_height": 450,
+            "mobile_height": 280,
+            "show_markers": true,
+            "markers_title": "Our locations",
+            "marker_1_enabled": true,
+            "marker_1_title": "Main Store",
+            "marker_1_link": "",
+            "marker_2_enabled": false,
+            "marker_2_title": "",
+            "marker_2_link": "",
+            "marker_3_enabled": false,
+            "marker_3_title": "",
+            "marker_3_link": "",
+            "marker_4_enabled": false,
+            "marker_4_title": "",
+            "marker_4_link": "",
+            "marker_5_enabled": false,
+            "marker_5_title": "",
+            "marker_5_link": "",
+            "spacing_top": 0,
+            "spacing_bottom": 0
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": ["ai_gen_block_4298ae7_map"],
+      "name": "Map",
+      "settings": {}
+    },
+    "form_section": {
+      "type": "_blocks",
+      "blocks": {
+        "ai_gen_block_fc6d095_form": {
+          "type": "ai_gen_block_fc6d095",
+          "settings": {
+            "section_bg_color": "#ffffff",
+            "section_padding_desktop": 60,
+            "section_padding_mobile": 30,
+            "form_max_width": 900,
+            "heading": "Leave Us A Message",
+            "heading_font": "assistant_n7",
+            "heading_size": 28,
+            "heading_line_height": 1.2,
+            "heading_color": "#121212",
+            "description": "<p>You email address will not be published. Required fields are marked.</p>",
+            "description_font": "assistant_n4",
+            "description_size": 14,
+            "description_line_height": 1.5,
+            "description_color": "#767676",
+            "description_spacing": 8,
+            "header_spacing": 32,
+            "show_name_field": true,
+            "name_label": "Your Name*",
+            "name_placeholder": "",
+            "name_required": true,
+            "show_email_field": true,
+            "email_label": "Your Email*",
+            "email_placeholder": "",
+            "show_phone_field": false,
+            "phone_label": "Phone",
+            "phone_placeholder": "",
+            "phone_required": false,
+            "show_message_field": true,
+            "message_label": "",
+            "message_placeholder": "We want to know your feedback...",
+            "message_required": true,
+            "label_font": "assistant_n4",
+            "label_size": 14,
+            "label_color": "#121212",
+            "input_font": "assistant_n4",
+            "input_size": 14,
+            "input_height": 46,
+            "textarea_height": 130,
+            "input_text_color": "#121212",
+            "placeholder_color": "#999999",
+            "input_bg_color": "#ffffff",
+            "input_border_width": 1,
+            "input_border_color": "#cccccc",
+            "input_border_radius": 4,
+            "field_gap": 16,
+            "button_text": "Send",
+            "button_sending_text": "Sending...",
+            "button_font": "assistant_n7",
+            "button_font_size": 15,
+            "button_width": "fixed",
+            "button_padding_vertical": 14,
+            "button_padding_horizontal": 45,
+            "button_bg_color": "#a50000",
+            "button_text_color": "#ffffff",
+            "button_border_width": 0,
+            "button_border_color": "#a50000",
+            "button_border_radius": 4,
+            "button_hover_bg_color": "#7d0000",
+            "button_hover_text_color": "#ffffff",
+            "button_hover_border_color": "#7d0000",
+            "button_spacing": 24,
+            "success_message": "Thanks for contacting us. We'll get back to you as soon as possible.",
+            "success_bg_color": "#e8f5e9",
+            "success_text_color": "#2e7d32",
+            "success_border_color": "#81c784",
+            "error_bg_color": "#ffebee",
+            "error_text_color": "#c62828",
+            "error_border_color": "#ef5350"
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": ["ai_gen_block_fc6d095_form"],
+      "name": "Contact form",
+      "settings": {}
     }
   },
   "order": [
-    "main",
-    "form"
+    "hero_section",
+    "info_grid_section",
+    "map_section",
+    "form_section"
   ]
 }

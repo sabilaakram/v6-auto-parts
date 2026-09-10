@@ -1,0 +1,77 @@
+{% comment %}
+  Renders the "Sold progress bar" local block: a "SOLD X/Y" urgency bar,
+  sourced from two plain-number product metafields (sold count, total count).
+  Hidden if either metafield is missing or total is 0.
+
+  Accepts:
+  - block: {Object} the "ai_sold_progress" block from main-product.liquid
+
+  Usage:
+  {% render 'ai-sold-progress', block: block %}
+{% endcomment %}
+
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% liquid
+  assign sold_value = blank
+  assign total_value = blank
+
+  if block.settings.sold_metafield_key != blank
+    assign parts = block.settings.sold_metafield_key | strip | split: '.'
+    if parts.size == 2
+      assign sold_value = product.metafields[parts[0]][parts[1]].value
+    endif
+  endif
+
+  if block.settings.total_metafield_key != blank
+    assign parts = block.settings.total_metafield_key | strip | split: '.'
+    if parts.size == 2
+      assign total_value = product.metafields[parts[0]][parts[1]].value
+    endif
+  endif
+
+  assign sold_number = sold_value | plus: 0
+  assign total_number = total_value | plus: 0
+%}
+
+{% if sold_value != blank and total_number > 0 %}
+  {% assign fill_percent = sold_number | times: 100.0 | divided_by: total_number | at_most: 100 %}
+
+  {% style %}
+    .ai-sold-progress-{{ ai_gen_id }} {
+      margin: 16px 0;
+    }
+
+    .ai-sold-progress__label-{{ ai_gen_id }} {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      color: #111111;
+      margin-bottom: 6px;
+      display: block;
+    }
+
+    .ai-sold-progress__track-{{ ai_gen_id }} {
+      width: 100%;
+      height: 6px;
+      border-radius: 3px;
+      background: {{ block.settings.track_color }};
+      overflow: hidden;
+    }
+
+    .ai-sold-progress__fill-{{ ai_gen_id }} {
+      height: 100%;
+      border-radius: 3px;
+      background: {{ block.settings.bar_color }};
+      width: {{ fill_percent }}%;
+    }
+  {% endstyle %}
+
+  <div class="ai-sold-progress-{{ ai_gen_id }} quick-add-hidden" {{ block.shopify_attributes }}>
+    <span class="ai-sold-progress__label-{{ ai_gen_id }}">Sold {{ sold_number }}/{{ total_number }}</span>
+    <div class="ai-sold-progress__track-{{ ai_gen_id }}">
+      <div class="ai-sold-progress__fill-{{ ai_gen_id }}"></div>
+    </div>
+  </div>
+{% endif %}

@@ -1,0 +1,544 @@
+{% doc %}
+  @prompt
+    Generate an info grid section for a Contact Us page: up to 4 columns, each with a small circular icon, a bold title, and a couple of lines of text (e.g. "Store Location" with two addresses, "Get In Touch With Us" with a phone and email, "Opening Hours" with two schedules). Thin vertical dividers between columns on desktop, stacking to one column on mobile. Every icon, title, text, font, size, color and spacing must be editable from the theme editor for desktop and mobile.
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-info-grid-{{ai_gen_id}} {
+    display: block;
+    width: 100%;
+    background-color: {{ block.settings.background_color }};
+    padding: {{ block.settings.section_padding_top }}px 0 {{ block.settings.section_padding_bottom }}px;
+    border-top: 1px solid {{ block.settings.divider_color }};
+    border-bottom: 1px solid {{ block.settings.divider_color }};
+  }
+
+  .ai-info-grid__container-{{ai_gen_id}} {
+    width: {{ block.settings.container_width_percent }}%;
+    max-width: {{ block.settings.content_max_width }}px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat({{ block.settings.columns_desktop }}, 1fr);
+    gap: {{ block.settings.column_gap }}px;
+  }
+
+  .ai-info-grid__item-{{ai_gen_id}} {
+    display: flex;
+    align-items: flex-start;
+    gap: {{ block.settings.icon_gap }}px;
+    padding-left: {{ block.settings.column_gap }}px;
+    border-left: {{ block.settings.divider_width }}px solid {{ block.settings.divider_color }};
+  }
+
+  .ai-info-grid__item-{{ai_gen_id}}:first-child {
+    padding-left: 0;
+    border-left: 0;
+  }
+
+  .ai-info-grid__icon-{{ai_gen_id}} {
+    flex: 0 0 auto;
+    width: {{ block.settings.icon_circle_size }}px;
+    height: {{ block.settings.icon_circle_size }}px;
+    border-radius: 50%;
+    background-color: {{ block.settings.icon_bg_color }};
+    color: {{ block.settings.icon_color }};
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ai-info-grid__icon-{{ai_gen_id}} svg {
+    width: {{ block.settings.icon_size }}px;
+    height: {{ block.settings.icon_size }}px;
+    display: block;
+  }
+
+  .ai-info-grid__title-{{ai_gen_id}} {
+    font-family: {{ block.settings.title_font.family }}, {{ block.settings.title_font.fallback_families }};
+    font-weight: {{ block.settings.title_font.weight }};
+    font-style: {{ block.settings.title_font.style }};
+    font-size: {{ block.settings.title_size }}px;
+    color: {{ block.settings.title_color }};
+    text-transform: {{ block.settings.title_case }};
+    margin: 0 0 {{ block.settings.title_spacing_bottom }}px 0;
+  }
+
+  .ai-info-grid__body-{{ai_gen_id}} {
+    font-family: {{ block.settings.body_font.family }}, {{ block.settings.body_font.fallback_families }};
+    font-weight: {{ block.settings.body_font.weight }};
+    font-style: {{ block.settings.body_font.style }};
+    font-size: {{ block.settings.body_size }}px;
+    line-height: {{ block.settings.body_line_height }};
+    color: {{ block.settings.body_color }};
+  }
+
+  .ai-info-grid__body-{{ai_gen_id}} p {
+    margin: 0 0 {{ block.settings.body_paragraph_spacing }}px 0;
+  }
+
+  .ai-info-grid__body-{{ai_gen_id}} p:last-child {
+    margin-bottom: 0;
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-info-grid-{{ai_gen_id}} {
+      padding: {{ block.settings.section_padding_top_mobile }}px 0 {{ block.settings.section_padding_bottom_mobile }}px;
+    }
+
+    .ai-info-grid__container-{{ai_gen_id}} {
+      grid-template-columns: repeat({{ block.settings.columns_mobile }}, 1fr);
+      gap: {{ block.settings.column_gap_mobile }}px;
+    }
+
+    .ai-info-grid__item-{{ai_gen_id}} {
+      padding-left: 0;
+      border-left: 0;
+      padding-top: {{ block.settings.column_gap_mobile }}px;
+      border-top: {{ block.settings.divider_width }}px solid {{ block.settings.divider_color }};
+    }
+
+    .ai-info-grid__item-{{ai_gen_id}}:first-child {
+      padding-top: 0;
+      border-top: 0;
+    }
+
+    .ai-info-grid__title-{{ai_gen_id}} {
+      font-size: {{ block.settings.title_size_mobile }}px;
+    }
+
+    .ai-info-grid__body-{{ai_gen_id}} {
+      font-size: {{ block.settings.body_size_mobile }}px;
+    }
+  }
+{% endstyle %}
+
+<div class="ai-info-grid-{{ai_gen_id}}">
+  <div class="ai-info-grid__container-{{ai_gen_id}}">
+    {% for i in (1..4) %}
+      {% assign enabled_key = 'item_' | append: i | append: '_enabled' %}
+      {% assign icon_key = 'item_' | append: i | append: '_icon' %}
+      {% assign title_key = 'item_' | append: i | append: '_title' %}
+      {% assign body_key = 'item_' | append: i | append: '_body' %}
+      {% if block.settings[enabled_key] %}
+        <div class="ai-info-grid__item-{{ai_gen_id}}">
+          <span class="ai-info-grid__icon-{{ai_gen_id}}">{{ block.settings[icon_key] }}</span>
+          <div>
+            {% if block.settings[title_key] != blank %}
+              <p class="ai-info-grid__title-{{ai_gen_id}}">{{ block.settings[title_key] }}</p>
+            {% endif %}
+            {% if block.settings[body_key] != blank %}
+              <div class="ai-info-grid__body-{{ai_gen_id}}">{{ block.settings[body_key] }}</div>
+            {% endif %}
+          </div>
+        </div>
+      {% endif %}
+    {% endfor %}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Contact info grid",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "divider_color",
+      "label": "Divider color",
+      "default": "#e5e5e5"
+    },
+    {
+      "type": "range",
+      "id": "divider_width",
+      "min": 0,
+      "max": 4,
+      "step": 1,
+      "unit": "px",
+      "label": "Divider thickness",
+      "default": 1
+    },
+    {
+      "type": "range",
+      "id": "container_width_percent",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "label": "Container width",
+      "default": 90
+    },
+    {
+      "type": "range",
+      "id": "content_max_width",
+      "min": 1000,
+      "max": 1800,
+      "step": 50,
+      "unit": "px",
+      "label": "Max width",
+      "default": 1500
+    },
+    {
+      "type": "range",
+      "id": "columns_desktop",
+      "min": 1,
+      "max": 4,
+      "step": 1,
+      "label": "Columns (desktop)",
+      "default": 3
+    },
+    {
+      "type": "range",
+      "id": "columns_mobile",
+      "min": 1,
+      "max": 3,
+      "step": 1,
+      "label": "Columns (mobile)",
+      "default": 1
+    },
+    {
+      "type": "range",
+      "id": "column_gap",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Gap between columns (desktop)",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "column_gap_mobile",
+      "min": 0,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "label": "Gap between columns (mobile)",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "icon_gap",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "label": "Gap between icon and text",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "section_padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "label": "Padding top (desktop)",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "section_padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "label": "Padding bottom (desktop)",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "section_padding_top_mobile",
+      "min": 0,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "label": "Padding top (mobile)",
+      "default": 28
+    },
+    {
+      "type": "range",
+      "id": "section_padding_bottom_mobile",
+      "min": 0,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "label": "Padding bottom (mobile)",
+      "default": 28
+    },
+    {
+      "type": "header",
+      "content": "Icon style"
+    },
+    {
+      "type": "color",
+      "id": "icon_bg_color",
+      "label": "Icon background",
+      "default": "#fdeaea"
+    },
+    {
+      "type": "color",
+      "id": "icon_color",
+      "label": "Icon color",
+      "default": "#a50000"
+    },
+    {
+      "type": "range",
+      "id": "icon_circle_size",
+      "min": 24,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "label": "Icon circle size",
+      "default": 44
+    },
+    {
+      "type": "range",
+      "id": "icon_size",
+      "min": 12,
+      "max": 40,
+      "step": 1,
+      "unit": "px",
+      "label": "Icon size",
+      "default": 20
+    },
+    {
+      "type": "header",
+      "content": "Title style"
+    },
+    {
+      "type": "font_picker",
+      "id": "title_font",
+      "label": "Font",
+      "default": "assistant_n7"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Color",
+      "default": "#121212"
+    },
+    {
+      "type": "range",
+      "id": "title_size",
+      "min": 10,
+      "max": 32,
+      "step": 1,
+      "unit": "px",
+      "label": "Size (desktop)",
+      "default": 15
+    },
+    {
+      "type": "range",
+      "id": "title_size_mobile",
+      "min": 10,
+      "max": 26,
+      "step": 1,
+      "unit": "px",
+      "label": "Size (mobile)",
+      "default": 14
+    },
+    {
+      "type": "select",
+      "id": "title_case",
+      "label": "Text case",
+      "options": [
+        { "value": "none", "label": "None" },
+        { "value": "uppercase", "label": "Uppercase" },
+        { "value": "lowercase", "label": "Lowercase" },
+        { "value": "capitalize", "label": "Capitalize" }
+      ],
+      "default": "uppercase"
+    },
+    {
+      "type": "range",
+      "id": "title_spacing_bottom",
+      "min": 0,
+      "max": 30,
+      "step": 2,
+      "unit": "px",
+      "label": "Spacing below",
+      "default": 8
+    },
+    {
+      "type": "header",
+      "content": "Body text style"
+    },
+    {
+      "type": "font_picker",
+      "id": "body_font",
+      "label": "Font",
+      "default": "assistant_n4"
+    },
+    {
+      "type": "color",
+      "id": "body_color",
+      "label": "Color",
+      "default": "#5c5c5c"
+    },
+    {
+      "type": "range",
+      "id": "body_size",
+      "min": 10,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Size (desktop)",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "body_size_mobile",
+      "min": 10,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "label": "Size (mobile)",
+      "default": 13
+    },
+    {
+      "type": "range",
+      "id": "body_line_height",
+      "min": 1,
+      "max": 2,
+      "step": 0.1,
+      "label": "Line height",
+      "default": 1.5
+    },
+    {
+      "type": "range",
+      "id": "body_paragraph_spacing",
+      "min": 0,
+      "max": 30,
+      "step": 2,
+      "unit": "px",
+      "label": "Space between paragraphs",
+      "default": 10
+    },
+    {
+      "type": "header",
+      "content": "Column 1"
+    },
+    {
+      "type": "checkbox",
+      "id": "item_1_enabled",
+      "label": "Enable",
+      "default": true
+    },
+    {
+      "type": "textarea",
+      "id": "item_1_icon",
+      "label": "Icon (SVG code)",
+      "default": "<svg viewBox=\"0 0 24 24\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M12 22s7-7.05 7-12A7 7 0 1 0 5 10c0 4.95 7 12 7 12Z\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linejoin=\"round\"/><circle cx=\"12\" cy=\"10\" r=\"2.4\" stroke=\"currentColor\" stroke-width=\"1.6\"/></svg>"
+    },
+    {
+      "type": "text",
+      "id": "item_1_title",
+      "label": "Title",
+      "default": "Store Location"
+    },
+    {
+      "type": "richtext",
+      "id": "item_1_body",
+      "label": "Text",
+      "default": "<p>Store 1<br>234 Maple Street, Springfield, USA</p><p>Store 2<br>9101 Pine Drive, Austin, TX 73301, USA</p>"
+    },
+    {
+      "type": "header",
+      "content": "Column 2"
+    },
+    {
+      "type": "checkbox",
+      "id": "item_2_enabled",
+      "label": "Enable",
+      "default": true
+    },
+    {
+      "type": "textarea",
+      "id": "item_2_icon",
+      "label": "Icon (SVG code)",
+      "default": "<svg viewBox=\"0 0 24 24\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M6.5 3h3l1.5 4.5-2.2 1.8a12 12 0 0 0 5.9 5.9l1.8-2.2L21 14.5v3a2 2 0 0 1-2.2 2A17.5 17.5 0 0 1 4.5 5.2 2 2 0 0 1 6.5 3Z\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linejoin=\"round\"/></svg>"
+    },
+    {
+      "type": "text",
+      "id": "item_2_title",
+      "label": "Title",
+      "default": "Get In Touch With Us"
+    },
+    {
+      "type": "richtext",
+      "id": "item_2_body",
+      "label": "Text",
+      "default": "<p>Hotline<br>+00 7379 4724</p><p>Email<br>autospares@email.com</p>"
+    },
+    {
+      "type": "header",
+      "content": "Column 3"
+    },
+    {
+      "type": "checkbox",
+      "id": "item_3_enabled",
+      "label": "Enable",
+      "default": true
+    },
+    {
+      "type": "textarea",
+      "id": "item_3_icon",
+      "label": "Icon (SVG code)",
+      "default": "<svg viewBox=\"0 0 24 24\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><circle cx=\"12\" cy=\"12\" r=\"8.2\" stroke=\"currentColor\" stroke-width=\"1.6\"/><path d=\"M12 7.8V12l3 2\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>"
+    },
+    {
+      "type": "text",
+      "id": "item_3_title",
+      "label": "Title",
+      "default": "Opening Hours"
+    },
+    {
+      "type": "richtext",
+      "id": "item_3_body",
+      "label": "Text",
+      "default": "<p>Monday to Friday<br>9am - 5pm</p><p>Saturday &amp; Sunday<br>10am - 6pm</p>"
+    },
+    {
+      "type": "header",
+      "content": "Column 4"
+    },
+    {
+      "type": "checkbox",
+      "id": "item_4_enabled",
+      "label": "Enable",
+      "default": false
+    },
+    {
+      "type": "textarea",
+      "id": "item_4_icon",
+      "label": "Icon (SVG code)",
+      "default": "<svg viewBox=\"0 0 24 24\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><rect x=\"3.5\" y=\"5.5\" width=\"17\" height=\"13\" rx=\"1.5\" stroke=\"currentColor\" stroke-width=\"1.6\"/><path d=\"M4 7l8 6 8-6\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>"
+    },
+    {
+      "type": "text",
+      "id": "item_4_title",
+      "label": "Title"
+    },
+    {
+      "type": "richtext",
+      "id": "item_4_body",
+      "label": "Text"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Contact info grid"
+    }
+  ]
+}
+{% endschema %}

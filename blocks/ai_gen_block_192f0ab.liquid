@@ -278,6 +278,7 @@
   .ai-footer-{{ ai_gen_id }} {
     display: block;
     width: 100%;
+    background-color: {{ block.settings.section_bg_color }};
   }
 
   .ai-footer-wrapper-{{ ai_gen_id }} {
@@ -291,20 +292,26 @@
     background-color: {{ block.settings.main_bg_color }};
     border-radius: {{ block.settings.border_radius }}px;
     padding: {{ block.settings.panel_padding_top }}px {{ block.settings.panel_padding_horizontal }}px {{ block.settings.panel_padding_bottom }}px;
+    overflow: hidden;
   }
 
-  .ai-footer-main-{{ ai_gen_id }}::before {
-    content: '';
-    position: absolute;
-    top: -{{ block.settings.notch_size }}px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 0;
-    height: 0;
-    border-left: {{ block.settings.notch_size }}px solid transparent;
-    border-right: {{ block.settings.notch_size }}px solid transparent;
-    border-bottom: {{ block.settings.notch_size }}px solid {{ block.settings.main_bg_color }};
-  }
+  {% if block.settings.show_notch %}
+    {% assign notch_width_diff = block.settings.notch_top_width | minus: block.settings.notch_bottom_width %}
+    {% assign notch_inset_pct = notch_width_diff | times: 1.0 | divided_by: block.settings.notch_top_width | times: 50 %}
+    {% assign notch_right_pct = 100 | minus: notch_inset_pct %}
+
+    .ai-footer-notch-{{ ai_gen_id }} {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: {{ block.settings.notch_top_width }}%;
+      height: {{ block.settings.notch_height }}px;
+      background-color: {{ block.settings.section_bg_color }};
+      clip-path: polygon(0% 0%, 100% 0%, {{ notch_right_pct }}% 100%, {{ notch_inset_pct }}% 100%);
+      pointer-events: none;
+    }
+  {% endif %}
 
   .ai-footer-top-row-{{ ai_gen_id }} {
     display: flex;
@@ -513,6 +520,18 @@
   }
 
   @media screen and (max-width: 749px) {
+    {% if block.settings.hide_notch_mobile %}
+      .ai-footer-notch-{{ ai_gen_id }} {
+        display: none;
+      }
+    {% endif %}
+
+    .ai-footer-wrapper-{{ ai_gen_id }},
+    .ai-footer-bottom-container-{{ ai_gen_id }} {
+      padding-left: {{ block.settings.mobile_side_margin }}px;
+      padding-right: {{ block.settings.mobile_side_margin }}px;
+    }
+
     .ai-footer-columns-{{ ai_gen_id }} {
       grid-template-columns: 1fr;
       gap: {{ block.settings.mobile_column_spacing }}px;
@@ -556,6 +575,9 @@
 <footer-custom-{{ ai_gen_id }} class="ai-footer-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
   <div class="ai-footer-wrapper-{{ ai_gen_id }}">
     <div class="ai-footer-main-{{ ai_gen_id }}">
+      {% if block.settings.show_notch %}
+        <div class="ai-footer-notch-{{ ai_gen_id }}" aria-hidden="true"></div>
+      {% endif %}
       <div class="ai-footer-top-row-{{ ai_gen_id }}">
         <nav class="ai-footer-nav-{{ ai_gen_id }}">
           {% if block.settings.footer_menu != blank %}
@@ -746,12 +768,22 @@
     {
       "type": "range",
       "id": "side_margin",
-      "label": "Side margin",
+      "label": "Side margin (desktop)",
       "min": 10,
       "max": 100,
       "step": 5,
       "unit": "px",
       "default": 40
+    },
+    {
+      "type": "range",
+      "id": "mobile_side_margin",
+      "label": "Side margin (mobile)",
+      "min": 0,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "default": 16
     },
     {
       "type": "range",
@@ -808,18 +840,57 @@
       "content": "Top decorative notch"
     },
     {
+      "type": "checkbox",
+      "id": "show_notch",
+      "label": "Show notch",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "hide_notch_mobile",
+      "label": "Hide notch on mobile",
+      "default": true
+    },
+    {
       "type": "range",
-      "id": "notch_size",
-      "label": "Notch size",
+      "id": "notch_height",
+      "label": "Notch height",
       "min": 0,
-      "max": 50,
-      "step": 5,
+      "max": 80,
+      "step": 4,
       "unit": "px",
-      "default": 20
+      "default": 28
+    },
+    {
+      "type": "range",
+      "id": "notch_top_width",
+      "label": "Notch width (top)",
+      "min": 5,
+      "max": 40,
+      "step": 1,
+      "unit": "%",
+      "default": 18
+    },
+    {
+      "type": "range",
+      "id": "notch_bottom_width",
+      "label": "Notch width (bottom)",
+      "min": 3,
+      "max": 30,
+      "step": 1,
+      "unit": "%",
+      "default": 11
     },
     {
       "type": "header",
       "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "section_bg_color",
+      "label": "Backdrop background",
+      "info": "Shows around and behind the red panel, and behind the notch cut-out.",
+      "default": "#000000"
     },
     {
       "type": "color",

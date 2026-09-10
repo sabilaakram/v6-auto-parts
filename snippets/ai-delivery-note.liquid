@@ -1,0 +1,36 @@
+{% comment %}
+  Renders the "Delivery note" local block: a small line of text (e.g. "Free
+  delivery from $100") shown near the price/buy box.
+
+  Accepts:
+  - block: {Object} the "ai_delivery_note" block from main-product.liquid
+
+  Usage:
+  {% render 'ai-delivery-note', block: block %}
+{% endcomment %}
+
+{% if block.settings.text != blank %}
+  {% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+  {% style %}
+    .ai-delivery-note-{{ ai_gen_id }} {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      color: {{ block.settings.text_color }};
+      margin: 8px 0;
+    }
+
+    .ai-delivery-note-{{ ai_gen_id }} svg {
+      width: 16px;
+      height: 16px;
+      flex: 0 0 auto;
+    }
+  {% endstyle %}
+
+  <p class="ai-delivery-note-{{ ai_gen_id }} quick-add-hidden" {{ block.shopify_attributes }}>
+    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 7h11v9H3z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M14 10h4l3 3v3h-7z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><circle cx="7" cy="18" r="1.6" stroke="currentColor" stroke-width="1.4"/><circle cx="17.5" cy="18" r="1.6" stroke="currentColor" stroke-width="1.4"/></svg>
+    {{ block.settings.text }}
+  </p>
+{% endif %}

@@ -37,10 +37,182 @@
         padding-bottom: {{ section.settings.padding_bottom }}px;
       }
     }
+
+    #MainProduct-{{ section.id }} {
+      --ai-pf-family: {{ section.settings.body_font.family }}, {{ section.settings.body_font.fallback_families }};
+      --ai-pf-weight: {{ section.settings.body_font_weight }};
+      --ai-pf-size: {{ section.settings.body_font_size }}px;
+      --ai-pf-color: {{ section.settings.text_color }};
+      --ai-pf-heading-family: {{ section.settings.heading_font.family }}, {{ section.settings.heading_font.fallback_families }};
+      --ai-pf-heading-color: {{ section.settings.heading_color }};
+      --ai-pf-accent: {{ section.settings.accent_color }};
+      font-family: var(--ai-pf-family);
+      color: var(--ai-pf-color);
+    }
+
+    #MainProduct-{{ section.id }} select,
+    #MainProduct-{{ section.id }} button,
+    #MainProduct-{{ section.id }} input,
+    #MainProduct-{{ section.id }} label,
+    #MainProduct-{{ section.id }} .product__description,
+    #MainProduct-{{ section.id }} .product__text,
+    #MainProduct-{{ section.id }} .accordion__title,
+    #MainProduct-{{ section.id }} .accordion__content {
+      font-family: var(--ai-pf-family) !important;
+      color: var(--ai-pf-color);
+    }
+
+    #MainProduct-{{ section.id }} .product__title h1,
+    #MainProduct-{{ section.id }} .product__title {
+      font-family: var(--ai-pf-heading-family) !important;
+      color: var(--ai-pf-heading-color) !important;
+    }
+
+    #MainProduct-{{ section.id }} .price,
+    #MainProduct-{{ section.id }} .price__container,
+    #MainProduct-{{ section.id }} .price-item--sale {
+      font-family: var(--ai-pf-family) !important;
+      color: var(--ai-pf-accent) !important;
+    }
+
+    #MainProduct-{{ section.id }} .product__title h1,
+    #MainProduct-{{ section.id }} .price {
+      font-size: calc(var(--ai-pf-size) * 2) !important;
+    }
+
+    #MainProduct-{{ section.id }} .product__description,
+    #MainProduct-{{ section.id }} .product__description p {
+      font-size: var(--ai-pf-size);
+    }
+
+    /* Full-width layout with a fixed side gutter, matching the collection page */
+    #MainProduct-{{ section.id }} .page-width {
+      max-width: none;
+      width: 100%;
+      padding-left: 80px;
+      padding-right: 80px;
+      box-sizing: border-box;
+    }
+
+    @media screen and (max-width: 989px) {
+      #MainProduct-{{ section.id }} .page-width {
+        padding-left: 40px;
+        padding-right: 40px;
+      }
+    }
+
+    @media screen and (max-width: 749px) {
+      #MainProduct-{{ section.id }} .page-width {
+        padding-left: 20px;
+        padding-right: 20px;
+      }
+    }
+
+    #MainProduct-{{ section.id }} .ai-product-media-wrapper {
+      position: relative;
+    }
+
+    #MainProduct-{{ section.id }} .ai-product-sale-badge {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      z-index: 3;
+      background: #a50000;
+      color: #ffffff;
+      font-weight: 700;
+      font-size: 14px;
+      letter-spacing: 0.03em;
+      padding: 6px 12px;
+      border-radius: 4px;
+    }
+
+    /* Shared centered heading + underline style for Description/Specification/
+       Compatibility/Feature grid sections below the buy box */
+    #MainProduct-{{ section.id }} .ai-section-heading {
+      text-align: center;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: #a50000;
+      font-size: 18px;
+      position: relative;
+      margin: 0 0 28px 0;
+      padding-bottom: 14px;
+    }
+
+    #MainProduct-{{ section.id }} .ai-section-heading::after {
+      content: '';
+      position: absolute;
+      left: 50%;
+      bottom: 0;
+      transform: translateX(-50%);
+      width: 46px;
+      height: 3px;
+      background: #a50000;
+    }
+
+    #MainProduct-{{ section.id }} .ai-section-narrow {
+      max-width: 900px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* Full-width row below the images + buy-box row, stacking every block that
+       comes after "Description" (Specification, Feature grid, Compatibility,
+       reviews, Share, etc.) in a single column spanning the whole page width. */
+    #MainProduct-{{ section.id }} .ai-product-below-description {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      margin-top: 48px;
+      padding-top: 40px;
+      border-top: 1px solid #e5e5e5;
+    }
+
+    #MainProduct-{{ section.id }} .ai-product-below-description > * {
+      width: 100%;
+    }
+
+    /* Cursor-tracking zoom on hover, matching the collection page product cards */
+    #MainProduct-{{ section.id }} .product__media-item,
+    .ai-quick-view-modal .product__media-item {
+      overflow: hidden;
+    }
+
+    #MainProduct-{{ section.id }} .product__media-item img,
+    .ai-quick-view-modal .product__media-item img {
+      transition: transform 0.25s ease, transform-origin 0.05s linear;
+      transform-origin: center center;
+    }
+
+    {% if section.settings.enable_hover_zoom %}
+      #MainProduct-{{ section.id }} .product__media-item:hover img {
+        transform: scale(1.8);
+      }
+    {% endif %}
   {%- endstyle -%}
 
   <script src="{{ 'product-info.js' | asset_url }}" defer="defer"></script>
   <script src="{{ 'product-form.js' | asset_url }}" defer="defer"></script>
+  {%- if section.settings.enable_hover_zoom -%}
+    <script>
+      (function () {
+        if (window.__aiProductZoomBound) return;
+        window.__aiProductZoomBound = true;
+
+        document.addEventListener('mousemove', function (event) {
+          const mediaItem = event.target.closest('.product__media-item');
+          if (!mediaItem) return;
+          const img = mediaItem.querySelector('img');
+          if (!img) return;
+          const rect = mediaItem.getBoundingClientRect();
+          const x = ((event.clientX - rect.left) / rect.width) * 100;
+          const y = ((event.clientY - rect.top) / rect.height) * 100;
+          img.style.transformOrigin = x + '% ' + y + '%';
+        });
+      })();
+    </script>
+  {%- endif -%}
   {%- if product.quantity_price_breaks_configured? -%}
     <script src="{{ 'show-more.js' | asset_url }}" defer="defer"></script>
     <script src="{{ 'price-per-item.js' | asset_url }}" defer="defer"></script>
@@ -76,7 +248,11 @@
   <product-component view-event-payload="{{ product | standard_event_data: 'view', context: 'page' | escape }}">
     <div class="page-width">
       <div class="product product--{{ section.settings.media_size }} product--{{ section.settings.media_position }} product--{{ section.settings.gallery_layout }} product--mobile-{{ section.settings.mobile_thumbnails }} grid grid--1-col {% if product.media.size > 0 %}grid--2-col-tablet{% else %}product--no-media{% endif %}">
-        <div class="grid__item product__media-wrapper">
+        <div class="grid__item product__media-wrapper ai-product-media-wrapper">
+          {% if product.compare_at_price > product.price %}
+            {% assign ai_discount_percent = product.compare_at_price | minus: product.price | times: 100.0 | divided_by: product.compare_at_price | round %}
+            <span class="ai-product-sale-badge">-{{ ai_discount_percent }}%</span>
+          {% endif %}
           {% render 'product-media-gallery', variant_images: variant_images %}
         </div>
         <div class="product__info-wrapper grid__item{% if settings.page_width > 1400 and section.settings.media_size == "small" %} product__info-wrapper--extra-padding{% endif %}{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}">
@@ -86,7 +262,27 @@
           >
             {%- assign product_form_id = 'product-form-' | append: section.id -%}
 
+            {%- comment -%}
+              Find the position of the "Description" heading/block. Everything
+              before it stays in this column, next to the images. Description
+              itself, and everything after it (Specification, Reviews, Feature
+              grid, Compatibility, Share, ...), renders further down instead, in
+              a full-width row below the images + buy-box row (see
+              ai-product-below-description, after this grid) — Description comes
+              first there, above Reviews, followed by the rest in block order.
+            {%- endcomment -%}
+            {%- assign ai_split_index = 0 -%}
             {%- for block in section.blocks -%}
+              {%- if block.type == 'description' or block.type == 'ai_section_heading' -%}
+                {%- assign ai_split_index = forloop.index -%}
+                {%- break -%}
+              {%- endif -%}
+            {%- endfor -%}
+
+            {%- for block in section.blocks -%}
+              {%- if ai_split_index != 0 and forloop.index >= ai_split_index -%}
+                {%- continue -%}
+              {%- endif -%}
               {%- case block.type -%}
                 {%- when '@app' -%}
                   {% render block %}
@@ -198,6 +394,22 @@
                       {{ product.description }}
                     </div>
                   {%- endif -%}
+                {%- when 'ai_specification' -%}
+                  {% render 'ai-specification', block: block %}
+                {%- when 'ai_feature_grid' -%}
+                  {% render 'ai-feature-grid', block: block %}
+                {%- when 'ai_compatibility_table' -%}
+                  {% render 'ai-compatibility-table', block: block %}
+                {%- when 'ai_section_heading' -%}
+                  {% render 'ai-section-heading', block: block %}
+                {%- when 'ai_quick_facts' -%}
+                  {% render 'ai-quick-facts', block: block %}
+                {%- when 'ai_sold_progress' -%}
+                  {% render 'ai-sold-progress', block: block %}
+                {%- when 'ai_delivery_note' -%}
+                  {% render 'ai-delivery-note', block: block %}
+                {%- when 'ai_wishlist_compare' -%}
+                  {% render 'ai-wishlist-compare', block: block %}
                 {%- when 'sku' -%}
                   <p
                     class="product__sku{% if block.settings.text_style == 'uppercase' %} caption-with-letter-spacing{% elsif block.settings.text_style == 'subtitle' %} subtitle{% endif %}{% if product.selected_or_first_available_variant.sku.size == 0 %} visibility-hidden{% endif %}"
@@ -697,6 +909,16 @@
           </section>
         </div>
       </div>
+
+      {%- if ai_split_index != 0 -%}
+        <div class="ai-product-below-description">
+          {%- for block in section.blocks -%}
+            {%- if forloop.index >= ai_split_index -%}
+              {% render 'product-info-block', block: block, product_form_id: product_form_id %}
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
 
       {% render 'product-media-modal', variant_images: variant_images %}
 
@@ -2144,6 +2366,654 @@
           "info": "t:sections.main-product.blocks.icon_with_text.settings.heading.info"
         }
       ]
+    },
+    {
+      "type": "ai_specification",
+      "name": "Specification",
+      "settings": [
+        {
+          "type": "header",
+          "content": "Heading"
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Specification"
+        },
+        {
+          "type": "header",
+          "content": "Grouping"
+        },
+        {
+          "type": "paragraph",
+          "content": "Optionally split the rows into two labeled groups (e.g. \"General\" / \"Dimensions\"). Leave the second group's label blank to show one ungrouped table."
+        },
+        {
+          "type": "text",
+          "id": "group_1_label",
+          "label": "First group label",
+          "default": "General"
+        },
+        {
+          "type": "text",
+          "id": "group_2_label",
+          "label": "Second group label",
+          "default": "Dimensions"
+        },
+        {
+          "type": "range",
+          "id": "group_2_start_row",
+          "label": "Second group starts at row",
+          "min": 2,
+          "max": 8,
+          "step": 1,
+          "default": 6
+        },
+        {
+          "type": "header",
+          "content": "Table style"
+        },
+        {
+          "type": "font_picker",
+          "id": "table_font",
+          "label": "Font",
+          "default": "inter_n4"
+        },
+        {
+          "type": "range",
+          "id": "table_font_size",
+          "min": 10,
+          "max": 20,
+          "step": 1,
+          "unit": "px",
+          "label": "Font size",
+          "default": 14
+        },
+        {
+          "type": "color",
+          "id": "label_color",
+          "label": "Label column color",
+          "default": "#5c5c5c"
+        },
+        {
+          "type": "color",
+          "id": "value_color",
+          "label": "Value color",
+          "default": "#111111"
+        },
+        {
+          "type": "color",
+          "id": "divider_color",
+          "label": "Divider color",
+          "default": "#e5e5e5"
+        },
+        {
+          "type": "paragraph",
+          "content": "Each row pulls its value from a metafield on this product. Enter the metafield as namespace.key (find this on the product's Metafields section in Admin, e.g. custom.brand). Rows with no value on this product — and their label — are hidden automatically."
+        },
+        {
+          "type": "header",
+          "content": "Row 1"
+        },
+        {
+          "type": "checkbox",
+          "id": "row_1_enabled",
+          "label": "Enable",
+          "default": true
+        },
+        {
+          "type": "text",
+          "id": "row_1_label",
+          "label": "Label",
+          "default": "Brand"
+        },
+        {
+          "type": "text",
+          "id": "row_1_metafield_key",
+          "label": "Metafield (namespace.key)"
+        },
+        {
+          "type": "header",
+          "content": "Row 2"
+        },
+        {
+          "type": "checkbox",
+          "id": "row_2_enabled",
+          "label": "Enable",
+          "default": true
+        },
+        {
+          "type": "text",
+          "id": "row_2_label",
+          "label": "Label",
+          "default": "Compatibility"
+        },
+        {
+          "type": "text",
+          "id": "row_2_metafield_key",
+          "label": "Metafield (namespace.key)"
+        },
+        {
+          "type": "header",
+          "content": "Row 3"
+        },
+        {
+          "type": "checkbox",
+          "id": "row_3_enabled",
+          "label": "Enable",
+          "default": true
+        },
+        {
+          "type": "text",
+          "id": "row_3_label",
+          "label": "Label",
+          "default": "Material"
+        },
+        {
+          "type": "text",
+          "id": "row_3_metafield_key",
+          "label": "Metafield (namespace.key)"
+        },
+        {
+          "type": "header",
+          "content": "Row 4"
+        },
+        {
+          "type": "checkbox",
+          "id": "row_4_enabled",
+          "label": "Enable",
+          "default": true
+        },
+        {
+          "type": "text",
+          "id": "row_4_label",
+          "label": "Label",
+          "default": "Weight"
+        },
+        {
+          "type": "text",
+          "id": "row_4_metafield_key",
+          "label": "Metafield (namespace.key)"
+        },
+        {
+          "type": "header",
+          "content": "Row 5"
+        },
+        {
+          "type": "checkbox",
+          "id": "row_5_enabled",
+          "label": "Enable",
+          "default": true
+        },
+        {
+          "type": "text",
+          "id": "row_5_label",
+          "label": "Label",
+          "default": "Warranty"
+        },
+        {
+          "type": "text",
+          "id": "row_5_metafield_key",
+          "label": "Metafield (namespace.key)"
+        },
+        {
+          "type": "header",
+          "content": "Row 6"
+        },
+        {
+          "type": "checkbox",
+          "id": "row_6_enabled",
+          "label": "Enable",
+          "default": false
+        },
+        {
+          "type": "text",
+          "id": "row_6_label",
+          "label": "Label"
+        },
+        {
+          "type": "text",
+          "id": "row_6_metafield_key",
+          "label": "Metafield (namespace.key)"
+        },
+        {
+          "type": "header",
+          "content": "Row 7"
+        },
+        {
+          "type": "checkbox",
+          "id": "row_7_enabled",
+          "label": "Enable",
+          "default": false
+        },
+        {
+          "type": "text",
+          "id": "row_7_label",
+          "label": "Label"
+        },
+        {
+          "type": "text",
+          "id": "row_7_metafield_key",
+          "label": "Metafield (namespace.key)"
+        },
+        {
+          "type": "header",
+          "content": "Row 8"
+        },
+        {
+          "type": "checkbox",
+          "id": "row_8_enabled",
+          "label": "Enable",
+          "default": false
+        },
+        {
+          "type": "text",
+          "id": "row_8_label",
+          "label": "Label"
+        },
+        {
+          "type": "text",
+          "id": "row_8_metafield_key",
+          "label": "Metafield (namespace.key)"
+        }
+      ]
+    },
+    {
+      "type": "ai_feature_grid",
+      "name": "Feature grid",
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading (optional)"
+        },
+        {
+          "type": "header",
+          "content": "Style"
+        },
+        {
+          "type": "font_picker",
+          "id": "heading_font",
+          "label": "Heading font",
+          "default": "inter_n7"
+        },
+        {
+          "type": "color",
+          "id": "heading_color",
+          "label": "Heading color",
+          "default": "#111111"
+        },
+        {
+          "type": "font_picker",
+          "id": "text_font",
+          "label": "Text font",
+          "default": "inter_n4"
+        },
+        {
+          "type": "color",
+          "id": "text_color",
+          "label": "Text color",
+          "default": "#5c5c5c"
+        },
+        {
+          "type": "color",
+          "id": "icon_color",
+          "label": "Icon color",
+          "default": "#a50000"
+        },
+        {
+          "type": "header",
+          "content": "Item 1"
+        },
+        {
+          "type": "checkbox",
+          "id": "item_1_enabled",
+          "label": "Enable",
+          "default": true
+        },
+        {
+          "type": "textarea",
+          "id": "item_1_icon",
+          "label": "Icon (SVG code)",
+          "default": "<svg viewBox=\"0 0 24 24\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M3 12l2-7h14l2 7M5 12h14v7a1 1 0 0 1-1 1h-1a1 1 0 0 1-1-1v-1H8v1a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1v-7Z\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linejoin=\"round\"/><circle cx=\"7.5\" cy=\"15.5\" r=\"1\" fill=\"currentColor\"/><circle cx=\"16.5\" cy=\"15.5\" r=\"1\" fill=\"currentColor\"/></svg>"
+        },
+        {
+          "type": "text",
+          "id": "item_1_heading",
+          "label": "Heading",
+          "default": "Fast Delivery"
+        },
+        {
+          "type": "textarea",
+          "id": "item_1_text",
+          "label": "Text",
+          "default": "Quick, reliable shipping on every order."
+        },
+        {
+          "type": "header",
+          "content": "Item 2"
+        },
+        {
+          "type": "checkbox",
+          "id": "item_2_enabled",
+          "label": "Enable",
+          "default": true
+        },
+        {
+          "type": "textarea",
+          "id": "item_2_icon",
+          "label": "Icon (SVG code)",
+          "default": "<svg viewBox=\"0 0 24 24\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M12 3l7 3.2v5.3c0 4.6-3 8.3-7 9.5-4-1.2-7-4.9-7-9.5V6.2L12 3Z\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linejoin=\"round\"/><path d=\"M9 12l2 2 4-4\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>"
+        },
+        {
+          "type": "text",
+          "id": "item_2_heading",
+          "label": "Heading",
+          "default": "Quality Guaranteed"
+        },
+        {
+          "type": "textarea",
+          "id": "item_2_text",
+          "label": "Text",
+          "default": "Every part is checked before it ships."
+        },
+        {
+          "type": "header",
+          "content": "Item 3"
+        },
+        {
+          "type": "checkbox",
+          "id": "item_3_enabled",
+          "label": "Enable",
+          "default": true
+        },
+        {
+          "type": "textarea",
+          "id": "item_3_icon",
+          "label": "Icon (SVG code)",
+          "default": "<svg viewBox=\"0 0 24 24\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.4 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2Z\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linejoin=\"round\"/></svg>"
+        },
+        {
+          "type": "text",
+          "id": "item_3_heading",
+          "label": "Heading",
+          "default": "24/7 Support"
+        },
+        {
+          "type": "textarea",
+          "id": "item_3_text",
+          "label": "Text",
+          "default": "Friendly help whenever you need it."
+        }
+      ]
+    },
+    {
+      "type": "ai_compatibility_table",
+      "name": "Compatibility table",
+      "settings": [
+        {
+          "type": "header",
+          "content": "Heading"
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Vehicle Compatibility"
+        },
+        {
+          "type": "header",
+          "content": "Data source"
+        },
+        {
+          "type": "text",
+          "id": "metafield_key",
+          "label": "Metafield (namespace.key)",
+          "info": "A multi-line text metafield on this product. First line = column headers, separated by commas. Each line after that = one row, cells separated by commas. Example:\nMake,Model,Year,Engine\nToyota,Yaris,2005-2011,1.3L Petrol\nToyota,Vitz,2005-2011,1.0L Petrol"
+        },
+        {
+          "type": "header",
+          "content": "Table style"
+        },
+        {
+          "type": "font_picker",
+          "id": "table_font",
+          "label": "Font",
+          "default": "inter_n4"
+        },
+        {
+          "type": "range",
+          "id": "table_font_size",
+          "min": 10,
+          "max": 20,
+          "step": 1,
+          "unit": "px",
+          "label": "Font size",
+          "default": 14
+        },
+        {
+          "type": "color",
+          "id": "header_bg_color",
+          "label": "Header row background",
+          "default": "#f5f5f5"
+        },
+        {
+          "type": "color",
+          "id": "header_text_color",
+          "label": "Header row text",
+          "default": "#111111"
+        },
+        {
+          "type": "color",
+          "id": "row_text_color",
+          "label": "Row text",
+          "default": "#333333"
+        },
+        {
+          "type": "color",
+          "id": "divider_color",
+          "label": "Divider color",
+          "default": "#e5e5e5"
+        },
+        {
+          "type": "range",
+          "id": "rows_per_page",
+          "min": 5,
+          "max": 50,
+          "step": 5,
+          "label": "Rows per page",
+          "default": 20
+        }
+      ]
+    },
+    {
+      "type": "ai_section_heading",
+      "name": "Section heading",
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Description"
+        }
+      ]
+    },
+    {
+      "type": "ai_quick_facts",
+      "name": "Quick facts",
+      "settings": [
+        {
+          "type": "paragraph",
+          "content": "Up to 4 small info boxes (e.g. SKU, Brand, Country, Part Number). Box 1 uses this variant's SKU automatically unless you set a metafield for it too. Boxes are hidden individually when they have no value."
+        },
+        {
+          "type": "header",
+          "content": "Box 1"
+        },
+        {
+          "type": "checkbox",
+          "id": "box_1_enabled",
+          "label": "Enable",
+          "default": true
+        },
+        {
+          "type": "text",
+          "id": "box_1_label",
+          "label": "Label",
+          "default": "SKU"
+        },
+        {
+          "type": "checkbox",
+          "id": "box_1_use_sku",
+          "label": "Use this variant's SKU",
+          "default": true
+        },
+        {
+          "type": "text",
+          "id": "box_1_metafield_key",
+          "label": "Metafield (namespace.key)",
+          "info": "Used instead of the SKU if \"Use this variant's SKU\" is off."
+        },
+        {
+          "type": "header",
+          "content": "Box 2"
+        },
+        {
+          "type": "checkbox",
+          "id": "box_2_enabled",
+          "label": "Enable",
+          "default": true
+        },
+        {
+          "type": "text",
+          "id": "box_2_label",
+          "label": "Label",
+          "default": "Brand"
+        },
+        {
+          "type": "checkbox",
+          "id": "box_2_use_vendor",
+          "label": "Use this product's vendor",
+          "default": true
+        },
+        {
+          "type": "text",
+          "id": "box_2_metafield_key",
+          "label": "Metafield (namespace.key)",
+          "info": "Used instead of the vendor if \"Use this product's vendor\" is off."
+        },
+        {
+          "type": "header",
+          "content": "Box 3"
+        },
+        {
+          "type": "checkbox",
+          "id": "box_3_enabled",
+          "label": "Enable",
+          "default": true
+        },
+        {
+          "type": "text",
+          "id": "box_3_label",
+          "label": "Label",
+          "default": "Country"
+        },
+        {
+          "type": "text",
+          "id": "box_3_metafield_key",
+          "label": "Metafield (namespace.key)"
+        },
+        {
+          "type": "header",
+          "content": "Box 4"
+        },
+        {
+          "type": "checkbox",
+          "id": "box_4_enabled",
+          "label": "Enable",
+          "default": true
+        },
+        {
+          "type": "text",
+          "id": "box_4_label",
+          "label": "Label",
+          "default": "Part Number"
+        },
+        {
+          "type": "text",
+          "id": "box_4_metafield_key",
+          "label": "Metafield (namespace.key)"
+        }
+      ]
+    },
+    {
+      "type": "ai_sold_progress",
+      "name": "Sold progress bar",
+      "settings": [
+        {
+          "type": "paragraph",
+          "content": "Shows a \"Sold X/Y\" urgency bar. Both metafields must be set (as plain numbers) on a product for it to appear."
+        },
+        {
+          "type": "text",
+          "id": "sold_metafield_key",
+          "label": "\"Sold\" metafield (namespace.key)"
+        },
+        {
+          "type": "text",
+          "id": "total_metafield_key",
+          "label": "\"Total\" metafield (namespace.key)"
+        },
+        {
+          "type": "color",
+          "id": "bar_color",
+          "label": "Bar color",
+          "default": "#a50000"
+        },
+        {
+          "type": "color",
+          "id": "track_color",
+          "label": "Track color",
+          "default": "#e5e5e5"
+        }
+      ]
+    },
+    {
+      "type": "ai_delivery_note",
+      "name": "Delivery note",
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text",
+          "default": "Free delivery from $100"
+        },
+        {
+          "type": "color",
+          "id": "text_color",
+          "label": "Text color",
+          "default": "#5c5c5c"
+        }
+      ]
+    },
+    {
+      "type": "ai_wishlist_compare",
+      "name": "Wishlist & Compare",
+      "settings": [
+        {
+          "type": "checkbox",
+          "id": "show_wishlist",
+          "label": "Show wishlist button",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "show_compare",
+          "label": "Show compare button",
+          "default": true
+        }
+      ]
     }
   ],
   "settings": [
@@ -2320,6 +3190,74 @@
       "unit": "px",
       "label": "t:sections.all.padding.padding_bottom",
       "default": 36
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "font_picker",
+      "id": "body_font",
+      "label": "Body font",
+      "default": "inter_n4",
+      "info": "Applies to vendor, description and accordion text."
+    },
+    {
+      "type": "range",
+      "id": "body_font_size",
+      "min": 10,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "label": "Body font size",
+      "default": 15
+    },
+    {
+      "type": "select",
+      "id": "body_font_weight",
+      "label": "Body font weight",
+      "options": [
+        { "value": "400", "label": "Normal" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semi-bold" },
+        { "value": "700", "label": "Bold" }
+      ],
+      "default": "400"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Body text color",
+      "default": "#111111"
+    },
+    {
+      "type": "font_picker",
+      "id": "heading_font",
+      "label": "Title font",
+      "default": "inter_n7"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Title color",
+      "default": "#111111"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Price color",
+      "default": "#a50000"
+    },
+    {
+      "type": "header",
+      "content": "Image zoom"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_hover_zoom",
+      "label": "Zoom image on hover",
+      "info": "Follows the cursor, matching the collection page.",
+      "default": true
     }
   ]
 }

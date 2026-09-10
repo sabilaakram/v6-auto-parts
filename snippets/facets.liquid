@@ -7,6 +7,7 @@
   - enable_sorting: {Boolean} Show sorting when true
   - filter_type: {String} Type of filter
   - paginate: {Object}
+  - exclude_labels: {String} Comma-separated filter labels to skip rendering (optional)
 
   Usage:
   {% render 'facets', results: collection, enable_filtering: true, enable_sorting: true, filter_type: 'vertical', paginate: paginate %}
@@ -20,6 +21,7 @@
   assign sort_by = results.sort_by | default: results.default_sort_by
   assign total_active_values = 0
   assign default_presentation = 'text'
+  assign excluded_filter_labels = exclude_labels | split: ','
   if results.url
     assign results_url = results.url
   else
@@ -116,6 +118,17 @@
             {% comment %} Filters for both horizontal and vertical filter {% endcomment %}
             {%- for filter in results.filters -%}
               {% liquid
+                assign skip_filter = false
+                for excluded_label in excluded_filter_labels
+                  assign excluded_label = excluded_label | strip
+                  if filter.label == excluded_label
+                    assign skip_filter = true
+                  endif
+                endfor
+                if skip_filter
+                  continue
+                endif
+
                 assign total_active_values = total_active_values | plus: filter.active_values.size
                 assign presentation = filter.presentation | default: default_presentation
 
@@ -515,6 +528,17 @@
               {%- if enable_filtering -%}
                 {%- for filter in results.filters -%}
                   {% liquid
+                    assign skip_filter = false
+                    for excluded_label in excluded_filter_labels
+                      assign excluded_label = excluded_label | strip
+                      if filter.label == excluded_label
+                        assign skip_filter = true
+                      endif
+                    endfor
+                    if skip_filter
+                      continue
+                    endif
+
                     assign presentation = filter.presentation | default: default_presentation
                     if presentation == 'image'
                       assign visual_layout_class = 'facets-layout facets-layout-grid facets-layout-grid--' | append: presentation
