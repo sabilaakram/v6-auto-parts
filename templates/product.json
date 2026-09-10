@@ -258,7 +258,7 @@
           "type": "ai_compatibility_table",
           "settings": {
             "heading": "Vehicle Compatibility",
-            "metafield_key": "",
+            "metafield_key": "custom.compatibility",
             "table_font": "inter_n4",
             "table_font_size": 14,
             "header_bg_color": "#f5f5f5",
