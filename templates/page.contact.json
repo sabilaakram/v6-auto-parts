@@ -9,6 +9,35 @@
  */
 {
   "sections": {
+    "image_banner_T4VFVL": {
+      "type": "image-banner",
+      "blocks": {
+        "heading_zfhgpn": {
+          "type": "heading",
+          "settings": {
+            "heading": "Contact Us",
+            "heading_size": "h1"
+          }
+        }
+      },
+      "block_order": [
+        "heading_zfhgpn"
+      ],
+      "name": "t:sections.image-banner.presets.name",
+      "settings": {
+        "image": "shopify://shop_images/b77cf58343878d0c45f879142505cd6d7e71fcc7.png",
+        "image_overlay_opacity": 0,
+        "image_height": "medium",
+        "image_behavior": "none",
+        "desktop_content_position": "middle-left",
+        "desktop_content_alignment": "left",
+        "show_text_box": false,
+        "color_scheme": "",
+        "stack_images_on_mobile": true,
+        "mobile_content_alignment": "center",
+        "show_text_below": true
+      }
+    },
     "hero_section": {
       "type": "_blocks",
       "blocks": {
@@ -28,6 +57,13 @@
             "section_padding_top_mobile": 28,
             "section_padding_bottom_mobile": 0,
             "eyebrow_text": "",
+            "eyebrow_font": "inter_n7",
+            "eyebrow_color": "#a50000",
+            "eyebrow_size": 14,
+            "eyebrow_size_mobile": 12,
+            "eyebrow_letter_spacing": 2,
+            "eyebrow_case": "uppercase",
+            "eyebrow_spacing_bottom": 12,
             "heading_text": "Contact Us",
             "heading_font": "assistant_n7",
             "heading_color": "#121212",
@@ -38,6 +74,11 @@
             "heading_case": "uppercase",
             "heading_spacing_bottom": 16,
             "subheading_text": "",
+            "subheading_font": "assistant_n4",
+            "subheading_color": "#5c5c5c",
+            "subheading_size": 16,
+            "subheading_size_mobile": 14,
+            "subheading_line_height": 1.5,
             "image_alt": "Contact V6 Auto Parts",
             "image_aspect_ratio": "auto",
             "image_fit": "cover",
@@ -46,7 +87,10 @@
           "blocks": {}
         }
       },
-      "block_order": ["ai_gen_block_5b8e2f1_hero"],
+      "block_order": [
+        "ai_gen_block_5b8e2f1_hero"
+      ],
+      "disabled": true,
       "name": "Contact hero",
       "settings": {}
     },
@@ -87,20 +131,28 @@
             "body_line_height": 1.5,
             "body_paragraph_spacing": 10,
             "item_1_enabled": true,
+            "item_1_icon": "<svg viewbox=\"0 0 24 24\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M12 22s7-7.05 7-12A7 7 0 1 0 5 10c0 4.95 7 12 7 12Z\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linejoin=\"round\"></path><circle cx=\"12\" cy=\"10\" r=\"2.4\" stroke=\"currentColor\" stroke-width=\"1.6\"></circle></svg>",
             "item_1_title": "Store Location",
             "item_1_body": "<p>V6 Auto Parts Ltd<br>104 Nechells Place, Birmingham, B7 5AB</p>",
             "item_2_enabled": true,
+            "item_2_icon": "<svg viewbox=\"0 0 24 24\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M6.5 3h3l1.5 4.5-2.2 1.8a12 12 0 0 0 5.9 5.9l1.8-2.2L21 14.5v3a2 2 0 0 1-2.2 2A17.5 17.5 0 0 1 4.5 5.2 2 2 0 0 1 6.5 3Z\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linejoin=\"round\"></path></svg>",
             "item_2_title": "Get In Touch With Us",
             "item_2_body": "<p>Hotline<br>07308 675129</p><p>Email<br>v6ceo@aol.com</p>",
             "item_3_enabled": true,
+            "item_3_icon": "<svg viewbox=\"0 0 24 24\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><circle cx=\"12\" cy=\"12\" r=\"8.2\" stroke=\"currentColor\" stroke-width=\"1.6\"></circle><path d=\"M12 7.8V12l3 2\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\"></path></svg>",
             "item_3_title": "Opening Hours",
             "item_3_body": "<p>Monday to Friday<br>9am - 5pm</p><p>Saturday &amp; Sunday<br>10am - 6pm</p>",
-            "item_4_enabled": false
+            "item_4_enabled": false,
+            "item_4_icon": "<svg viewbox=\"0 0 24 24\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><rect x=\"3.5\" y=\"5.5\" width=\"17\" height=\"13\" rx=\"1.5\" stroke=\"currentColor\" stroke-width=\"1.6\"></rect><path d=\"M4 7l8 6 8-6\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\"></path></svg>",
+            "item_4_title": "",
+            "item_4_body": ""
           },
           "blocks": {}
         }
       },
-      "block_order": ["ai_gen_block_3a7d9c6_info"],
+      "block_order": [
+        "ai_gen_block_3a7d9c6_info"
+      ],
       "name": "Contact info grid",
       "settings": {}
     },
@@ -137,7 +189,9 @@
           "blocks": {}
         }
       },
-      "block_order": ["ai_gen_block_4298ae7_map"],
+      "block_order": [
+        "ai_gen_block_4298ae7_map"
+      ],
       "name": "Map",
       "settings": {}
     },
@@ -219,12 +273,15 @@
           "blocks": {}
         }
       },
-      "block_order": ["ai_gen_block_fc6d095_form"],
+      "block_order": [
+        "ai_gen_block_fc6d095_form"
+      ],
       "name": "Contact form",
       "settings": {}
     }
   },
   "order": [
+    "image_banner_T4VFVL",
     "hero_section",
     "info_grid_section",
     "map_section",
