@@ -1,6 +1,584 @@
+{% doc %}
+  @prompt
+    Create a responsive split promotional hero section with two equal panels side by side on desktop.
+    
+    The left panel should have a solid black background and the right panel should have a solid red background (#cc0000).
+    
+    The two panels must meet in the center with a clean diagonal/slanted divider. There must be no white gap, no empty space, and no overlap between the two panels.
+    
+    Do not use separate clip-path shapes that create a gap between the panels. The diagonal transition should look like one continuous black-to-red split.
+    
+    Left panel content:
+    
+    Heading: GREASES & LUBRICANTS
+    Subheading: Top engine & chain oils from your favorite brands
+    Red “SHOP NOW” button
+    
+    Right panel content:
+    
+    Heading: SEAT COVER
+    Subheading: Car Seat Protectors with Comfortable Mesh Back
+    Black “SHOP NOW” button
+    
+    Keep all text fully visible and safely positioned away from the diagonal divider. The right-side heading must not be cut off or hidden.
+    
+    Design requirements:
+    
+    Full-width section
+    Minimum desktop height around 480–500px
+    Large white uppercase serif headings
+    Smaller white sans-serif descriptions
+    Content vertically aligned toward the lower-middle area
+    Balanced padding on both sides
+    Clean automotive/e-commerce style
+    No images
+    No borders
+    No white center gap
+    
+    On mobile, stack the two panels vertically. Remove the diagonal divider on mobile and show the left section as solid black and the right section as solid red.
+    
+    Make the section fully responsive for desktop, tablet, and mobile and ensure there is no horizontal overflow or clipped text.   
+    Prioritize a clean layout over decorative clipping effects. The most important requirement is that the black and red backgrounds touch perfectly with a single diagonal divider and all content remains fully readable.
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-split-hero-{{ ai_gen_id }} {
+    display: block;
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .ai-split-hero-container-{{ ai_gen_id }} {
+    display: flex;
+    min-height: {{ block.settings.desktop_height }}px;
+    position: relative;
+  }
+
+  .ai-split-hero-panel-{{ ai_gen_id }} {
+    flex: 1;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding: {{ block.settings.panel_padding }}px;
+    position: relative;
+    min-height: {{ block.settings.desktop_height }}px;
+  }
+
+  .ai-split-hero-panel-left-{{ ai_gen_id }} {
+    background-color: {{ block.settings.left_bg_color }};
+    clip-path: polygon(0 0, 100% 0, calc(100% - {{ block.settings.diagonal_offset }}px) 100%, 0 100%);
+    padding-right: calc({{ block.settings.panel_padding }}px + {{ block.settings.diagonal_offset }}px);
+  }
+
+  .ai-split-hero-panel-right-{{ ai_gen_id }} {
+    background-color: {{ block.settings.right_bg_color }};
+    margin-left: calc(-1 * {{ block.settings.diagonal_offset }}px);
+    padding-left: calc({{ block.settings.panel_padding }}px + {{ block.settings.diagonal_offset }}px);
+  }
+
+  .ai-split-hero-content-{{ ai_gen_id }} {
+    max-width: {{ block.settings.content_max_width }}px;
+    width: 100%;
+    text-align: {{ block.settings.text_alignment }};
+  }
+
+  .ai-split-hero-heading-{{ ai_gen_id }} {
+    color: {{ block.settings.text_color }};
+    font-size: {{ block.settings.heading_size }}px;
+    font-family: {{ block.settings.heading_font.family }}, {{ block.settings.heading_font.fallback_families }};
+    font-weight: {{ block.settings.heading_font.weight }};
+    text-transform: uppercase;
+    margin: 0 0 {{ block.settings.heading_spacing }}px;
+    line-height: 1.2;
+    letter-spacing: {{ block.settings.letter_spacing }}px;
+  }
+
+  .ai-split-hero-subheading-{{ ai_gen_id }} {
+    color: {{ block.settings.text_color }};
+    font-size: {{ block.settings.subheading_size }}px;
+    margin: 0 0 {{ block.settings.subheading_spacing }}px;
+    line-height: 1.5;
+  }
+
+  .ai-split-hero-button-{{ ai_gen_id }} {
+    display: inline-block;
+    padding: {{ block.settings.button_padding_vertical }}px {{ block.settings.button_padding_horizontal }}px;
+    font-size: {{ block.settings.button_font_size }}px;
+    font-weight: 600;
+    text-transform: uppercase;
+    text-decoration: none;
+    border-radius: {{ block.settings.button_border_radius }}px;
+    transition: all 0.3s ease;
+    letter-spacing: 1px;
+  }
+
+  .ai-split-hero-button-left-{{ ai_gen_id }} {
+    background-color: {{ block.settings.left_button_bg }};
+    color: {{ block.settings.left_button_color }};
+  }
+
+  .ai-split-hero-button-left-{{ ai_gen_id }}:hover {
+    background-color: {{ block.settings.left_button_hover_bg }};
+    color: {{ block.settings.left_button_hover_color }};
+  }
+
+  .ai-split-hero-button-right-{{ ai_gen_id }} {
+    background-color: {{ block.settings.right_button_bg }};
+    color: {{ block.settings.right_button_color }};
+  }
+
+  .ai-split-hero-button-right-{{ ai_gen_id }}:hover {
+    background-color: {{ block.settings.right_button_hover_bg }};
+    color: {{ block.settings.right_button_hover_color }};
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-split-hero-container-{{ ai_gen_id }} {
+      flex-direction: column;
+      min-height: auto;
+    }
+
+    .ai-split-hero-panel-{{ ai_gen_id }} {
+      min-height: {{ block.settings.mobile_height }}px;
+      padding: {{ block.settings.mobile_panel_padding }}px;
+    }
+
+    .ai-split-hero-panel-left-{{ ai_gen_id }} {
+      clip-path: none;
+      padding-right: {{ block.settings.mobile_panel_padding }}px;
+    }
+
+    .ai-split-hero-panel-right-{{ ai_gen_id }} {
+      margin-left: 0;
+      padding-left: {{ block.settings.mobile_panel_padding }}px;
+    }
+
+    .ai-split-hero-heading-{{ ai_gen_id }} {
+      font-size: {{ block.settings.mobile_heading_size }}px;
+    }
+
+    .ai-split-hero-subheading-{{ ai_gen_id }} {
+      font-size: {{ block.settings.mobile_subheading_size }}px;
+    }
+
+    .ai-split-hero-button-{{ ai_gen_id }} {
+      font-size: {{ block.settings.mobile_button_font_size }}px;
+    }
+  }
+{% endstyle %}
+
+<split-hero-{{ ai_gen_id }} class="ai-split-hero-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-split-hero-container-{{ ai_gen_id }}">
+    <div class="ai-split-hero-panel-{{ ai_gen_id }} ai-split-hero-panel-left-{{ ai_gen_id }}">
+      <div class="ai-split-hero-content-{{ ai_gen_id }}">
+        {% if block.settings.left_heading != blank %}
+          <h2 class="ai-split-hero-heading-{{ ai_gen_id }}">{{ block.settings.left_heading }}</h2>
+        {% endif %}
+        {% if block.settings.left_subheading != blank %}
+          <p class="ai-split-hero-subheading-{{ ai_gen_id }}">{{ block.settings.left_subheading }}</p>
+        {% endif %}
+        {% if block.settings.left_button_label != blank %}
+          <a href="{{ block.settings.left_button_link }}" class="ai-split-hero-button-{{ ai_gen_id }} ai-split-hero-button-left-{{ ai_gen_id }}">
+            {{ block.settings.left_button_label }}
+          </a>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="ai-split-hero-panel-{{ ai_gen_id }} ai-split-hero-panel-right-{{ ai_gen_id }}">
+      <div class="ai-split-hero-content-{{ ai_gen_id }}">
+        {% if block.settings.right_heading != blank %}
+          <h2 class="ai-split-hero-heading-{{ ai_gen_id }}">{{ block.settings.right_heading }}</h2>
+        {% endif %}
+        {% if block.settings.right_subheading != blank %}
+          <p class="ai-split-hero-subheading-{{ ai_gen_id }}">{{ block.settings.right_subheading }}</p>
+        {% endif %}
+        {% if block.settings.right_button_label != blank %}
+          <a href="{{ block.settings.right_button_link }}" class="ai-split-hero-button-{{ ai_gen_id }} ai-split-hero-button-right-{{ ai_gen_id }}">
+            {{ block.settings.right_button_label }}
+          </a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</split-hero-{{ ai_gen_id }}>
+
+<script>
+  (function() {
+    class SplitHero{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+      }
+
+      connectedCallback() {
+        this.adjustForResponsive();
+        window.addEventListener('resize', () => this.adjustForResponsive());
+      }
+
+      adjustForResponsive() {
+        const container = this.querySelector('.ai-split-hero-container-{{ ai_gen_id }}');
+        if (window.innerWidth <= 749) {
+          container.style.flexDirection = 'column';
+        } else {
+          container.style.flexDirection = 'flex';
+        }
+      }
+    }
+
+    customElements.define('split-hero-{{ ai_gen_id }}', SplitHero{{ ai_gen_id }});
+  })();
+</script>
+
 {% schema %}
- {
-   "name": "AI_Block",
-   "tag": "shopify-ai-generated-block"
- }
+{
+  "name": "Split promotional hero",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Left panel"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "left_heading",
+      "label": "Heading",
+      "default": "GREASES & LUBRICANTS"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "left_subheading",
+      "label": "Subheading",
+      "default": "Top engine & chain oils from your favorite brands"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "left_button_label",
+      "label": "Button text",
+      "default": "SHOP NOW"
+    },
+    {
+      "type": "url",
+      "id": "left_button_link",
+      "label": "Button link"
+    },
+    {
+      "type": "color",
+      "id": "left_bg_color",
+      "label": "Background color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "left_button_bg",
+      "label": "Button background",
+      "default": "#cc0000"
+    },
+    {
+      "type": "color",
+      "id": "left_button_color",
+      "label": "Button text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "left_button_hover_bg",
+      "label": "Button hover background",
+      "default": "#990000"
+    },
+    {
+      "type": "color",
+      "id": "left_button_hover_color",
+      "label": "Button hover text",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Right panel"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "right_heading",
+      "label": "Heading",
+      "default": "SEAT COVER"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "right_subheading",
+      "label": "Subheading",
+      "default": "Car Seat Protectors with Comfortable Mesh Back"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "right_button_label",
+      "label": "Button text",
+      "default": "SHOP NOW"
+    },
+    {
+      "type": "url",
+      "id": "right_button_link",
+      "label": "Button link"
+    },
+    {
+      "type": "color",
+      "id": "right_bg_color",
+      "label": "Background color",
+      "default": "#cc0000"
+    },
+    {
+      "type": "color",
+      "id": "right_button_bg",
+      "label": "Button background",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "right_button_color",
+      "label": "Button text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "right_button_hover_bg",
+      "label": "Button hover background",
+      "default": "#333333"
+    },
+    {
+      "type": "color",
+      "id": "right_button_hover_color",
+      "label": "Button hover text",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "desktop_height",
+      "label": "Desktop height",
+      "min": 300,
+      "max": 800,
+      "step": 20,
+      "unit": "px",
+      "default": 480
+    },
+    {
+      "type": "range",
+      "id": "mobile_height",
+      "label": "Mobile height",
+      "min": 200,
+      "max": 600,
+      "step": 20,
+      "unit": "px",
+      "default": 360
+    },
+    {
+      "type": "range",
+      "id": "diagonal_offset",
+      "label": "Diagonal divider offset",
+      "min": 20,
+      "max": 150,
+      "step": 10,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "panel_padding",
+      "label": "Desktop panel padding",
+      "min": 20,
+      "max": 100,
+      "step": 10,
+      "unit": "px",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "mobile_panel_padding",
+      "label": "Mobile panel padding",
+      "min": 10,
+      "max": 60,
+      "step": 5,
+      "unit": "px",
+      "default": 30
+    },
+    {
+      "type": "range",
+      "id": "content_max_width",
+      "label": "Content max width",
+      "min": 300,
+      "max": 700,
+      "step": 20,
+      "unit": "px",
+      "default": 500
+    },
+    {
+      "type": "select",
+      "id": "text_alignment",
+      "label": "Text alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "font_picker",
+      "id": "heading_font",
+      "label": "Heading font",
+      "default": "serif"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "label": "Desktop heading size",
+      "min": 24,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "mobile_heading_size",
+      "label": "Mobile heading size",
+      "min": 18,
+      "max": 50,
+      "step": 2,
+      "unit": "px",
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "letter_spacing",
+      "label": "Heading letter spacing",
+      "min": 0,
+      "max": 5,
+      "step": 0.5,
+      "unit": "px",
+      "default": 1
+    },
+    {
+      "type": "range",
+      "id": "heading_spacing",
+      "label": "Heading spacing",
+      "min": 10,
+      "max": 50,
+      "step": 5,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "subheading_size",
+      "label": "Desktop subheading size",
+      "min": 12,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "mobile_subheading_size",
+      "label": "Mobile subheading size",
+      "min": 10,
+      "max": 24,
+      "step": 2,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "subheading_spacing",
+      "label": "Subheading spacing",
+      "min": 10,
+      "max": 50,
+      "step": 5,
+      "unit": "px",
+      "default": 25
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Button style"
+    },
+    {
+      "type": "range",
+      "id": "button_padding_vertical",
+      "label": "Vertical padding",
+      "min": 8,
+      "max": 30,
+      "step": 2,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "button_padding_horizontal",
+      "label": "Horizontal padding",
+      "min": 20,
+      "max": 80,
+      "step": 5,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "button_font_size",
+      "label": "Desktop font size",
+      "min": 10,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "mobile_button_font_size",
+      "label": "Mobile font size",
+      "min": 10,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 13
+    },
+    {
+      "type": "range",
+      "id": "button_border_radius",
+      "label": "Border radius",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 4
+    }
+  ],
+  "presets": [
+    {
+      "name": "Split promotional hero"
+    }
+  ]
+}
 {% endschema %}
