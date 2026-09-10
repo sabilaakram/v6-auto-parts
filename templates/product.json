@@ -98,6 +98,9 @@
           "type": "ai_specification",
           "settings": {
             "heading": "Specification",
+            "group_1_label": "General",
+            "group_2_label": "Dimensions",
+            "group_2_start_row": 6,
             "table_font": "inter_n4",
             "table_font_size": 14,
             "label_color": "#5c5c5c",
@@ -119,12 +122,68 @@
             "row_5_label": "Warranty",
             "row_5_metafield_key": "",
             "row_6_enabled": false,
+            "row_6_label": "",
+            "row_6_metafield_key": "",
             "row_7_enabled": false,
-            "row_8_enabled": false
+            "row_7_label": "",
+            "row_7_metafield_key": "",
+            "row_8_enabled": false,
+            "row_8_label": "",
+            "row_8_metafield_key": ""
+          }
+        },
+        "google_reviews_repocean_repocean_reviews_carousel_dDz3gn": {
+          "type": "shopify://apps/google-reviews-repocean/blocks/repocean-reviews-carousel/019aa132-98b1-7055-b64e-581f915ade43",
+          "settings": {
+            "section_title": "",
+            "section_title_tag": "h2",
+            "section_title_color": "",
+            "section_description": "",
+            "min_rating": "5",
+            "show_no_text_reviews": "auto",
+            "only_with_photos": false,
+            "hide_reviews_with_keywords": "",
+            "max_reviews": 100,
+            "autoplay_style": "slide",
+            "autoplay_speed": 5,
+            "review_line_clamp": 5,
+            "show_headline": true,
+            "show_review_count": true,
+            "show_google_logo": true,
+            "show_review_time": true,
+            "show_verified_icon": true,
+            "show_profile_picture": true,
+            "show_review_photos": true,
+            "show_nav_arrows": true,
+            "reviewer_name_format": "none",
+            "padding_top": 36,
+            "padding_bottom": 36,
+            "cards_per_row_desktop": "0",
+            "card_radius": 20,
+            "background_color": "#F3F3F3",
+            "border_color": "#FFFFFF",
+            "headline_color": "#6B7280",
+            "star_color": "#f5a300",
+            "name_color": "#111111",
+            "time_color": "#6b7280",
+            "text_color": "#1f2937",
+            "arrow_bg_color": "#FFFFFF",
+            "arrow_icon_color": "#111111",
+            "arrow_border_color": "#0000001A",
+            "show_leave_review": true,
+            "leave_btn_label": "Leave a review on Google",
+            "leave_btn_text_color": "#FFFFFF",
+            "leave_btn_bg_color": "#1A73E8",
+            "leave_btn_border_color": "#1A73E866",
+            "leave_btn_radius": 16,
+            "leave_btn_padding_y": 11,
+            "leave_btn_padding_x": 20,
+            "dark_mode": false
           }
         },
         "google_reviews": {
           "type": "shopify://apps/google-reviews-repocean/blocks/repocean-reviews-carousel/019aa132-98b1-7055-b64e-581f915ade43",
+          "disabled": true,
           "settings": {
             "section_title": "Review",
             "section_title_tag": "h2",
@@ -182,12 +241,15 @@
             "text_color": "#5c5c5c",
             "icon_color": "#a50000",
             "item_1_enabled": true,
+            "item_1_icon": "<svg viewbox=\"0 0 24 24\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M3 12l2-7h14l2 7M5 12h14v7a1 1 0 0 1-1 1h-1a1 1 0 0 1-1-1v-1H8v1a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1v-7Z\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linejoin=\"round\"></path><circle cx=\"7.5\" cy=\"15.5\" r=\"1\" fill=\"currentColor\"></circle><circle cx=\"16.5\" cy=\"15.5\" r=\"1\" fill=\"currentColor\"></circle></svg>",
             "item_1_heading": "Fast Delivery",
             "item_1_text": "Quick, reliable shipping on every order.",
             "item_2_enabled": true,
+            "item_2_icon": "<svg viewbox=\"0 0 24 24\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M12 3l7 3.2v5.3c0 4.6-3 8.3-7 9.5-4-1.2-7-4.9-7-9.5V6.2L12 3Z\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linejoin=\"round\"></path><path d=\"M9 12l2 2 4-4\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\"></path></svg>",
             "item_2_heading": "Quality Guaranteed",
             "item_2_text": "Every part is checked before it ships.",
             "item_3_enabled": true,
+            "item_3_icon": "<svg viewbox=\"0 0 24 24\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.4 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2Z\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linejoin=\"round\"></path></svg>",
             "item_3_heading": "24/7 Support",
             "item_3_text": "Friendly help whenever you need it."
           }
@@ -227,6 +289,7 @@
         "description_heading",
         "description",
         "specification",
+        "google_reviews_repocean_repocean_reviews_carousel_dDz3gn",
         "google_reviews",
         "feature_grid",
         "compatibility",
@@ -259,6 +322,10 @@
     "disclosures": {
       "type": "disclosures",
       "settings": {
+        "heading": "Disclosures",
+        "heading_size": "h2",
+        "open_by_default": false,
+        "color_scheme": "",
         "padding_top": 36,
         "padding_bottom": 0
       }
@@ -283,6 +350,9 @@
       }
     }
   },
-  "order": ["main", "disclosures", "related-products"]
+  "order": [
+    "main",
+    "disclosures",
+    "related-products"
+  ]
 }
-
