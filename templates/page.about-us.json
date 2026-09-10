@@ -1,11 +1,50 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "main": {
       "type": "main-page",
+      "disabled": true,
       "settings": {
         "heading_font": "bebas_neue_n4",
         "padding_top": 28,
         "padding_bottom": 28
+      }
+    },
+    "image_banner_HebX3b": {
+      "type": "image-banner",
+      "blocks": {
+        "heading_TwBphK": {
+          "type": "heading",
+          "settings": {
+            "heading": "ABOUT US",
+            "heading_size": "hxl"
+          }
+        }
+      },
+      "block_order": [
+        "heading_TwBphK"
+      ],
+      "name": "t:sections.image-banner.presets.name",
+      "settings": {
+        "image": "shopify://shop_images/f6749132c7ac838d9b9416c4cee8ae8dc2a914cd.png",
+        "image_overlay_opacity": 0,
+        "image_height": "large",
+        "image_behavior": "none",
+        "desktop_content_position": "middle-left",
+        "desktop_content_alignment": "left",
+        "show_text_box": false,
+        "color_scheme": "scheme-1",
+        "stack_images_on_mobile": true,
+        "mobile_content_alignment": "left",
+        "show_text_below": true
       }
     },
     "stats_section": {
@@ -54,7 +93,9 @@
           "blocks": {}
         }
       },
-      "block_order": ["ai_gen_block_b7f2a1c_stats01"],
+      "block_order": [
+        "ai_gen_block_b7f2a1c_stats01"
+      ],
       "name": "Stats counter",
       "settings": {}
     },
@@ -64,7 +105,7 @@
         "ai_gen_block_9c3d5e2_howwework": {
           "type": "ai_gen_block_9c3d5e2",
           "settings": {
-            "image_position": "right",
+            "image_position": "left",
             "vertical_alignment": "center",
             "container_width_percent": 90,
             "content_max_width": 1400,
@@ -83,8 +124,8 @@
             "eyebrow_letter_spacing": 2,
             "eyebrow_case": "uppercase",
             "eyebrow_spacing_bottom": 12,
-            "heading_text": "Infuse Your Brand With Excellence",
-            "heading_font": "assistant_n7",
+            "heading_text": "Infuse Your Brand with Excellence",
+            "heading_font": "bebas_neue_n4",
             "heading_color": "#121212",
             "heading_size": 34,
             "heading_size_mobile": 24,
@@ -114,6 +155,7 @@
             "item_5_text": "",
             "item_6_enabled": false,
             "item_6_text": "",
+            "image": "shopify://shop_images/b43661735ffe28a8df5800dd870c3790_2.png",
             "image_alt": "How we work",
             "image_aspect_ratio": "auto",
             "image_fit": "cover",
@@ -122,7 +164,9 @@
           "blocks": {}
         }
       },
-      "block_order": ["ai_gen_block_9c3d5e2_howwework"],
+      "block_order": [
+        "ai_gen_block_9c3d5e2_howwework"
+      ],
       "name": "How We Work",
       "settings": {}
     },
@@ -132,7 +176,7 @@
         "ai_gen_block_9c3d5e2_ourservices": {
           "type": "ai_gen_block_9c3d5e2",
           "settings": {
-            "image_position": "left",
+            "image_position": "right",
             "vertical_alignment": "center",
             "container_width_percent": 90,
             "content_max_width": 1400,
@@ -190,7 +234,9 @@
           "blocks": {}
         }
       },
-      "block_order": ["ai_gen_block_9c3d5e2_ourservices"],
+      "block_order": [
+        "ai_gen_block_9c3d5e2_ourservices"
+      ],
       "name": "Our Services",
       "settings": {}
     },
@@ -254,14 +300,24 @@
             "team_4_name": "Jessica Thompson",
             "team_4_role": "",
             "team_5_enabled": false,
+            "team_5_name": "",
+            "team_5_role": "",
             "team_6_enabled": false,
+            "team_6_name": "",
+            "team_6_role": "",
             "team_7_enabled": false,
-            "team_8_enabled": false
+            "team_7_name": "",
+            "team_7_role": "",
+            "team_8_enabled": false,
+            "team_8_name": "",
+            "team_8_role": ""
           },
           "blocks": {}
         }
       },
-      "block_order": ["ai_gen_block_2f6a8b4_ourteam"],
+      "block_order": [
+        "ai_gen_block_2f6a8b4_ourteam"
+      ],
       "name": "Our Team",
       "settings": {}
     },
@@ -279,6 +335,7 @@
             "section_padding_top_mobile": 0,
             "section_padding_bottom_mobile": 32,
             "image_alt": "V6 Auto Parts",
+            "link": "",
             "image_fit": "cover",
             "height_desktop": 420,
             "height_mobile": 220,
@@ -288,13 +345,16 @@
           "blocks": {}
         }
       },
-      "block_order": ["ai_gen_block_7e1c4d9_bottomimg"],
+      "block_order": [
+        "ai_gen_block_7e1c4d9_bottomimg"
+      ],
       "name": "Bottom image",
       "settings": {}
     }
   },
   "order": [
     "main",
+    "image_banner_HebX3b",
     "stats_section",
     "how_we_work_section",
     "our_services_section",
