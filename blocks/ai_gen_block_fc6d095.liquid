@@ -53,7 +53,7 @@
 
   .ai-contact-form-heading-{{ ai_gen_id }} {
     font-family: {{ block.settings.heading_font.family }}, {{ block.settings.heading_font.fallback_families }};
-    font-weight: 700;
+    font-weight: {{ block.settings.heading_font.weight }};
     font-style: {{ block.settings.heading_font.style }};
     font-size: {{ block.settings.heading_size }}px;
     line-height: {{ block.settings.heading_line_height }};

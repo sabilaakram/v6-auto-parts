@@ -40,7 +40,7 @@
 
   .ai-featured-tabs__sub-heading-{{ai_gen_id}} {
     font-family: {{ block.settings.sub_heading_font.family }}, {{ block.settings.sub_heading_font.fallback_families }};
-    font-weight: 700;
+    font-weight: {{ block.settings.sub_heading_font.weight }};
     font-size: {{ block.settings.sub_heading_size }}px;
     line-height: {{ block.settings.sub_heading_line_height }};
     color: {{ block.settings.sub_heading_color }};
