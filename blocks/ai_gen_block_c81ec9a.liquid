@@ -438,19 +438,9 @@
     .ai-featured-tabs__sub-heading-{{ai_gen_id}} {
       font-size: calc({{ block.settings.sub_heading_size }}px * 0.72);
     }
-
-    .ai-featured-tabs__tab-{{ai_gen_id}} {
-      font-size: calc({{ block.settings.tab_size }}px * 0.75);
-    }
   }
 
   @media screen and (max-width: 479px) {
-    {% if block.settings.mobile_columns > 1 %}
-      .ai-featured-tabs__grid-{{ai_gen_id}} {
-        grid-template-columns: 1fr;
-      }
-    {% endif %}
-
     .ai-featured-tabs__footer-{{ai_gen_id}} {
       align-items: center;
     }

@@ -269,7 +269,7 @@
             "tab_hover_color": "#ca2629",
             "tab_case": "none",
             "tabs_alignment": "center",
-            "mobile_tabs_layout": "column",
+            "mobile_tabs_layout": "row",
             "background_color": "#ffffff",
             "container_padding": 20,
             "border_radius": 8,
