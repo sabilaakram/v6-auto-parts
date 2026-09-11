@@ -199,10 +199,10 @@
       ],
       "name": "t:sections.multicolumn.presets.name",
       "custom_css": [
-        "#Slide-multicolumn_7fwHrt-1 .multicolumn-card{background:#a50000}",
-        "#Slide-multicolumn_7fwHrt-1 .multicolumn-card__info *{color:#fff}",
-        "#Slide-multicolumn_7fwHrt-2 .multicolumn-card{background:#000}",
-        "#Slide-multicolumn_7fwHrt-2 .multicolumn-card__info *{color:#fff}",
+        ".multicolumn-list__item:nth-child(1) .multicolumn-card{background:#a50000}",
+        ".multicolumn-list__item:nth-child(1) .multicolumn-card__info *{color:#fff}",
+        ".multicolumn-list__item:nth-child(2) .multicolumn-card{background:#000}",
+        ".multicolumn-list__item:nth-child(2) .multicolumn-card__info *{color:#fff}",
         ".multicolumn-card__info h3{font-family:'Bebas Neue',sans-serif;font-size:38px}",
         ".multicolumn-card__info .rte{font-family:Inter,sans-serif}",
         "@media(max-width:749px){.multicolumn-card__info h3{font-size:26px}}"
