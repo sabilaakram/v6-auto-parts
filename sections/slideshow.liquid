@@ -110,6 +110,10 @@
         #Slide-{{ section.id }}-{{ forloop.index }} .banner__media::after {
           opacity: {{ block.settings.image_overlay_opacity | divided_by: 100.0 }};
         }
+
+        #Slide-{{ section.id }}-{{ forloop.index }} .slideshow__media img {
+          object-position: center {{ block.settings.image_focal_y | default: 50 }}%;
+        }
       </style>
       <div
         class="slideshow__slide grid__item grid--1-col slider__slide"
@@ -404,6 +408,17 @@
           "unit": "%",
           "label": "t:sections.slideshow.blocks.slide.settings.image_overlay_opacity.label",
           "default": 0
+        },
+        {
+          "type": "range",
+          "id": "image_focal_y",
+          "min": 0,
+          "max": 100,
+          "step": 5,
+          "unit": "%",
+          "label": "Image vertical focus",
+          "info": "Where the image crops from when the slide is shorter than the photo. 0% keeps the top of the photo in view (crops the bottom first), 100% keeps the bottom in view.",
+          "default": 50
         },
         {
           "type": "header",

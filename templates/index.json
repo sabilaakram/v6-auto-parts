@@ -17,6 +17,7 @@
           "settings": {
             "image": "shopify://shop_images/9df0f742da1217b42a3c7d5ba3a18103c5d0ee1d_1.webp",
             "image_overlay_opacity": 0,
+            "image_focal_y": 15,
             "heading": "Quality Car Parts in the UK, Delivered Fast",
             "heading_size": "h1",
             "subheading": "<em>Genuine and aftermarket car parts for every make. Buy online today.</em> ",
@@ -42,7 +43,7 @@
       "name": "t:sections.slideshow.presets.name",
       "settings": {
         "layout": "full_bleed",
-        "slide_height": "medium",
+        "slide_height": "small",
         "slider_visual": "dots",
         "auto_rotate": true,
         "change_slides_speed": 9,
