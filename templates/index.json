@@ -492,7 +492,7 @@
             "right_button_hover_color": "#ffffff",
             "desktop_height": 480,
             "mobile_height": 360,
-            "diagonal_offset": 80,
+            "diagonal_offset": 0,
             "panel_padding": 60,
             "mobile_panel_padding": 30,
             "content_max_width": 500,
