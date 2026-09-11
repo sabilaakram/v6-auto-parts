@@ -1,0 +1,619 @@
+{% doc %}
+  @prompt
+    Vehicle parts finder widget with two modes: Manual Search (Brand / Maker / Model / Year
+    dropdowns) and Reg Lookup (UK number-plate style input). Manual Search submits a text
+    query built from the selected values to Shopify's native /search endpoint (no structured
+    fitment data exists in this catalog yet, so this is a search-query builder, not a true
+    filter). Reg Lookup's UI is complete but its actual DVLA API call is stubbed until a
+    server-side proxy + API key exist (DVLA's API cannot be called from the browser directly).
+    Used on the homepage and, with page_context: 'product', on the product page.
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .vf-{{ ai_gen_id }} {
+    width: 100%;
+    background-color: {{ block.settings.background_color }};
+    padding: {{ block.settings.padding_vertical }}px 20px;
+  }
+
+  .vf-inner-{{ ai_gen_id }} {
+    max-width: {{ block.settings.max_width }}px;
+    margin: 0 auto;
+  }
+
+  .vf-heading-{{ ai_gen_id }} {
+    font-family: 'Bebas Neue', sans-serif;
+    font-weight: 700;
+    font-size: 24px;
+    color: {{ block.settings.heading_color }};
+    text-align: center;
+    margin: 0 0 16px;
+    letter-spacing: 0.02em;
+  }
+
+  .vf-tabs-{{ ai_gen_id }} {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+  }
+
+  .vf-tab-{{ ai_gen_id }} {
+    position: relative;
+    border: none;
+    cursor: pointer;
+    padding: 12px 24px 12px 20px;
+    font-family: Inter, sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    clip-path: polygon(0 0, 88% 0, 100% 50%, 88% 100%, 0 100%);
+    background: {{ block.settings.dropdown_bg_color }};
+    color: {{ block.settings.body_text_color }};
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+
+  .vf-tab-{{ ai_gen_id }}.is-active {
+    background: {{ block.settings.accent_color }};
+    color: #ffffff;
+  }
+
+  .vf-panel-{{ ai_gen_id }} {
+    display: none;
+  }
+
+  .vf-panel-{{ ai_gen_id }}.is-active {
+    display: block;
+  }
+
+  .vf-manual-row-{{ ai_gen_id }} {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: stretch;
+  }
+
+  .vf-select-wrap-{{ ai_gen_id }} {
+    flex: 1 1 160px;
+    min-width: 140px;
+  }
+
+  .vf-select-{{ ai_gen_id }} {
+    width: 100%;
+    height: 44px;
+    padding: 0 14px;
+    border: 1px solid {{ block.settings.border_color }};
+    border-radius: 4px;
+    background: {{ block.settings.dropdown_bg_color }};
+    color: {{ block.settings.body_text_color }};
+    font-family: Inter, sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 16px;
+  }
+
+  .vf-reg-row-{{ ai_gen_id }} {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .vf-reg-label-{{ ai_gen_id }} {
+    font-family: Inter, sans-serif;
+    font-weight: 700;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: {{ block.settings.body_text_color }};
+    white-space: nowrap;
+  }
+
+  .vf-reg-input-wrap-{{ ai_gen_id }} {
+    display: flex;
+    align-items: stretch;
+    flex: 1 1 260px;
+    border-radius: 4px;
+    overflow: hidden;
+    border: 2px solid #000000;
+  }
+
+  .vf-reg-badge-{{ ai_gen_id }} {
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    background: #003399;
+    color: #ffffff;
+    font-size: 9px;
+    font-weight: 700;
+    line-height: 1.1;
+    padding: 4px 0;
+  }
+
+  .vf-reg-input-{{ ai_gen_id }} {
+    flex: 1 1 auto;
+    border: none;
+    background: #ffd400;
+    color: #111111;
+    font-family: 'Charles Wright', Arial, sans-serif;
+    font-weight: 700;
+    font-size: 22px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-align: center;
+    padding: 8px 10px;
+  }
+
+  .vf-reg-input-{{ ai_gen_id }}::placeholder {
+    color: #8a7a00;
+    opacity: 1;
+  }
+
+  .vf-btn-{{ ai_gen_id }} {
+    flex: 0 0 auto;
+    border: none;
+    cursor: pointer;
+    padding: 12px 26px 12px 22px;
+    background: {{ block.settings.accent_color }};
+    color: #ffffff;
+    font-family: Inter, sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    clip-path: polygon(0 0, 88% 0, 100% 50%, 88% 100%, 0 100%);
+    transition: background-color 0.2s ease;
+  }
+
+  .vf-btn-{{ ai_gen_id }}:hover {
+    background: {{ block.settings.accent_hover_color }};
+  }
+
+  .vf-note-{{ ai_gen_id }} {
+    margin-top: 10px;
+    font-family: Inter, sans-serif;
+    font-size: 12px;
+    color: {{ block.settings.note_text_color }};
+  }
+
+  .vf-note-{{ ai_gen_id }}.is-hidden {
+    display: none;
+  }
+
+  @media screen and (max-width: 749px) {
+    .vf-tab-{{ ai_gen_id }} {
+      flex: 1 1 auto;
+      text-align: center;
+      clip-path: none;
+      border-radius: 4px;
+    }
+
+    .vf-manual-row-{{ ai_gen_id }},
+    .vf-reg-row-{{ ai_gen_id }} {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .vf-btn-{{ ai_gen_id }} {
+      clip-path: none;
+      border-radius: 4px;
+      width: 100%;
+      padding: 14px;
+    }
+
+    .vf-reg-input-wrap-{{ ai_gen_id }} {
+      flex-basis: auto;
+    }
+  }
+{% endstyle %}
+
+<vehicle-finder-{{ ai_gen_id }} class="vf-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="vf-inner-{{ ai_gen_id }}">
+    {% if block.settings.heading != blank %}
+      <div class="vf-heading-{{ ai_gen_id }}">{{ block.settings.heading }}</div>
+    {% endif %}
+
+    <div class="vf-tabs-{{ ai_gen_id }}">
+      <button type="button" class="vf-tab-{{ ai_gen_id }} is-active" data-vf-tab="manual">
+        {{ block.settings.manual_tab_label }}
+      </button>
+      <button type="button" class="vf-tab-{{ ai_gen_id }}" data-vf-tab="reg">
+        {{ block.settings.reg_tab_label }}
+      </button>
+    </div>
+
+    {%- comment -%} Manual search: builds a text query and submits to native Shopify search {%- endcomment -%}
+    <div class="vf-panel-{{ ai_gen_id }} is-active" data-vf-panel="manual">
+      <form action="{{ routes.search_url }}" method="get" class="vf-manual-row-{{ ai_gen_id }}">
+        <input type="hidden" name="type" value="product">
+        <input type="hidden" name="options[prefix]" value="last">
+        <input type="hidden" name="q" data-vf-query-field>
+
+        <div class="vf-select-wrap-{{ ai_gen_id }}">
+          <select class="vf-select-{{ ai_gen_id }}" data-vf-field="brand">
+            <option value="">{{ block.settings.brand_placeholder }}</option>
+            {%- assign brand_list = block.settings.brands | newline_to_br | strip_newlines | split: '<br />' -%}
+            {%- for brand in brand_list -%}
+              {%- assign brand = brand | strip -%}
+              {%- if brand != blank -%}
+                <option value="{{ brand | escape }}">{{ brand }}</option>
+              {%- endif -%}
+            {%- endfor -%}
+          </select>
+        </div>
+
+        <div class="vf-select-wrap-{{ ai_gen_id }}">
+          <select class="vf-select-{{ ai_gen_id }}" data-vf-field="maker">
+            <option value="">{{ block.settings.maker_placeholder }}</option>
+            {%- assign maker_list = block.settings.makers | newline_to_br | strip_newlines | split: '<br />' -%}
+            {%- for maker in maker_list -%}
+              {%- assign maker = maker | strip -%}
+              {%- if maker != blank -%}
+                <option value="{{ maker | escape }}">{{ maker }}</option>
+              {%- endif -%}
+            {%- endfor -%}
+          </select>
+        </div>
+
+        <div class="vf-select-wrap-{{ ai_gen_id }}">
+          <select class="vf-select-{{ ai_gen_id }}" data-vf-field="model">
+            <option value="">{{ block.settings.model_placeholder }}</option>
+          </select>
+        </div>
+
+        <div class="vf-select-wrap-{{ ai_gen_id }}">
+          <select class="vf-select-{{ ai_gen_id }}" data-vf-field="year">
+            <option value="">{{ block.settings.year_placeholder }}</option>
+            {%- assign start_year = block.settings.year_from -%}
+            {%- assign end_year = block.settings.year_to -%}
+            {%- for y in (start_year..end_year) reversed -%}
+              <option value="{{ y }}">{{ y }}</option>
+            {%- endfor -%}
+          </select>
+        </div>
+
+        <button type="submit" class="vf-btn-{{ ai_gen_id }}">{{ block.settings.find_button_label }}</button>
+      </form>
+      <p class="vf-note-{{ ai_gen_id }}">{{ block.settings.manual_note }}</p>
+    </div>
+
+    {%- comment -%} Reg lookup: UI complete, DVLA call is stubbed pending a server-side proxy + API key {%- endcomment -%}
+    <div class="vf-panel-{{ ai_gen_id }}" data-vf-panel="reg">
+      <form class="vf-reg-row-{{ ai_gen_id }}" data-vf-reg-form>
+        <span class="vf-reg-label-{{ ai_gen_id }}">{{ block.settings.reg_field_label }}</span>
+        <div class="vf-reg-input-wrap-{{ ai_gen_id }}">
+          <span class="vf-reg-badge-{{ ai_gen_id }}">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="12" cy="12" r="10" fill="#FFD700"/>
+            </svg>
+            UK
+          </span>
+          <input
+            type="text"
+            class="vf-reg-input-{{ ai_gen_id }}"
+            data-vf-reg-input
+            maxlength="8"
+            autocomplete="off"
+            autocapitalize="characters"
+            placeholder="{{ block.settings.reg_placeholder }}"
+          >
+        </div>
+        <button type="submit" class="vf-btn-{{ ai_gen_id }}">{{ block.settings.reg_button_label }}</button>
+      </form>
+      <p class="vf-note-{{ ai_gen_id }}" data-vf-reg-note>{{ block.settings.reg_note }}</p>
+    </div>
+  </div>
+</vehicle-finder-{{ ai_gen_id }}>
+
+<script>
+  (function () {
+    class VehicleFinder{{ ai_gen_id }} extends HTMLElement {
+      connectedCallback() {
+        this.pageContext = '{{ block.settings.page_context }}';
+        this.currentProductTitle = {% if block.settings.page_context == 'product' and product %}{{ product.title | json }}{% else %}''{% endif %};
+
+        this.tabs = this.querySelectorAll('[data-vf-tab]');
+        this.panels = this.querySelectorAll('[data-vf-panel]');
+        this.tabs.forEach((tab) => {
+          tab.addEventListener('click', () => this.switchTab(tab.dataset.vfTab));
+        });
+
+        this.manualForm = this.querySelector('form[action]');
+        if (this.manualForm) {
+          this.manualForm.addEventListener('submit', (event) => this.handleManualSubmit(event));
+        }
+
+        this.regForm = this.querySelector('[data-vf-reg-form]');
+        if (this.regForm) {
+          this.regForm.addEventListener('submit', (event) => this.handleRegSubmit(event));
+        }
+
+        this.regInput = this.querySelector('[data-vf-reg-input]');
+        if (this.regInput) {
+          this.regInput.addEventListener('input', () => {
+            this.regInput.value = this.regInput.value.toUpperCase();
+          });
+        }
+      }
+
+      switchTab(name) {
+        this.tabs.forEach((tab) => tab.classList.toggle('is-active', tab.dataset.vfTab === name));
+        this.panels.forEach((panel) => panel.classList.toggle('is-active', panel.dataset.vfPanel === name));
+      }
+
+      handleManualSubmit(event) {
+        event.preventDefault();
+        const fields = this.querySelectorAll('[data-vf-field]');
+        const parts = [];
+        fields.forEach((field) => {
+          if (field.value) parts.push(field.value);
+        });
+
+        if (this.pageContext === 'product' && this.currentProductTitle) {
+          parts.push(this.currentProductTitle);
+        }
+
+        if (parts.length === 0) {
+          this.querySelector('[data-vf-field="maker"]').focus();
+          return;
+        }
+
+        const queryField = this.querySelector('[data-vf-query-field]');
+        queryField.value = parts.join(' ');
+        this.manualForm.submit();
+      }
+
+      handleRegSubmit(event) {
+        event.preventDefault();
+        const reg = this.regInput.value.replace(/\s+/g, '').trim();
+        const note = this.querySelector('[data-vf-reg-note]');
+        if (!reg) {
+          this.regInput.focus();
+          return;
+        }
+
+        // DVLA's Vehicle Enquiry Service requires a server-side API key (it cannot be
+        // called from the browser: no CORS support, and exposing the key in theme JS
+        // would leak it). Once a backend proxy + API key exist, replace this block with
+        // a fetch() to that proxy endpoint, e.g.:
+        //   fetch('/apps/dvla-lookup?registration=' + encodeURIComponent(reg))
+        //     .then((r) => r.json())
+        //     .then((vehicle) => { ...redirect to /search using vehicle.make/model/year... });
+        if (note) {
+          note.textContent = {{ block.settings.reg_pending_message | json }};
+          note.classList.remove('is-hidden');
+        }
+      }
+    }
+
+    if (!customElements.get('vehicle-finder-{{ ai_gen_id }}')) {
+      customElements.define('vehicle-finder-{{ ai_gen_id }}', VehicleFinder{{ ai_gen_id }});
+    }
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Vehicle parts finder",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Find Parts For Your Vehicle"
+    },
+    {
+      "type": "text",
+      "id": "manual_tab_label",
+      "label": "Manual search tab label",
+      "default": "Manual Search"
+    },
+    {
+      "type": "text",
+      "id": "reg_tab_label",
+      "label": "Reg lookup tab label",
+      "default": "Reg Lookup"
+    },
+    {
+      "type": "select",
+      "id": "page_context",
+      "label": "Search scope",
+      "options": [
+        { "value": "site", "label": "Whole site (homepage)" },
+        { "value": "product", "label": "This product (product page)" }
+      ],
+      "default": "site"
+    },
+    {
+      "type": "header",
+      "content": "Manual search"
+    },
+    {
+      "type": "text",
+      "id": "brand_placeholder",
+      "label": "Brand placeholder",
+      "default": "Select Brand"
+    },
+    {
+      "type": "textarea",
+      "id": "brands",
+      "label": "Brand options (one per line)",
+      "info": "Optional. This catalog isn't tagged by parts brand yet, so leave blank to hide meaningful options.",
+      "default": "OEM / Genuine\nAftermarket"
+    },
+    {
+      "type": "text",
+      "id": "maker_placeholder",
+      "label": "Maker placeholder",
+      "default": "Select Maker"
+    },
+    {
+      "type": "textarea",
+      "id": "makers",
+      "label": "Car makers (one per line)",
+      "default": "Audi\nBMW\nCitroen\nFiat\nFord\nHonda\nHyundai\nJaguar\nKia\nLand Rover\nLexus\nMazda\nMercedes-Benz\nMini\nMitsubishi\nNissan\nPeugeot\nRenault\nSeat\nSkoda\nSubaru\nSuzuki\nToyota\nVauxhall\nVolkswagen\nVolvo"
+    },
+    {
+      "type": "text",
+      "id": "model_placeholder",
+      "label": "Model placeholder",
+      "default": "Select Model"
+    },
+    {
+      "type": "text",
+      "id": "year_placeholder",
+      "label": "Year placeholder",
+      "default": "Select Year"
+    },
+    {
+      "type": "number",
+      "id": "year_from",
+      "label": "Earliest year",
+      "default": 1995
+    },
+    {
+      "type": "number",
+      "id": "year_to",
+      "label": "Latest year",
+      "default": 2026
+    },
+    {
+      "type": "text",
+      "id": "find_button_label",
+      "label": "Manual search button label",
+      "default": "Find Parts"
+    },
+    {
+      "type": "text",
+      "id": "manual_note",
+      "label": "Manual search helper note",
+      "default": "Searches your make, model and year against our part listings."
+    },
+    {
+      "type": "header",
+      "content": "Reg lookup"
+    },
+    {
+      "type": "text",
+      "id": "reg_field_label",
+      "label": "Reg field label",
+      "default": "Enter UK Registration:"
+    },
+    {
+      "type": "text",
+      "id": "reg_placeholder",
+      "label": "Reg input placeholder",
+      "default": "YY26 ABC"
+    },
+    {
+      "type": "text",
+      "id": "reg_button_label",
+      "label": "Reg lookup button label",
+      "default": "Find Parts"
+    },
+    {
+      "type": "text",
+      "id": "reg_note",
+      "label": "Reg lookup helper note",
+      "default": "We use your registration to find the exact parts for your vehicle."
+    },
+    {
+      "type": "text",
+      "id": "reg_pending_message",
+      "label": "Message shown until DVLA lookup is connected",
+      "default": "Registration lookup is being set up. Please use Manual Search for now.",
+      "info": "DVLA's API needs a server-side key + proxy, which isn't connected yet -- see the code comment in this block."
+    },
+    {
+      "type": "header",
+      "content": "Style"
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "min": 600,
+      "max": 1400,
+      "step": 20,
+      "unit": "px",
+      "label": "Max width",
+      "default": 1100
+    },
+    {
+      "type": "range",
+      "id": "padding_vertical",
+      "min": 0,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "label": "Vertical padding",
+      "default": 24
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#111111"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "body_text_color",
+      "label": "Label/dropdown text color",
+      "default": "#111111"
+    },
+    {
+      "type": "color",
+      "id": "note_text_color",
+      "label": "Helper note color",
+      "default": "#bbbbbb"
+    },
+    {
+      "type": "color",
+      "id": "dropdown_bg_color",
+      "label": "Dropdown background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "Dropdown border",
+      "default": "#d0d0d0"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent color (buttons, active tab)",
+      "default": "#a50000"
+    },
+    {
+      "type": "color",
+      "id": "accent_hover_color",
+      "label": "Accent hover color",
+      "default": "#7a0000"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Vehicle parts finder"
+    }
+  ]
+}
+{% endschema %}

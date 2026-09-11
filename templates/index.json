@@ -52,6 +52,23 @@
         "accessibility_info": "Slideshow about our brand"
       }
     },
+    "vehicle_finder_home": {
+      "type": "_blocks",
+      "blocks": {
+        "vehicle_finder_home_block": {
+          "type": "vehicle_finder",
+          "settings": {
+            "page_context": "site"
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "vehicle_finder_home_block"
+      ],
+      "name": "Vehicle parts finder",
+      "settings": {}
+    },
     "1788342816778cbeb6": {
       "type": "_blocks",
       "blocks": {
@@ -857,6 +874,7 @@
   },
   "order": [
     "slideshow_7HwpLb",
+    "vehicle_finder_home",
     "1788342816778cbeb6",
     "1788344374aa9fe7c0",
     "1788343453c1cb3136",
