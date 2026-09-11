@@ -242,13 +242,6 @@
             "rows_per_page": 20
           }
         },
-        "vehicle_finder_product_block": {
-          "type": "vehicle_finder",
-          "settings": {
-            "page_context": "product",
-            "heading": "Find More Parts For Your Vehicle"
-          }
-        },
         "share": {
           "type": "share",
           "settings": {
@@ -274,7 +267,6 @@
         "google_reviews",
         "feature_grid",
         "compatibility",
-        "vehicle_finder_product_block",
         "share"
       ],
       "settings": {
@@ -300,6 +292,22 @@
         "accent_color": "#a50000",
         "enable_hover_zoom": true
       }
+    },
+    "vehicle_finder_product": {
+      "type": "_blocks",
+      "blocks": {
+        "vehicle_finder_product_block": {
+          "type": "vehicle_finder",
+          "settings": {
+            "page_context": "product",
+            "heading": "Find More Parts For Your Vehicle"
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": ["vehicle_finder_product_block"],
+      "name": "Vehicle parts finder",
+      "settings": {}
     },
     "disclosures": {
       "type": "disclosures",
@@ -334,6 +342,7 @@
   },
   "order": [
     "main",
+    "vehicle_finder_product",
     "disclosures",
     "related-products"
   ]
