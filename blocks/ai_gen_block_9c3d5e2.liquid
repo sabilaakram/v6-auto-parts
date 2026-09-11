@@ -14,9 +14,22 @@
   }
 
   .ai-feature__container-{{ai_gen_id}} {
-    width: {{ block.settings.container_width_percent }}%;
-    max-width: {{ block.settings.content_max_width }}px;
-    margin: 0 auto;
+    {% if block.settings.edge_bleed_image %}
+      width: 100%;
+      max-width: none;
+      margin: 0;
+      {% if block.settings.image_position == 'left' %}
+        padding-left: max(0px, calc((100% - min({{ block.settings.container_width_percent }}%, {{ block.settings.content_max_width }}px)) / 2));
+        padding-right: 0;
+      {% else %}
+        padding-right: max(0px, calc((100% - min({{ block.settings.container_width_percent }}%, {{ block.settings.content_max_width }}px)) / 2));
+        padding-left: 0;
+      {% endif %}
+    {% else %}
+      width: {{ block.settings.container_width_percent }}%;
+      max-width: {{ block.settings.content_max_width }}px;
+      margin: 0 auto;
+    {% endif %}
     display: flex;
     align-items: {{ block.settings.vertical_alignment }};
     gap: {{ block.settings.column_gap }}px;
@@ -152,6 +165,13 @@
     .ai-feature__text-{{ai_gen_id}} {
       order: 2;
       width: 100%;
+      {% if block.settings.edge_bleed_image %}
+        {% if block.settings.image_position == 'left' %}
+          padding-right: max(0px, calc((100% - min({{ block.settings.container_width_percent }}%, {{ block.settings.content_max_width }}px)) / 2));
+        {% else %}
+          padding-left: max(0px, calc((100% - min({{ block.settings.container_width_percent }}%, {{ block.settings.content_max_width }}px)) / 2));
+        {% endif %}
+      {% endif %}
     }
 
     .ai-feature__eyebrow-{{ai_gen_id}} {
@@ -231,6 +251,13 @@
         { "value": "right", "label": "Right" }
       ],
       "default": "right"
+    },
+    {
+      "type": "checkbox",
+      "id": "edge_bleed_image",
+      "label": "Remove padding on the image's outer edge",
+      "info": "Lets the image touch the edge of the page (desktop and mobile) instead of keeping the container's side gap. The other side (text) keeps its normal padding.",
+      "default": false
     },
     {
       "type": "select",
