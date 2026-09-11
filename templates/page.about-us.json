@@ -84,11 +84,11 @@
             "stat_2_number": "23,000+",
             "stat_2_label": "Parts Delivered",
             "stat_3_enabled": true,
-            "stat_3_number": "10",
-            "stat_3_label": "Years",
+            "stat_3_number": "50,000+",
+            "stat_3_label": "Trusted Customers",
             "stat_4_enabled": true,
-            "stat_4_number": "02",
-            "stat_4_label": "Offices"
+            "stat_4_number": "99.5%",
+            "stat_4_label": "Positive Feedback"
           },
           "blocks": {}
         }
@@ -124,14 +124,14 @@
             "eyebrow_letter_spacing": 2,
             "eyebrow_case": "uppercase",
             "eyebrow_spacing_bottom": 12,
-            "heading_text": "Infuse Your Brand with Excellence",
+            "heading_text": "A Family-Run Business, Built on Trust",
             "heading_font": "bebas_neue_n4",
             "heading_color": "#121212",
             "heading_size": 34,
             "heading_size_mobile": 24,
             "heading_line_height": 1.2,
             "heading_spacing_bottom": 16,
-            "description": "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas turpis dui, sollicitudin pellentesque tempus id, sed lectus.</p>",
+            "description": "<p>V6 Auto Parts is a family-run UK supplier delivering brand-new car parts fast, fairly, and personally. Seven years of trading. Ten thousand customers. One straightforward promise.<br/><br/></p>",
             "description_font": "assistant_n4",
             "description_color": "#5c5c5c",
             "description_size": 15,
@@ -144,11 +144,11 @@
             "list_text_size_mobile": 14,
             "list_item_spacing": 14,
             "item_1_enabled": true,
-            "item_1_text": "Quality parts you can trust",
+            "item_1_text": "UK warehouse, UK dispatch",
             "item_2_enabled": true,
-            "item_2_text": "Certified, experienced technicians",
+            "item_2_text": "Brand-new, factory-sourced parts",
             "item_3_enabled": true,
-            "item_3_text": "Fast, reliable turnaround",
+            "item_3_text": "Same-day dispatch, free next-day delivery",
             "item_4_enabled": false,
             "item_4_text": "",
             "item_5_enabled": false,
@@ -169,6 +169,50 @@
       ],
       "name": "How We Work",
       "settings": {}
+    },
+    "multicolumn_7fwHrt": {
+      "type": "multicolumn",
+      "blocks": {
+        "column_VJTwqj": {
+          "type": "column",
+          "settings": {
+            "title": "Our Mission ",
+            "text": "<p>To deliver quality car parts fast, with same-day dispatch and free next-day delivery across the UK, backed by a family-run team that treats every order like their own. </p>",
+            "link_label": "",
+            "link": ""
+          }
+        },
+        "column_U73GdA": {
+          "type": "column",
+          "settings": {
+            "title": "Our Vision",
+            "text": "<p>To become the go-to independent car parts specialist across the UK, known for quality, speed, and honest service that keeps drivers moving and garages running without dealer prices.</p>",
+            "link_label": "",
+            "link": ""
+          }
+        }
+      },
+      "block_order": [
+        "column_VJTwqj",
+        "column_U73GdA"
+      ],
+      "name": "t:sections.multicolumn.presets.name",
+      "settings": {
+        "title": "",
+        "heading_size": "h1",
+        "image_width": "full",
+        "image_ratio": "adapt",
+        "button_label": "",
+        "button_link": "",
+        "columns_desktop": 2,
+        "column_alignment": "left",
+        "background_style": "primary",
+        "color_scheme": "scheme-2",
+        "columns_mobile": "1",
+        "swipe_on_mobile": false,
+        "padding_top": 36,
+        "padding_bottom": 36
+      }
     },
     "our_services_section": {
       "type": "_blocks",
@@ -238,6 +282,7 @@
       "block_order": [
         "ai_gen_block_9c3d5e2_ourservices"
       ],
+      "disabled": true,
       "name": "Our Services",
       "settings": {}
     },
@@ -323,6 +368,7 @@
       "block_order": [
         "ai_gen_block_2f6a8b4_ourteam"
       ],
+      "disabled": true,
       "name": "Our Team",
       "settings": {}
     },
@@ -423,6 +469,7 @@
     "image_banner_HebX3b",
     "stats_section",
     "how_we_work_section",
+    "multicolumn_7fwHrt",
     "our_services_section",
     "our_team_section",
     "bottom_image_section",
