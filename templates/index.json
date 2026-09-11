@@ -91,8 +91,8 @@
           "settings": {
             "heading": "Best Selling Categories",
             "heading_font": "bebas_neue_n4",
-            "heading_size": 40,
-            "heading_size_mobile": 24,
+            "heading_size": 48,
+            "heading_size_mobile": 28,
             "heading_line_height": 1.2,
             "heading_line_height_mobile": 1.3,
             "heading_color": "#a50000",
@@ -498,7 +498,7 @@
             "mobile_panel_padding": 30,
             "content_max_width": 500,
             "text_alignment": "left",
-            "heading_font": "serif",
+            "heading_font": "bebas_neue_n4",
             "heading_size": 48,
             "mobile_heading_size": 32,
             "letter_spacing": 1,
@@ -552,8 +552,8 @@
             "discount_font_size": 14,
             "heading": "PREPARE YOUR RIDE FOR ADVERSE CONDITIONS",
             "heading_color": "#121212",
-            "heading_font": "assistant_n4",
-            "heading_font_size": 36,
+            "heading_font": "bebas_neue_n4",
+            "heading_font_size": 48,
             "heading_line_height": 1.2,
             "heading_margin_bottom": 15,
             "description": "Save on blower motors, fuel pipes, grilles, and all the car parts winter demands.",
@@ -599,7 +599,7 @@
             "shop_button_border_radius": 4,
             "mobile_layout": "column",
             "mobile_gap": 25,
-            "mobile_heading_font_size": 24,
+            "mobile_heading_font_size": 28,
             "mobile_description_font_size": 14
           },
           "blocks": {}
@@ -634,7 +634,7 @@
             "small_heading_bottom_margin": 10,
             "main_heading": "What Sets V6 Auto Parts Apart",
             "main_heading_font": "bebas_neue_n4",
-            "main_heading_size": 42,
+            "main_heading_size": 48,
             "main_heading_line_height": 1.2,
             "main_heading_color": "#ffffff",
             "heading_alignment": "center",
@@ -728,6 +728,9 @@
         "ai_gen_block_02d5943_GpAb6R",
         "google_reviews_repocean_repocean_reviews_carousel_4HiGqH"
       ],
+      "custom_css": [
+        ".repocean-section-title { font-family: 'Bebas Neue', sans-serif !important; font-weight: 700 !important; font-size: clamp(28px, 6vw, 48px) !important; line-height: 1.2 !important; }"
+      ],
       "settings": {}
     },
     "1788429138711c2820": {
@@ -779,8 +782,8 @@
             "section_padding_mobile": 30,
             "form_max_width": 800,
             "heading": "Contact us",
-            "heading_font": "assistant_n4",
-            "heading_size": 32,
+            "heading_font": "bebas_neue_n4",
+            "heading_size": 48,
             "heading_line_height": 1.2,
             "heading_color": "#121212",
             "description": "<p>We'd love to hear from you. Send us a message and we'll respond as soon as possible.</p>",
