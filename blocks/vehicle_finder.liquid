@@ -1,11 +1,13 @@
 {% doc %}
   @prompt
-    Vehicle parts finder widget with two modes: Manual Search (Brand / Maker / Model / Year
-    dropdowns) and Reg Lookup (UK number-plate style input). Manual Search submits a text
-    query built from the selected values to Shopify's native /search endpoint (no structured
-    fitment data exists in this catalog yet, so this is a search-query builder, not a true
-    filter). Reg Lookup's UI is complete but its actual DVLA API call is stubbed until a
-    server-side proxy + API key exist (DVLA's API cannot be called from the browser directly).
+    Vehicle parts finder widget with two modes: Search by Parts (a keyword search bar --
+    same simple /search?q= form as the header -- plus Brand / Maker / Model / Year
+    dropdowns) and Reg Lookup (UK number-plate style input). Both dropdowns and keyword
+    search submit to Shopify's native /search endpoint (no structured fitment data exists
+    in this catalog yet, so the dropdown search is a query-builder, not a true filter).
+    Reg Lookup's DVLA API call is stubbed until a server-side proxy + API key exist (DVLA's
+    API cannot be called from the browser directly) -- until then, submitting the reg
+    number navigates to /search?q=<reg> so the tab stays functional rather than a dead end.
     Used on the homepage and, with page_context: 'product', on the product page.
 {% enddoc %}
 {% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
@@ -15,6 +17,10 @@
     width: 100%;
     background-color: {{ block.settings.background_color }};
     padding: {{ block.settings.padding_vertical }}px 20px;
+    border-top: 3px solid {{ block.settings.accent_color }};
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+    position: relative;
+    z-index: 1;
   }
 
   .vf-inner-{{ ai_gen_id }} {
@@ -66,6 +72,85 @@
 
   .vf-panel-{{ ai_gen_id }}.is-active {
     display: block;
+  }
+
+  .vf-keyword-form-{{ ai_gen_id }} {
+    position: relative;
+    display: flex;
+    align-items: stretch;
+    height: 46px;
+    background: #ffffff;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 14px;
+  }
+
+  .vf-keyword-icon-{{ ai_gen_id }} {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 16px;
+    height: 16px;
+    color: #777;
+    pointer-events: none;
+  }
+
+  .vf-keyword-input-{{ ai_gen_id }} {
+    flex: 1 1 auto;
+    border: none;
+    padding: 0 14px 0 40px;
+    font-family: Inter, sans-serif;
+    font-size: 14px;
+    color: #111111;
+    background: transparent;
+  }
+
+  .vf-keyword-input-{{ ai_gen_id }}::placeholder {
+    color: #999;
+  }
+
+  .vf-keyword-submit-{{ ai_gen_id }} {
+    flex: 0 0 auto;
+    border: none;
+    cursor: pointer;
+    padding: 0 22px;
+    background: {{ block.settings.accent_color }};
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s ease;
+  }
+
+  .vf-keyword-submit-{{ ai_gen_id }}:hover {
+    background: {{ block.settings.accent_hover_color }};
+  }
+
+  .vf-keyword-submit-{{ ai_gen_id }} svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .vf-divider-{{ ai_gen_id }} {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+    color: #999999;
+    font-family: Inter, sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .vf-divider-{{ ai_gen_id }}::before,
+  .vf-divider-{{ ai_gen_id }}::after {
+    content: '';
+    flex: 1 1 auto;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.15);
   }
 
   .vf-manual-row-{{ ai_gen_id }} {
@@ -231,9 +316,32 @@
       </button>
     </div>
 
-    {%- comment -%} Manual search: builds a text query and submits to native Shopify search {%- endcomment -%}
+    {%- comment -%} Manual search: keyword search bar (same as header) plus a builder that submits a text query from the dropdowns -- both hit native Shopify search {%- endcomment -%}
     <div class="vf-panel-{{ ai_gen_id }} is-active" data-vf-panel="manual">
-      <form action="{{ routes.search_url }}" method="get" class="vf-manual-row-{{ ai_gen_id }}">
+      <form action="{{ routes.search_url }}" method="get" class="vf-keyword-form-{{ ai_gen_id }}" role="search">
+        <input type="hidden" name="type" value="product">
+        <svg class="vf-keyword-icon-{{ ai_gen_id }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"></circle>
+          <path d="M21 21l-4.35-4.35"></path>
+        </svg>
+        <input
+          type="search"
+          name="q"
+          class="vf-keyword-input-{{ ai_gen_id }}"
+          placeholder="{{ block.settings.keyword_placeholder }}"
+          aria-label="Search for parts"
+        >
+        <button type="submit" class="vf-keyword-submit-{{ ai_gen_id }}" aria-label="Search">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"></circle>
+            <path d="M21 21l-4.35-4.35"></path>
+          </svg>
+        </button>
+      </form>
+
+      <div class="vf-divider-{{ ai_gen_id }}"><span>{{ block.settings.divider_label }}</span></div>
+
+      <form action="{{ routes.search_url }}" method="get" class="vf-manual-row-{{ ai_gen_id }}" data-vf-manual-form>
         <input type="hidden" name="type" value="product">
         <input type="hidden" name="options[prefix]" value="last">
         <input type="hidden" name="q" data-vf-query-field>
@@ -309,7 +417,7 @@
         </div>
         <button type="submit" class="vf-btn-{{ ai_gen_id }}">{{ block.settings.reg_button_label }}</button>
       </form>
-      <p class="vf-note-{{ ai_gen_id }}" data-vf-reg-note>{{ block.settings.reg_note }}</p>
+      <p class="vf-note-{{ ai_gen_id }}">{{ block.settings.reg_note }}</p>
     </div>
   </div>
 </vehicle-finder-{{ ai_gen_id }}>
@@ -327,7 +435,7 @@
           tab.addEventListener('click', () => this.switchTab(tab.dataset.vfTab));
         });
 
-        this.manualForm = this.querySelector('form[action]');
+        this.manualForm = this.querySelector('[data-vf-manual-form]');
         if (this.manualForm) {
           this.manualForm.addEventListener('submit', (event) => this.handleManualSubmit(event));
         }
@@ -375,7 +483,6 @@
       handleRegSubmit(event) {
         event.preventDefault();
         const reg = this.regInput.value.replace(/\s+/g, '').trim();
-        const note = this.querySelector('[data-vf-reg-note]');
         if (!reg) {
           this.regInput.focus();
           return;
@@ -388,10 +495,12 @@
         //   fetch('/apps/dvla-lookup?registration=' + encodeURIComponent(reg))
         //     .then((r) => r.json())
         //     .then((vehicle) => { ...redirect to /search using vehicle.make/model/year... });
-        if (note) {
-          note.textContent = {{ block.settings.reg_pending_message | json }};
-          note.classList.remove('is-hidden');
-        }
+        // Until then, send the registration itself into native Shopify search so this
+        // tab stays functional rather than a dead end.
+        const params = new URLSearchParams();
+        params.set('type', 'product');
+        params.set('q', reg);
+        window.location.href = {{ routes.search_url | json }} + '?' + params.toString();
       }
     }
 
@@ -419,7 +528,7 @@
       "type": "text",
       "id": "manual_tab_label",
       "label": "Manual search tab label",
-      "default": "Manual Search"
+      "default": "Search by Parts"
     },
     {
       "type": "text",
@@ -440,6 +549,18 @@
     {
       "type": "header",
       "content": "Manual search"
+    },
+    {
+      "type": "text",
+      "id": "keyword_placeholder",
+      "label": "Keyword search placeholder",
+      "default": "Search for parts..."
+    },
+    {
+      "type": "text",
+      "id": "divider_label",
+      "label": "Divider label (between keyword search and vehicle dropdowns)",
+      "default": "Or search by vehicle"
     },
     {
       "type": "text",
@@ -528,14 +649,8 @@
       "type": "text",
       "id": "reg_note",
       "label": "Reg lookup helper note",
-      "default": "We use your registration to find the exact parts for your vehicle."
-    },
-    {
-      "type": "text",
-      "id": "reg_pending_message",
-      "label": "Message shown until DVLA lookup is connected",
-      "default": "Registration lookup is being set up. Please use Manual Search for now.",
-      "info": "DVLA's API needs a server-side key + proxy, which isn't connected yet -- see the code comment in this block."
+      "default": "We're setting up full registration lookup. For now, this searches your registration number across our catalog.",
+      "info": "DVLA's API needs a server-side key + proxy, which isn't connected yet -- see the code comment in this block. Submitting currently searches the reg number directly."
     },
     {
       "type": "header",
@@ -565,7 +680,7 @@
       "type": "color",
       "id": "background_color",
       "label": "Background color",
-      "default": "#111111"
+      "default": "#000000"
     },
     {
       "type": "color",
