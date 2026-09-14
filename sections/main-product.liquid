@@ -130,14 +130,21 @@
        Compatibility/Feature grid sections below the buy box */
     #MainProduct-{{ section.id }} .ai-section-heading {
       text-align: center;
-      font-weight: 700;
+      font-family: 'Bebas Neue', sans-serif;
+      font-weight: 400;
+      font-size: 48px;
       text-transform: uppercase;
       letter-spacing: 0.04em;
       color: #a50000;
-      font-size: 18px;
       position: relative;
       margin: 0 0 28px 0;
       padding-bottom: 14px;
+    }
+
+    @media screen and (max-width: 749px) {
+      #MainProduct-{{ section.id }} .ai-section-heading {
+        font-size: 24px;
+      }
     }
 
     #MainProduct-{{ section.id }} .ai-section-heading::after {

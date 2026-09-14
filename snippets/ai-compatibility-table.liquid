@@ -56,10 +56,18 @@
     }
 
     .ai-compat__heading-{{ ai_gen_id }} {
-      font-size: 20px;
-      font-weight: 700;
+      text-align: center;
+      font-family: 'Bebas Neue', sans-serif;
+      font-weight: 400;
+      font-size: 48px;
       color: #111111;
       margin: 0 0 4px 0;
+    }
+
+    @media screen and (max-width: 749px) {
+      .ai-compat__heading-{{ ai_gen_id }} {
+        font-size: 24px;
+      }
     }
 
     .ai-compat__subheading-{{ ai_gen_id }} {
