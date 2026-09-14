@@ -128,7 +128,7 @@
     font-family: Inter, sans-serif;
     font-size: 14px;
     color: #111111;
-    background: #ffffff;
+    background: {{ block.settings.search_input_bg_color }};
   }
 
   .vf-search-input-{{ ai_gen_id }}::placeholder {
@@ -419,6 +419,12 @@
       "id": "search_placeholder",
       "label": "Search input placeholder",
       "default": "Search for parts..."
+    },
+    {
+      "type": "color",
+      "id": "search_input_bg_color",
+      "label": "Search field background",
+      "default": "#fbe4e4"
     },
     {
       "type": "text",
