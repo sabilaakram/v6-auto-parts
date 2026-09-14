@@ -403,7 +403,8 @@
                 {%- when 'ai_compatibility_table' -%}
                   {% render 'ai-compatibility-table', block: block %}
                 {%- when 'ai_section_heading' -%}
-                  {% render 'ai-section-heading', block: block %}
+                  {%- assign next_block = section.blocks[forloop.index] -%}
+                  {% render 'ai-section-heading', block: block, hide_in_quick_view: next_block.type == 'description' %}
                 {%- when 'ai_quick_facts' -%}
                   {% render 'ai-quick-facts', block: block %}
                 {%- when 'ai_sold_progress' -%}

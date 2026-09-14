@@ -5,11 +5,16 @@
 
   Accepts:
   - block: {Object} the "ai_section_heading" block from main-product.liquid
+  - hide_in_quick_view: {Boolean} Add quick-add-hidden so this heading doesn't
+    show in the quick-view popup. Used for the Description heading, since the
+    description text itself (product__description) already carries
+    quick-add-hidden -- without this the heading would show with nothing
+    under it inside the popup.
 
   Usage:
-  {% render 'ai-section-heading', block: block %}
+  {% render 'ai-section-heading', block: block, hide_in_quick_view: true %}
 {% endcomment %}
 
 {% if block.settings.heading != blank %}
-  <h2 class="ai-section-heading" {{ block.shopify_attributes }}>{{ block.settings.heading }}</h2>
+  <h2 class="ai-section-heading{% if hide_in_quick_view %} quick-add-hidden{% endif %}" {{ block.shopify_attributes }}>{{ block.settings.heading }}</h2>
 {% endif %}
