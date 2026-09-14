@@ -403,8 +403,7 @@
                 {%- when 'ai_compatibility_table' -%}
                   {% render 'ai-compatibility-table', block: block %}
                 {%- when 'ai_section_heading' -%}
-                  {%- assign next_block = section.blocks[forloop.index] -%}
-                  {% render 'ai-section-heading', block: block, hide_in_quick_view: next_block.type == 'description' %}
+                  {% render 'ai-section-heading', block: block %}
                 {%- when 'ai_quick_facts' -%}
                   {% render 'ai-quick-facts', block: block %}
                 {%- when 'ai_sold_progress' -%}
@@ -917,7 +916,8 @@
         <div class="ai-product-below-description">
           {%- for block in section.blocks -%}
             {%- if forloop.index >= ai_split_index -%}
-              {% render 'product-info-block', block: block, product_form_id: product_form_id %}
+              {%- assign next_block = section.blocks[forloop.index] -%}
+              {% render 'product-info-block', block: block, product_form_id: product_form_id, next_block_type: next_block.type %}
             {%- endif -%}
           {%- endfor -%}
         </div>

@@ -8,9 +8,13 @@
   - block: {Object} the section block to render
   - product_form_id: {String} the id of the product form, used by blocks that
     submit to it (quantity selector, variant picker, buy buttons)
+  - next_block_type: {String} type of the block immediately after this one,
+    used only by 'ai_section_heading' to detect the Description heading (the
+    one directly followed by a 'description' block) so it can hide itself in
+    the quick-view popup along with the description text below it.
 
   Usage:
-  {% render 'product-info-block', block: block, product_form_id: product_form_id %}
+  {% render 'product-info-block', block: block, product_form_id: product_form_id, next_block_type: next_block_type %}
 {% endcomment %}
 
 {%- case block.type -%}
@@ -133,7 +137,7 @@
   {%- when 'ai_compatibility_table' -%}
     {% render 'ai-compatibility-table', block: block %}
   {%- when 'ai_section_heading' -%}
-    {% render 'ai-section-heading', block: block %}
+    {% render 'ai-section-heading', block: block, hide_in_quick_view: next_block_type == 'description' %}
   {%- when 'ai_quick_facts' -%}
     {% render 'ai-quick-facts', block: block %}
   {%- when 'ai_sold_progress' -%}
