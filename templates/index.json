@@ -17,10 +17,10 @@
           "settings": {
             "image": "shopify://shop_images/9df0f742da1217b42a3c7d5ba3a18103c5d0ee1d_1.webp",
             "image_overlay_opacity": 0,
-            "image_focal_y": 15,
-            "heading": "Quality Car Parts in the UK, Delivered Fast",
+            "image_focal_y": 30,
+            "heading": "Quality car parts at low prices, same day dispatch, free & fast delivery",
             "heading_size": "h1",
-            "subheading": "<em>Genuine and aftermarket car parts for every make. Buy online today.</em>",
+            "subheading": "Uk stocks, ready to ship buy now and receive tomorrow",
             "button_label": "Explore",
             "link": "shopify://collections",
             "button_style_secondary": false,
