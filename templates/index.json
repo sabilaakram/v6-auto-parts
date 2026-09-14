@@ -58,35 +58,7 @@
         "vehicle_finder_home_block": {
           "type": "vehicle_finder",
           "settings": {
-            "heading": "Find Parts For Your Vehicle",
-            "manual_tab_label": "Manual Search",
-            "reg_tab_label": "Reg Lookup",
-            "page_context": "site",
-            "brand_placeholder": "Select Brand",
-            "brands": "OEM / Genuine\nAftermarket",
-            "maker_placeholder": "Select Maker",
-            "makers": "Audi\nBMW\nCitroen\nFiat\nFord\nHonda\nHyundai\nJaguar\nKia\nLand Rover\nLexus\nMazda\nMercedes-Benz\nMini\nMitsubishi\nNissan\nPeugeot\nRenault\nSeat\nSkoda\nSubaru\nSuzuki\nToyota\nVauxhall\nVolkswagen\nVolvo",
-            "model_placeholder": "Select Model",
-            "year_placeholder": "Select Year",
-            "year_from": 1995,
-            "year_to": 2026,
-            "find_button_label": "Find Parts",
-            "manual_note": "Searches your make, model and year against our part listings.",
-            "reg_field_label": "Enter UK Registration:",
-            "reg_placeholder": "YY26 ABC",
-            "reg_button_label": "Find Parts",
-            "reg_note": "We use your registration to find the exact parts for your vehicle.",
-            "reg_pending_message": "Registration lookup is being set up. Please use Manual Search for now.",
-            "max_width": 1100,
-            "padding_vertical": 24,
-            "background_color": "#111111",
-            "heading_color": "#ffffff",
-            "body_text_color": "#111111",
-            "note_text_color": "#bbbbbb",
-            "dropdown_bg_color": "#ffffff",
-            "border_color": "#d0d0d0",
-            "accent_color": "#a50000",
-            "accent_hover_color": "#7a0000"
+            "heading": "Find Parts For Your Vehicle"
           },
           "blocks": {}
         }
