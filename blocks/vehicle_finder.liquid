@@ -16,10 +16,10 @@
 {% style %}
   .vf-{{ ai_gen_id }} {
     width: 100%;
-    background-color: {{ block.settings.background_color }};
+    background: none;
     padding: {{ block.settings.padding_vertical }}px 20px;
-    border-top: 3px solid {{ block.settings.accent_color }};
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    border-top: none;
+    box-shadow: none;
     position: relative;
     z-index: 1;
   }
@@ -246,6 +246,7 @@
 
     .vf-search-input-wrap-{{ ai_gen_id }},
     .vf-reg-input-wrap-{{ ai_gen_id }} {
+      flex: 0 0 auto;
       width: 100%;
       min-width: 0;
     }
@@ -507,12 +508,6 @@
       "unit": "px",
       "label": "Vertical padding",
       "default": 14
-    },
-    {
-      "type": "color",
-      "id": "background_color",
-      "label": "Background color",
-      "default": "#ffffff"
     },
     {
       "type": "color",
