@@ -43,6 +43,38 @@
       padding-right: 20px;
     }
   }
+
+  /* Match the product page's Description/Specifications/Compatibility
+     section headings (same font, size, weight, centering, underline) */
+  #shopify-section-{{ section.id }} .related-products__heading {
+    text-align: center;
+    font-family: 'Bebas Neue', sans-serif;
+    font-weight: 400;
+    font-size: 48px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #a50000;
+    position: relative;
+    margin: 0 0 28px 0;
+    padding-bottom: 14px;
+  }
+
+  #shopify-section-{{ section.id }} .related-products__heading::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    transform: translateX(-50%);
+    width: 46px;
+    height: 3px;
+    background: #a50000;
+  }
+
+  @media screen and (max-width: 749px) {
+    #shopify-section-{{ section.id }} .related-products__heading {
+      font-size: 24px;
+    }
+  }
 {%- endstyle -%}
 
 <div class="color-{{ section.settings.color_scheme }} gradient">
