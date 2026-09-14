@@ -17,11 +17,12 @@
   .vf-{{ ai_gen_id }} {
     width: 100%;
     background: none;
-    padding: {{ block.settings.padding_vertical }}px 20px;
+    padding: {{ block.settings.padding_vertical }}px 20px !important;
     border-top: none;
     box-shadow: none;
     position: relative;
     z-index: 1;
+    box-sizing: border-box;
   }
 
   .vf-inner-{{ ai_gen_id }} {
@@ -214,8 +215,8 @@
 
   @media screen and (max-width: 749px) {
     .vf-{{ ai_gen_id }} {
-      padding-left: 20px;
-      padding-right: 20px;
+      padding-left: 20px !important;
+      padding-right: 20px !important;
     }
 
     .vf-heading-{{ ai_gen_id }} {
