@@ -601,7 +601,7 @@
             "heading_font_size": 48,
             "heading_line_height": 1.2,
             "heading_margin_bottom": 15,
-            "description": "Save on blower motors, fuel pipes, grilles, and all the car parts winter demands.",
+            "description": "Save on heater blower motors, fuel pipes, grilles, and all the car parts winter demands.",
             "description_color": "#666666",
             "description_font": "assistant_n4",
             "description_font_size": 16,
@@ -821,6 +821,7 @@
       "blocks": {
         "ai_gen_block_fc6d095_i9pHjg": {
           "type": "ai_gen_block_fc6d095",
+          "disabled": true,
           "settings": {
             "section_bg_color": "#ffffff",
             "section_padding_desktop": 50,
