@@ -1,9 +1,9 @@
 {% doc %}
   @prompt
-    Vehicle parts finder widget, compact single-row bar: two tabs (Search by Parts / Reg
-    Lookup) on the left, with the active tab's input cluster inline to the right -- a small
-    label above, then icon/badge + input + button below, matching a reference design.
-    Search by Parts is a plain native Shopify /search?q= form (no JS needed). Reg Lookup
+    Vehicle parts finder widget, white background, stacked two-row layout: a tab row
+    (Search by Parts / Reg Lookup) on top, then the active tab's full content -- icon/badge
+    + input + button -- on its own row below, matching a reference design. Search by Parts
+    is a plain native Shopify /search?q= form (no JS needed). Reg Lookup
     is a UK number-plate style input; its DVLA API call is stubbed until a server-side
     proxy + API key exist (DVLA's API cannot be called from the browser directly) -- until
     then, submitting navigates to /search?q=<reg> so the tab stays functional rather than
@@ -19,7 +19,7 @@
     background-color: {{ block.settings.background_color }};
     padding: {{ block.settings.padding_vertical }}px 20px;
     border-top: 3px solid {{ block.settings.accent_color }};
-    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
     position: relative;
     z-index: 1;
   }
@@ -41,15 +41,14 @@
 
   .vf-bar-{{ ai_gen_id }} {
     display: flex;
-    align-items: center;
+    flex-direction: column;
+    align-items: stretch;
     gap: 16px;
-    flex-wrap: wrap;
   }
 
   .vf-tabs-{{ ai_gen_id }} {
     display: flex;
     gap: 8px;
-    flex-shrink: 0;
   }
 
   .vf-tab-{{ ai_gen_id }} {
@@ -75,8 +74,7 @@
   }
 
   .vf-content-{{ ai_gen_id }} {
-    flex: 1 1 260px;
-    min-width: 240px;
+    width: 100%;
   }
 
   .vf-panel-{{ ai_gen_id }} {
@@ -490,13 +488,13 @@
       "type": "color",
       "id": "background_color",
       "label": "Background color",
-      "default": "#000000"
+      "default": "#ffffff"
     },
     {
       "type": "color",
       "id": "heading_color",
       "label": "Heading color",
-      "default": "#ffffff"
+      "default": "#111111"
     },
     {
       "type": "color",
@@ -508,7 +506,7 @@
       "type": "color",
       "id": "note_text_color",
       "label": "Label & note text color",
-      "default": "#bbbbbb"
+      "default": "#666666"
     },
     {
       "type": "color",
