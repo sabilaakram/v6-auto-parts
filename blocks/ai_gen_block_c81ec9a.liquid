@@ -149,6 +149,52 @@
     transition: transform 0.4s ease;
   }
 
+  .ai-featured-tabs__thumb-btn-{{ai_gen_id}} {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    padding: 0;
+    margin: 0;
+    background: none;
+    cursor: pointer;
+  }
+
+  .ai-featured-tabs__quickview-hint-{{ai_gen_id}} {
+    position: absolute;
+    left: 50%;
+    bottom: 12px;
+    transform: translate(-50%, 8px);
+    z-index: 2;
+    background: rgba(17, 17, 17, 0.82);
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    padding: 8px 16px;
+    border-radius: 20px;
+    opacity: 0;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    white-space: nowrap;
+  }
+
+  .ai-featured-tabs__card-{{ai_gen_id}}:hover .ai-featured-tabs__quickview-hint-{{ai_gen_id}} {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+
+  .ai-featured-tabs__thumb-btn-{{ai_gen_id}} .loading__spinner {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 24px;
+    height: 24px;
+    z-index: 3;
+  }
+
   .ai-featured-tabs__card-{{ai_gen_id}}:hover .ai-featured-tabs__thumb-{{ai_gen_id}} img {
     transform: scale(1.04);
   }
@@ -447,6 +493,10 @@
   }
 {% endstyle %}
 
+{% if block.settings.enable_quick_view %}
+  {{ 'quick-add.css' | asset_url | stylesheet_tag }}
+  <script src="{{ 'quick-add.js' | asset_url }}" defer="defer"></script>
+{% endif %}
 <script src="{{ 'product-form.js' | asset_url }}" defer="defer"></script>
 
 <featured-tabs-{{ai_gen_id}} class="ai-featured-tabs-{{ai_gen_id}}" {{ block.shopify_attributes }}>
@@ -484,6 +534,7 @@
       {% endfor %}
     </div>
 
+    {% assign skip_quick_view_styles = false %}
     {% for i in (1..5) %}
       {% liquid
         assign tab_enabled_key = 'tab_' | append: i | append: '_enabled'
@@ -513,6 +564,7 @@
                   assign rating = product.metafields.reviews.rating.value
                   assign rating_count = product.metafields.reviews.rating_count
                   assign variant = product.selected_or_first_available_variant
+                  assign quick_view_modal_id = 'QuickView-' | append: product.id | append: '-' | append: ai_gen_id | append: '-' | append: i
                 %}
                 <div class="ai-featured-tabs__card-{{ai_gen_id}}">
                   <div class="ai-featured-tabs__thumb-{{ai_gen_id}}">
@@ -532,21 +584,49 @@
                       </button>
                     {% endif %}
 
-                    <a href="{{ product.url }}" aria-label="{{ product.title | escape }}">
-                      {% if product.featured_image %}
-                        <img
-                          src="{{ product.featured_image | image_url: width: 700 }}"
-                          srcset="{{ product.featured_image | image_url: width: 400 }} 400w, {{ product.featured_image | image_url: width: 700 }} 700w, {{ product.featured_image | image_url: width: 1000 }} 1000w"
-                          sizes="(min-width: 990px) 25vw, (min-width: 750px) 40vw, 90vw"
-                          alt="{{ product.featured_image.alt | escape }}"
-                          loading="lazy"
-                          width="{{ product.featured_image.width }}"
-                          height="{{ product.featured_image.height }}"
+                    {% if block.settings.enable_quick_view %}
+                      <modal-opener data-modal="#{{ quick_view_modal_id }}">
+                        <button
+                          type="button"
+                          class="ai-featured-tabs__thumb-btn-{{ai_gen_id}}"
+                          data-product-url="{{ product.url }}"
+                          aria-haspopup="dialog"
+                          aria-label="{{ 'products.product.view_full_details' | t | default: 'Quick view' }} — {{ product.title | escape }}"
                         >
-                      {% else %}
-                        {{ 'product-1' | placeholder_svg_tag }}
-                      {% endif %}
-                    </a>
+                          {% if product.featured_image %}
+                            <img
+                              src="{{ product.featured_image | image_url: width: 700 }}"
+                              srcset="{{ product.featured_image | image_url: width: 400 }} 400w, {{ product.featured_image | image_url: width: 700 }} 700w, {{ product.featured_image | image_url: width: 1000 }} 1000w"
+                              sizes="(min-width: 990px) 25vw, (min-width: 750px) 40vw, 90vw"
+                              alt="{{ product.featured_image.alt | escape }}"
+                              loading="lazy"
+                              width="{{ product.featured_image.width }}"
+                              height="{{ product.featured_image.height }}"
+                            >
+                          {% else %}
+                            {{ 'product-1' | placeholder_svg_tag }}
+                          {% endif %}
+                          <span class="loading__spinner hidden">{% render 'loading-spinner' %}</span>
+                          <span class="ai-featured-tabs__quickview-hint-{{ai_gen_id}}">{{ 'products.product.view_full_details' | t | default: 'Quick view' }}</span>
+                        </button>
+                      </modal-opener>
+                    {% else %}
+                      <a href="{{ product.url }}" aria-label="{{ product.title | escape }}">
+                        {% if product.featured_image %}
+                          <img
+                            src="{{ product.featured_image | image_url: width: 700 }}"
+                            srcset="{{ product.featured_image | image_url: width: 400 }} 400w, {{ product.featured_image | image_url: width: 700 }} 700w, {{ product.featured_image | image_url: width: 1000 }} 1000w"
+                            sizes="(min-width: 990px) 25vw, (min-width: 750px) 40vw, 90vw"
+                            alt="{{ product.featured_image.alt | escape }}"
+                            loading="lazy"
+                            width="{{ product.featured_image.width }}"
+                            height="{{ product.featured_image.height }}"
+                          >
+                        {% else %}
+                          {{ 'product-1' | placeholder_svg_tag }}
+                        {% endif %}
+                      </a>
+                    {% endif %}
                   </div>
 
                   <div class="ai-featured-tabs__body-{{ai_gen_id}}">
@@ -606,6 +686,10 @@
                     </div>
                   </div>
                 </div>
+                {% if block.settings.enable_quick_view %}
+                  {% render 'ai-quick-view-modal', product: product, modal_id: quick_view_modal_id, skip_styles: skip_quick_view_styles %}
+                  {% assign skip_quick_view_styles = true %}
+                {% endif %}
               {% endfor %}
             </div>
           {% else %}
@@ -976,6 +1060,13 @@
       "type": "checkbox",
       "id": "show_wishlist",
       "label": "Show wishlist button",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_quick_view",
+      "label": "Enable quick view popup",
+      "info": "Clicking the product image opens a quick-view popup instead of navigating away, matching the collection pages.",
       "default": true
     },
     {
