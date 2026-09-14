@@ -89,35 +89,13 @@
         "vehicle_finder_home_block": {
           "type": "vehicle_finder",
           "settings": {
-            "heading": "Find Parts For Your Vehicle",
-            "search_tab_label": "Search by Parts",
-            "reg_tab_label": "Reg Lookup",
-            "search_label": "",
-            "search_placeholder": "Search for parts...",
-            "find_button_label": "Find Parts",
-            "search_note": "",
-            "reg_field_label": "Enter UK Registration:",
-            "reg_placeholder": "YY26 ABC",
-            "reg_button_label": "Find Parts",
-            "reg_note": "We're setting up full registration lookup. For now, this searches your registration number across our catalog.",
-            "max_width": 1100,
-            "padding_vertical": 14,
-            "background_color": "#ffffff",
-            "heading_color": "#111111",
-            "body_text_color": "#111111",
-            "note_text_color": "#666666",
-            "dropdown_bg_color": "#ffffff",
-            "accent_color": "#a50000",
-            "accent_hover_color": "#7a0000"
+            "heading": "Find Parts For Your Vehicle"
           },
           "blocks": {}
         }
       },
       "block_order": [
         "vehicle_finder_home_block"
-      ],
-      "custom_css": [
-        ".vf-at25nedrrtdnrn3fkyvehiclefinderhomeblock {background-color: #ffffff00; padding: 14px 20px; border-top: 3px solid #a5000000; box-shadow: 0 0 0 rgba(0, 0, 0, 0);}"
       ],
       "name": "Vehicle parts finder",
       "settings": {}
