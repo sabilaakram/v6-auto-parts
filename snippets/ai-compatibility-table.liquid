@@ -10,6 +10,13 @@
     Toyota,Yaris,2005-2011,1.3L Petrol
     Toyota,Vitz,2005-2011,1.0L Petrol
 
+  Shopify caps a single text metafield at 64KB, which a large fitment list
+  (400+ rows) can exceed. To support that, this snippet transparently merges
+  in up to two continuation metafields — <key>_part2 and <key>_part3, same
+  namespace, no header row, just more comma-separated data rows — appended
+  after the main metafield's rows if present. Blank/missing parts are a
+  no-op, so this is fully backward compatible with a single metafield.
+
   Accepts:
   - block: {Object} the "ai_compatibility_table" block from main-product.liquid
 
@@ -19,6 +26,9 @@
 
 {% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
 
+{% capture newline %}
+{% endcapture %}
+
 {% liquid
   assign mf_value = blank
   assign raw_key = block.settings.metafield_key
@@ -26,12 +36,19 @@
     assign parts = raw_key | strip | split: '.'
     if parts.size == 2
       assign mf_value = product.metafields[parts[0]][parts[1]].value
+      assign part2_key = parts[1] | append: '_part2'
+      assign part3_key = parts[1] | append: '_part3'
+      assign mf_value_part2 = product.metafields[parts[0]][part2_key].value
+      assign mf_value_part3 = product.metafields[parts[0]][part3_key].value
+      if mf_value_part2 != blank
+        assign mf_value = mf_value | append: newline | append: mf_value_part2
+      endif
+      if mf_value_part3 != blank
+        assign mf_value = mf_value | append: newline | append: mf_value_part3
+      endif
     endif
   endif
 %}
-
-{% capture newline %}
-{% endcapture %}
 
 {% if mf_value != blank %}
   {% liquid
