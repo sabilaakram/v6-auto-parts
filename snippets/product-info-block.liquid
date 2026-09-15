@@ -137,7 +137,7 @@
   {%- when 'ai_compatibility_table' -%}
     {% render 'ai-compatibility-table', block: block %}
   {%- when 'ai_section_heading' -%}
-    {% render 'ai-section-heading', block: block, hide_in_quick_view: next_block_type == 'description' %}
+    {% render 'ai-section-heading', block: block, hide_in_quick_view: next_block_type %}
   {%- when 'ai_quick_facts' -%}
     {% render 'ai-quick-facts', block: block %}
   {%- when 'ai_sold_progress' -%}
@@ -637,3 +637,15 @@
   {%- when 'icon-with-text' -%}
     {% render 'icon-with-text', block: block %}
 {%- endcase -%}
+{% comment %}
+
+This file has been rewritten to preserve the original behavior.
+
+---
+Changes:
+- from: "{% render 'ai-section-heading', block: block, hide_in_quick_view: next_block_type
+    == 'description' %}"
+  to: "{% render 'ai-section-heading', block: block, hide_in_quick_view: next_block_type
+    %}"
+  position: 6422..6506
+{% endcomment %}
