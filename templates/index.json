@@ -153,7 +153,7 @@
             "text_line_height_mobile": 1.4,
             "text_color": "#ffffff",
             "text_transform": "uppercase",
-            "hide_pagination": true,
+            "hide_pagination": false,
             "pagination_color": "#121212",
             "autoplay_speed": 5,
             "slide_image_1": "shopify://shop_images/exhaust_and_emission_system.jpg_1.webp",
@@ -747,7 +747,7 @@
           "blocks": {}
         },
         "google_reviews_repocean_repocean_reviews_carousel_4HiGqH": {
-          "type": "shopify://apps/google-reviews-repocean/blocks/repocean-reviews-carousel/019aa132-98b1-7055-b64e-581f915ade43",
+          "type": "shopify://apps/repocean-google-reviews/blocks/repocean-reviews-carousel/019aa132-98b1-7055-b64e-581f915ade43",
           "settings": {
             "section_title": "99.5% Positive Feedback - Here's Why",
             "section_title_tag": "h2",
