@@ -78,7 +78,7 @@
             "label_top_position": 50,
             "label_left_position": 58,
             "stat_1_enabled": true,
-            "stat_1_number": "7+",
+            "stat_1_number": "20+",
             "stat_1_label": "Years",
             "stat_2_enabled": true,
             "stat_2_number": "23,000+",
@@ -106,6 +106,7 @@
           "type": "ai_gen_block_9c3d5e2",
           "settings": {
             "image_position": "left",
+            "edge_bleed_image": true,
             "vertical_alignment": "center",
             "container_width_percent": 90,
             "content_max_width": 1400,
@@ -159,8 +160,7 @@
             "image_alt": "How we work",
             "image_aspect_ratio": "auto",
             "image_fit": "cover",
-            "image_radius": 12,
-            "edge_bleed_image": true
+            "image_radius": 12
           },
           "blocks": {}
         }
@@ -197,16 +197,16 @@
         "column_VJTwqj",
         "column_U73GdA"
       ],
-      "name": "t:sections.multicolumn.presets.name",
       "custom_css": [
-        ".multicolumn-list__item:nth-child(1) .multicolumn-card{background:#a50000}",
-        ".multicolumn-list__item:nth-child(1) .multicolumn-card__info *{color:#fff}",
-        ".multicolumn-list__item:nth-child(2) .multicolumn-card{background:#000}",
-        ".multicolumn-list__item:nth-child(2) .multicolumn-card__info *{color:#fff}",
-        ".multicolumn-card__info h3{font-family:'Bebas Neue',sans-serif;font-size:38px}",
-        ".multicolumn-card__info .rte{font-family:Inter,sans-serif}",
-        "@media(max-width:749px){.multicolumn-card__info h3{font-size:26px}}"
+        ".multicolumn-list__item:nth-child(1) .multicolumn-card {background: #a50000;}",
+        ".multicolumn-list__item:nth-child(1) .multicolumn-card__info * {color: #fff;}",
+        ".multicolumn-list__item:nth-child(2) .multicolumn-card {background: #000;}",
+        ".multicolumn-list__item:nth-child(2) .multicolumn-card__info * {color: #fff;}",
+        ".multicolumn-card__info h3 {font-family: \"Bebas Neue\", sans-serif; font-size: 38px;}",
+        ".multicolumn-card__info .rte {font-family: Inter, sans-serif;}",
+        "@media (max-width: 749px) {.multicolumn-card__info h3 {font-size: 26px; }}"
       ],
+      "name": "t:sections.multicolumn.presets.name",
       "settings": {
         "title": "",
         "heading_size": "h1",
@@ -231,6 +231,7 @@
           "type": "ai_gen_block_9c3d5e2",
           "settings": {
             "image_position": "right",
+            "edge_bleed_image": false,
             "vertical_alignment": "center",
             "container_width_percent": 90,
             "content_max_width": 1400,
@@ -417,7 +418,7 @@
       "type": "apps",
       "blocks": {
         "google_reviews_repocean_repocean_reviews_carousel_KAaU7w": {
-          "type": "shopify://apps/google-reviews-repocean/blocks/repocean-reviews-carousel/019aa132-98b1-7055-b64e-581f915ade43",
+          "type": "shopify://apps/repocean-google-reviews/blocks/repocean-reviews-carousel/019aa132-98b1-7055-b64e-581f915ade43",
           "settings": {
             "section_title": "",
             "section_title_tag": "h2",
