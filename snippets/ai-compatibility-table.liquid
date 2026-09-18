@@ -54,6 +54,7 @@
   {% liquid
     assign lines = mf_value | strip | split: newline
     assign header_cells = lines[0] | split: ','
+    assign last_column_index = header_cells.size | minus: 1
     assign rows_per_page = block.settings.rows_per_page | default: 20
 
     assign total_rows = 0
@@ -209,8 +210,9 @@
                 {% if trimmed_line != blank %}
                   {% assign cells = trimmed_line | split: ',' %}
                   <tr data-row-index="{{ row_index }}">
-                    {% for cell in cells %}
-                      <td>{{ cell | strip }}</td>
+                    {% for i in (0..last_column_index) %}
+                      {% assign cell_value = cells[i] | default: '' %}
+                      <td>{{ cell_value | strip }}</td>
                     {% endfor %}
                   </tr>
                   {% assign row_index = row_index | plus: 1 %}
