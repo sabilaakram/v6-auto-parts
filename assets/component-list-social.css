@@ -30,3 +30,15 @@
 .list-social__link:hover .icon {
   transform: scale(1.07);
 }
+
+/* Footer social icons: original brand colors */
+.footer__list-social .list-social__link .icon-facebook { color: #1877f2; }
+.footer__list-social .list-social__link .icon-instagram { color: #e4405f; }
+.footer__list-social .list-social__link .icon-youtube { color: #ff0000; }
+.footer__list-social .list-social__link .icon-tiktok { color: #000000; }
+.footer__list-social .list-social__link .icon-twitter { color: #000000; }
+.footer__list-social .list-social__link .icon-linkedin { color: #0a66c2; }
+.footer__list-social .list-social__link .icon-pinterest { color: #e60023; }
+.footer__list-social .list-social__link .icon-snapchat { color: #fffc00; }
+.footer__list-social .list-social__link .icon-tumblr { color: #36465d; }
+.footer__list-social .list-social__link .icon-vimeo { color: #1ab7ea; }
