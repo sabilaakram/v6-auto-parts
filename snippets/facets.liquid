@@ -28,6 +28,14 @@
     assign terms = results.terms | escape
     assign results_url = '?q=' | append: terms | append: '&options%5Bprefix%5D=last&sort_by=' | append: sort_by
   endif
+  assign category_names = 'Air & Fuel Delivery|Front Grilles & Headlights|Power Steering|Heater Blower Motor|Interior Parts & Accessories|Engine Cooling|Electrical & Starting|Exhaust & Emission System|Brake Parts|Wiper Linkages & Motors|Suspension|Other (Engine, Drivetrain & Misc.)' | split: '|'
+  assign category_handles = 'air-fuel-delivery|front-grilles|steering-suspension|ac-heating|interior-parts-accessories|engine-cooling-components|electrical-starting|exhaust-emission-system|brakes-brake-parts|wiper-linkage-motors-fiat-nissan-vauxhall-peugeot-v6-auto-parts|suspension|other-engine-drivetrain-misc' | split: '|'
+  assign current_category_handle = ''
+  if results.handle != blank
+    if category_handles contains results.handle
+      assign current_category_handle = results.handle
+    endif
+  endif
 -%}
 
 <div
@@ -139,6 +147,9 @@
                   assign show_more_number = 6
                   assign visual_layout_class = 'facets-layout facets-layout-list facets-layout-list--' | append: presentation
                 endif
+                if filter.param_name == 'filter.p.product_type'
+                  assign show_more_number = 20
+                endif
 
                 assign open_by_default = false
                 if forloop.index == 1 or filter.param_name == 'filter.v.availability'
@@ -215,28 +226,74 @@
                           class="{{ visual_layout_class }}{% if filter_type == 'vertical' %} facets__list--vertical{% else %} facets__list{% endif %} list-unstyled"
                           role="list"
                         >
-                          {%- for value in sorted_values -%}
+                          {%- liquid
+              assign is_category_filter = false
+              assign loop_values = sorted_values
+              if filter.param_name == 'filter.p.product_type'
+                assign is_category_filter = true
+                assign loop_values = category_names
+              endif
+            -%}
+{%- for item in loop_values -%}
                             {% liquid
-                              assign input_id = 'Filter-' | append: filter.param_name | escape | append: '-' | append: forloop.index
-                              assign is_disabled = false
-                              if value.count == 0 and value.active == false
-                                assign is_disabled = true
-                              endif
-                            %}
+                assign item_number = forloop.index
+                assign item_index = forloop.index0
+                assign category_url = ''
+                if is_category_filter
+                  assign value = nil
+                  for candidate in filter.values
+                    if candidate.label == item
+                      assign value = candidate
+                    endif
+                  endfor
+                  assign v_label = item
+                  assign v_param = filter.param_name
+                  assign v_value = item
+                  assign v_count = 0
+                  assign v_active = false
+                  if value
+                    assign v_param = value.param_name
+                    assign v_value = value.value
+                    assign v_count = value.count
+                    assign v_active = value.active
+                  endif
+                  if current_category_handle != blank
+                    assign this_handle = category_handles[item_index]
+                    assign category_url = routes.collections_url | append: '/' | append: this_handle
+                    assign v_count = collections[this_handle].products_count
+                    assign v_active = false
+                    if this_handle == current_category_handle
+                      assign v_active = true
+                    endif
+                  endif
+                else
+                  assign value = item
+                  assign v_label = value.label
+                  assign v_param = value.param_name
+                  assign v_value = value.value
+                  assign v_count = value.count
+                  assign v_active = value.active
+                endif
+                assign input_id = 'Filter-' | append: filter.param_name | escape | append: '-' | append: item_number
+                assign is_disabled = false
+                if v_count == 0 and v_active == false
+                  assign is_disabled = true
+                endif
+              %}
                             {%- capture label_class -%}
-                            facets__label facet-checkbox{% if is_disabled %} disabled{% endif %}{% if value.active %} active{% endif %}
+                            facets__label facet-checkbox{% if is_disabled %} disabled{% endif %}{% if v_active %} active{% endif %}
                             {%- endcapture -%}
 
                             {%- capture text_value -%}
                               <span class="facet-checkbox__text" aria-hidden="true">
-                                <span class="facet-checkbox__text-label">{{- value.label | escape }}</span> ({{- value.count -}})
+                                <span class="facet-checkbox__text-label">{{- v_label | escape }}</span> ({{- v_count -}})
                               </span>
                               <span class="visually-hidden">
-                                {{- value.label | escape }} (
-                                {%- if value.count == 1 -%}
-                                  {{- 'products.facets.product_count_simple.one' | t: count: value.count -}}
+                                {{- v_label | escape }} (
+                                {%- if v_count == 1 -%}
+                                  {{- 'products.facets.product_count_simple.one' | t: count: v_count -}}
                                 {%- else -%}
-                                  {{- 'products.facets.product_count_simple.other' | t: count: value.count -}}
+                                  {{- 'products.facets.product_count_simple.other' | t: count: v_count -}}
                                 {%- endif -%}
                                 )
                               </span>
@@ -249,11 +306,11 @@
                                     {% render 'swatch-input',
                                       id: input_id,
                                       type: 'checkbox',
-                                      name: value.param_name,
-                                      value: value.value,
+                                      name: v_param,
+                                      value: v_value,
                                       product_form_id: 'FacetFiltersForm',
                                       swatch: value.swatch,
-                                      checked: value.active,
+                                      checked: v_active,
                                       disabled: is_disabled
                                     %}
                                   </div>
@@ -264,10 +321,11 @@
                                 <label for="{{ input_id }}" class="{{ label_class }}">
                                   <input
                                     type="checkbox"
-                                    name="{{ value.param_name }}"
-                                    value="{{ value.value }}"
+                                    name="{{ v_param }}"
+                                    value="{{ v_value }}"
                                     id="{{ input_id }}"
-                                    {% if value.active %}
+                                    {% if category_url != blank %}data-category-url="{{ category_url }}"{% if v_active %} data-category-current{% endif %}{% endif %}
+                                    {% if v_active %}
                                       checked
                                     {% endif %}
                                     {% if is_disabled %}
@@ -594,29 +652,75 @@
                                 assign sorted_values = active_filter_values | concat: inactive_filter_values
                               endif
                             -%}
-                            {%- for value in sorted_values -%}
+                            {%- liquid
+              assign is_category_filter = false
+              assign loop_values = sorted_values
+              if filter.param_name == 'filter.p.product_type'
+                assign is_category_filter = true
+                assign loop_values = category_names
+              endif
+            -%}
+{%- for item in loop_values -%}
                               {% liquid
-                                assign input_id = 'Filter-' | append: filter.param_name | escape | append: '-mobile-' | append: forloop.index
-                                assign is_disabled = false
-                                if value.count == 0 and value.active == false
-                                  assign is_disabled = true
-                                endif
-                              %}
+                assign item_number = forloop.index
+                assign item_index = forloop.index0
+                assign category_url = ''
+                if is_category_filter
+                  assign value = nil
+                  for candidate in filter.values
+                    if candidate.label == item
+                      assign value = candidate
+                    endif
+                  endfor
+                  assign v_label = item
+                  assign v_param = filter.param_name
+                  assign v_value = item
+                  assign v_count = 0
+                  assign v_active = false
+                  if value
+                    assign v_param = value.param_name
+                    assign v_value = value.value
+                    assign v_count = value.count
+                    assign v_active = value.active
+                  endif
+                  if current_category_handle != blank
+                    assign this_handle = category_handles[item_index]
+                    assign category_url = routes.collections_url | append: '/' | append: this_handle
+                    assign v_count = collections[this_handle].products_count
+                    assign v_active = false
+                    if this_handle == current_category_handle
+                      assign v_active = true
+                    endif
+                  endif
+                else
+                  assign value = item
+                  assign v_label = value.label
+                  assign v_param = value.param_name
+                  assign v_value = value.value
+                  assign v_count = value.count
+                  assign v_active = value.active
+                endif
+                assign input_id = 'Filter-' | append: filter.param_name | escape | append: '-mobile-' | append: item_number
+                assign is_disabled = false
+                if v_count == 0 and v_active == false
+                  assign is_disabled = true
+                endif
+              %}
 
                               {%- capture label_class -%}
-                              facets__label mobile-facets__label{% if is_disabled %} disabled{% endif %}{% if value.active %} active{% endif %}
+                              facets__label mobile-facets__label{% if is_disabled %} disabled{% endif %}{% if v_active %} active{% endif %}
                               {%- endcapture -%}
 
                               {%- capture text_value -%}
                                 <span class="facet-checkbox__text" aria-hidden="true">
-                                  <span class="facet-checkbox__text-label">{{- value.label | escape }}</span> ({{- value.count -}})
+                                  <span class="facet-checkbox__text-label">{{- v_label | escape }}</span> ({{- v_count -}})
                                 </span>
                                 <span class="visually-hidden">
-                                  {{- value.label | escape }} (
-                                  {%- if value.count == '1' -%}
-                                    {{- 'products.facets.product_count_simple.one' | t: count: value.count -}}
+                                  {{- v_label | escape }} (
+                                  {%- if v_count == '1' -%}
+                                    {{- 'products.facets.product_count_simple.one' | t: count: v_count -}}
                                   {%- else -%}
-                                    {{- 'products.facets.product_count_simple.other' | t: count: value.count -}}
+                                    {{- 'products.facets.product_count_simple.other' | t: count: v_count -}}
                                   {%- endif -%}
                                   )
                                 </span>
@@ -629,11 +733,11 @@
                                       {% render 'swatch-input',
                                         id: input_id,
                                         type: 'checkbox',
-                                        name: value.param_name,
-                                        value: value.value,
+                                        name: v_param,
+                                        value: v_value,
                                         product_form_id: 'FacetFiltersFormMobile',
                                         swatch: value.swatch,
-                                        checked: value.active,
+                                        checked: v_active,
                                         disabled: is_disabled
                                       %}
                                     </div>
@@ -645,10 +749,11 @@
                                     <input
                                       class="mobile-facets__checkbox"
                                       type="checkbox"
-                                      name="{{ value.param_name }}"
-                                      value="{{ value.value }}"
+                                      name="{{ v_param }}"
+                                      value="{{ v_value }}"
                                       id="{{ input_id }}"
-                                      {% if value.active %}
+                                      {% if category_url != blank %}data-category-url="{{ category_url }}"{% if v_active %} data-category-current{% endif %}{% endif %}
+                                      {% if v_active %}
                                         checked
                                       {% endif %}
                                       {% if is_disabled %}
@@ -973,3 +1078,25 @@
     </facet-filters-form>
   {%- endif -%}
 </div>
+
+{%- if current_category_handle != blank -%}
+  <script>
+    /* V6 Auto Parts: on a category page, ticking another category opens that category's page. */
+    if (!window.__v6CategoryNav) {
+      window.__v6CategoryNav = true;
+      var v6CategoryGo = function (event) {
+        var box = event.target;
+        if (!box || !box.matches || !box.matches('input[data-category-url]')) return;
+        event.stopImmediatePropagation();
+        event.preventDefault();
+        if (box.hasAttribute('data-category-current')) {
+          box.checked = true;
+          return;
+        }
+        window.location.href = box.getAttribute('data-category-url');
+      };
+      document.addEventListener('input', v6CategoryGo, true);
+      document.addEventListener('change', v6CategoryGo, true);
+    }
+  </script>
+{%- endif -%}
