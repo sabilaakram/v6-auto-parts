@@ -11,7 +11,9 @@
   "sections": {
     "main": {
       "type": "main-page",
-      "custom_css": [],
+      "custom_css": [
+        ".page-width {max-width: 90% !important; width: 90% !important;}"
+      ],
       "settings": {
         "heading_font": "assistant_n4",
         "padding_top": 28,
