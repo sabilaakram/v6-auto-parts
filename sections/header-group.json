@@ -138,6 +138,7 @@
             "benefit_3_sub_text": "Promise",
             "benefit_3_link": "",
             "menu": "main-menu",
+            "mobile_menu": "mobile_menu",
             "nav_alignment": "center",
             "nav_row_height": 45,
             "nav_font_family": "inter_n7",
