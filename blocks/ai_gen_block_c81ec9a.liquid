@@ -77,6 +77,7 @@
     font-family: {{ block.settings.tab_font.family }}, {{ block.settings.tab_font.fallback_families }};
     font-weight: {{ block.settings.tab_font.weight }};
     font-size: {{ block.settings.tab_size }}px;
+    font-size: {{ block.settings.tab_size_mobile }}px;
     line-height: {{ block.settings.tab_line_height }};
     letter-spacing: 0.05em;
     color: {{ block.settings.tab_color }};
@@ -499,7 +500,7 @@
 {% endif %}
 <script src="{{ 'product-form.js' | asset_url }}" defer="defer"></script>
 
-<featured-tabs-{{ai_gen_id}} class="ai-featured-tabs-{{ai_gen_id}}" {{ block.shopify_attributes }}>
+<featured-tabs-{{ ai_gen_id }} class="ai-featured-tabs-{{ai_gen_id}}" {{ block.shopify_attributes }}>
   <div class="ai-featured-tabs__container-{{ai_gen_id}}">
     <div class="ai-featured-tabs__header-{{ai_gen_id}}">
       {% if block.settings.main_heading != blank %}
@@ -607,7 +608,9 @@
                             {{ 'product-1' | placeholder_svg_tag }}
                           {% endif %}
                           <span class="loading__spinner hidden">{% render 'loading-spinner' %}</span>
-                          <span class="ai-featured-tabs__quickview-hint-{{ai_gen_id}}">{{ 'products.product.view_full_details' | t | default: 'Quick view' }}</span>
+                          <span class="ai-featured-tabs__quickview-hint-{{ai_gen_id}}">
+                            {{- 'products.product.view_full_details' | t | default: 'Quick view' -}}
+                          </span>
                         </button>
                       </modal-opener>
                     {% else %}
@@ -636,10 +639,17 @@
                       <div class="ai-featured-tabs__rating-{{ai_gen_id}}">
                         <span class="ai-featured-tabs__stars-{{ai_gen_id}}" aria-hidden="true">
                           <span class="ai-featured-tabs__stars-track-{{ai_gen_id}}">
-                            {% for star in (1..5) %}{{ 'icon-star.svg' | inline_asset_content }}{% endfor %}
+                            {% for star in (1..5) -%}
+                              {{- 'icon-star.svg' | inline_asset_content -}}
+                            {%- endfor %}
                           </span>
-                          <span class="ai-featured-tabs__stars-fill-{{ai_gen_id}}" style="width: {{ rating | times: 20.0 | at_most: 100 }}%;">
-                            {% for star in (1..5) %}{{ 'icon-star.svg' | inline_asset_content }}{% endfor %}
+                          <span
+                            class="ai-featured-tabs__stars-fill-{{ai_gen_id}}"
+                            style="width: {{ rating | times: 20.0 | at_most: 100 }}%;"
+                          >
+                            {% for star in (1..5) -%}
+                              {{- 'icon-star.svg' | inline_asset_content -}}
+                            {%- endfor %}
                           </span>
                         </span>
                         {% if rating_count != blank %}
@@ -651,7 +661,9 @@
                     <div class="ai-featured-tabs__footer-{{ai_gen_id}}">
                       <div class="ai-featured-tabs__price-{{ai_gen_id}}{% if on_sale %} has-sale{% endif %}">
                         {% if on_sale %}
-                          <span class="ai-featured-tabs__price-compare-{{ai_gen_id}}">{{ product.compare_at_price | money }}</span>
+                          <span class="ai-featured-tabs__price-compare-{{ai_gen_id}}">
+                            {{- product.compare_at_price | money -}}
+                          </span>
                         {% endif %}
                         <span class="ai-featured-tabs__price-current-{{ai_gen_id}}">{{ product.price | money }}</span>
                       </div>
@@ -660,11 +672,20 @@
                         {% if product.has_only_default_variant %}
                           <product-form data-hide-errors="true">
                             {% form 'product', product %}
-                              <input type="hidden" name="id" value="{{ variant.id }}" {% unless variant.available %}disabled{% endunless %}>
+                              <input
+                                type="hidden"
+                                name="id"
+                                value="{{ variant.id }}"
+                                {% unless variant.available %}
+                                  disabled
+                                {% endunless %}
+                              >
                               <button
                                 type="submit"
                                 class="ai-featured-tabs__cta-{{ai_gen_id}}"
-                                {% unless variant.available %}disabled{% endunless %}
+                                {% unless variant.available %}
+                                  disabled
+                                {% endunless %}
                               >
                                 <span>
                                   {% if variant.available %}
@@ -687,21 +708,23 @@
                   </div>
                 </div>
                 {% if block.settings.enable_quick_view %}
-                  {% render 'ai-quick-view-modal', product: product, modal_id: quick_view_modal_id, skip_styles: skip_quick_view_styles %}
+                  {% render 'ai-quick-view-modal',
+                    product: product,
+                    modal_id: quick_view_modal_id,
+                    skip_styles: skip_quick_view_styles
+                  %}
                   {% assign skip_quick_view_styles = true %}
                 {% endif %}
               {% endfor %}
             </div>
           {% else %}
-            <div class="ai-featured-tabs__empty-{{ai_gen_id}}">
-              Next, select a collection for this tab
-            </div>
+            <div class="ai-featured-tabs__empty-{{ai_gen_id}}">Next, select a collection for this tab</div>
           {% endif %}
         </div>
       {% endif %}
     {% endfor %}
   </div>
-</featured-tabs-{{ai_gen_id}}>
+</featured-tabs-{{ ai_gen_id }}>
 
 <script>
   (function() {
@@ -915,8 +938,18 @@
       "max": 32,
       "step": 2,
       "unit": "px",
-      "label": "Size",
+      "label": "Size (desktop)",
       "default": 16
+    },
+    {
+      "type": "range",
+      "id": "tab_size_mobile",
+      "min": 10,
+      "max": 28,
+      "step": 1,
+      "unit": "px",
+      "label": "Size (mobile)",
+      "default": 14
     },
     {
       "type": "range",
