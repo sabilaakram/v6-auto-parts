@@ -8,6 +8,21 @@
 <script src="{{ 'product-form.js' | asset_url }}" defer="defer"></script>
 
 {%- style -%}
+  @media screen and (max-width: 749px) {
+  .ai-collection-{{ section.id }} .facets-vertical-sort.small-hide {
+    display: block !important;
+  }
+
+  .ai-collection-{{ section.id }} .ai-collection__toolbar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .ai-collection-{{ section.id }} .ai-collection__toolbar-right {
+    width: 100%;
+    justify-content: space-between;
+  }
+}
   .section-{{ section.id }}-padding {
     padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
     padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
