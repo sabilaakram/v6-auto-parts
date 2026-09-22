@@ -441,9 +441,11 @@
 
         .ai-featured-tabs__tabs-{{ai_gen_id}} {
           margin-bottom: 28px;
-          font-size: {{ block.settings.tab_size_mobile }}px;
           flex-direction: {{ block.settings.mobile_tabs_layout }};
         }
+        .ai-featured-tabs__tab-{{ai_gen_id}} {
+    font-size: {{ block.settings.tab_size_mobile }}px;
+  }
 
         {% if block.settings.mobile_tabs_layout == 'column' %}
           .ai-featured-tabs__tabs-{{ai_gen_id}} {
