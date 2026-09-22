@@ -60,6 +60,7 @@
     position: relative;
     overflow: hidden;
     border-radius: {{ block.settings.item_border_radius }}px;
+    transition: width 0.3s ease;
   }
 
   .ai-carousel-slide-{{ ai_gen_id }} a {
@@ -140,7 +141,7 @@
       height: {{ block.settings.item_height_tablet }}px;
     }
 
-    .ai-carousel-slide-{{ ai_gen_id }}:nth-child(3n + 2) {
+    .ai-carousel-slide-{{ ai_gen_id }}.is-carousel-center-{{ ai_gen_id }} {
       width: calc((100% - {{ block.settings.item_spacing }}px * 2) / 3 + {{ block.settings.center_offset_tablet }}px);
     }
   }
@@ -151,7 +152,7 @@
       height: {{ block.settings.item_height_desktop }}px;
     }
 
-    .ai-carousel-slide-{{ ai_gen_id }}:nth-child(3n + 2) {
+    .ai-carousel-slide-{{ ai_gen_id }}.is-carousel-center-{{ ai_gen_id }} {
       width: calc((100% - {{ block.settings.item_spacing }}px * 2) / 3 + {{ block.settings.center_offset_desktop }}px);
     }
   }
@@ -194,7 +195,7 @@
         height: {{ block.settings.item_height_mobile }}px;
       }
 
-      .ai-carousel-slide-{{ ai_gen_id }}:nth-child(3n + 2) {
+      .ai-carousel-slide-{{ ai_gen_id }}.is-carousel-center-{{ ai_gen_id }} {
         width: calc((100% - {{ block.settings.item_spacing }}px * 2) / 3 + {{ block.settings.center_offset_mobile }}px);
       }
     {% endif %}
@@ -397,6 +398,21 @@
           } else {
             dot.classList.remove('active');
           }
+        });
+
+        this.updateCenterSlide();
+      }
+
+      updateCenterSlide() {
+        const itemsPerPage = this.getItemsPerPage();
+        const pageStart = this.currentIndex * itemsPerPage;
+        const centerIndex = pageStart + Math.floor(itemsPerPage / 2);
+
+        this.slides.forEach((slide, index) => {
+          slide.classList.toggle(
+            'is-carousel-center-{{ ai_gen_id }}',
+            itemsPerPage > 1 && index === centerIndex
+          );
         });
       }
 
