@@ -293,6 +293,22 @@
     grid-template-columns: 1fr;
   }
 
+  /* Infinite scroll — applies at all screen widths, not just mobile */
+  .ai-collection-{{ section.id }} .ai-collection__infinite-scroll {
+    display: block;
+    width: 100%;
+  }
+
+  .ai-collection-{{ section.id }} .ai-collection__infinite-sentinel {
+    height: 1px;
+  }
+
+  .ai-collection-{{ section.id }} .ai-collection__infinite-spinner {
+    display: flex;
+    justify-content: center;
+    padding: 30px 0;
+  }
+
   @media screen and (max-width: 989px) {
     .ai-collection-{{ section.id }} .product-grid.grid--view-grid4 {
       grid-template-columns: repeat(3, 1fr);
@@ -304,6 +320,20 @@
   }
 
   @media screen and (max-width: 749px) {
+    .ai-collection-{{ section.id }} .facets-vertical-sort.small-hide {
+      display: block !important;
+    }
+
+    .ai-collection-{{ section.id }} .ai-collection__toolbar {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .ai-collection-{{ section.id }} .ai-collection__toolbar-right {
+      width: 100%;
+      justify-content: space-between;
+    }
+
     .ai-collection-{{ section.id }} .facets-vertical {
       flex-direction: column;
     }
@@ -408,12 +438,29 @@
                   </div>
                 {%- endif -%}
 
-                <ai-grid-view-toggle class="ai-collection__view-toggle" data-default="{{ section.settings.default_grid_view }}">
-                  <button type="button" class="ai-collection__view-button" data-view="grid-3" aria-label="Grid view (3 columns)">
-                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="3" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.6"/><rect x="9.5" y="3" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.6"/><rect x="16" y="3" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.6"/><rect x="3" y="9.5" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.6"/><rect x="9.5" y="9.5" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.6"/><rect x="16" y="9.5" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.6"/></svg>
+                <ai-grid-view-toggle
+                  class="ai-collection__view-toggle"
+                  data-default="{{ section.settings.default_grid_view }}"
+                >
+                  <button
+                    type="button"
+                    class="ai-collection__view-button"
+                    data-view="grid-3"
+                    aria-label="Grid view (3 columns)"
+                  >
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <rect x="3" y="3" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.6"/><rect x="9.5" y="3" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.6"/><rect x="16" y="3" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.6"/><rect x="3" y="9.5" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.6"/><rect x="9.5" y="9.5" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.6"/><rect x="16" y="9.5" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.6"/>
+                    </svg>
                   </button>
-                  <button type="button" class="ai-collection__view-button" data-view="grid-4" aria-label="Grid view (4 columns)">
-                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2.5" y="2.5" width="4" height="4" rx="0.8" stroke="currentColor" stroke-width="1.5"/><rect x="7.7" y="2.5" width="4" height="4" rx="0.8" stroke="currentColor" stroke-width="1.5"/><rect x="12.9" y="2.5" width="4" height="4" rx="0.8" stroke="currentColor" stroke-width="1.5"/><rect x="18.1" y="2.5" width="4" height="4" rx="0.8" stroke="currentColor" stroke-width="1.5"/><rect x="2.5" y="7.7" width="4" height="4" rx="0.8" stroke="currentColor" stroke-width="1.5"/><rect x="7.7" y="7.7" width="4" height="4" rx="0.8" stroke="currentColor" stroke-width="1.5"/><rect x="12.9" y="7.7" width="4" height="4" rx="0.8" stroke="currentColor" stroke-width="1.5"/><rect x="18.1" y="7.7" width="4" height="4" rx="0.8" stroke="currentColor" stroke-width="1.5"/></svg>
+                  <button
+                    type="button"
+                    class="ai-collection__view-button"
+                    data-view="grid-4"
+                    aria-label="Grid view (4 columns)"
+                  >
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <rect x="2.5" y="2.5" width="4" height="4" rx="0.8" stroke="currentColor" stroke-width="1.5"/><rect x="7.7" y="2.5" width="4" height="4" rx="0.8" stroke="currentColor" stroke-width="1.5"/><rect x="12.9" y="2.5" width="4" height="4" rx="0.8" stroke="currentColor" stroke-width="1.5"/><rect x="18.1" y="2.5" width="4" height="4" rx="0.8" stroke="currentColor" stroke-width="1.5"/><rect x="2.5" y="7.7" width="4" height="4" rx="0.8" stroke="currentColor" stroke-width="1.5"/><rect x="7.7" y="7.7" width="4" height="4" rx="0.8" stroke="currentColor" stroke-width="1.5"/><rect x="12.9" y="7.7" width="4" height="4" rx="0.8" stroke="currentColor" stroke-width="1.5"/><rect x="18.1" y="7.7" width="4" height="4" rx="0.8" stroke="currentColor" stroke-width="1.5"/>
+                    </svg>
                   </button>
                 </ai-grid-view-toggle>
               </div>
@@ -529,7 +576,18 @@
               </ul>
 
               {%- if paginate.pages > 1 -%}
-                {% render 'pagination', paginate: paginate, anchor: '' %}
+                <ai-infinite-scroll
+                  class="ai-collection__infinite-scroll"
+                  data-section-id="{{ section.id }}"
+                  data-current-page="{{ paginate.current_page }}"
+                  data-total-pages="{{ paginate.pages }}"
+                  data-base-url="{{ collection.url }}"
+                >
+                  <div class="ai-collection__infinite-sentinel" aria-hidden="true"></div>
+                  <div class="ai-collection__infinite-spinner" hidden>
+                    {%- render 'loading-spinner' -%}
+                  </div>
+                </ai-infinite-scroll>
               {%- endif -%}
             </div>
           {%- endif -%}
@@ -609,6 +667,78 @@
     }
 
     customElements.define('ai-grid-view-toggle', AiGridViewToggle);
+  })();
+</script>
+
+<script>
+  (function () {
+    if (customElements.get('ai-infinite-scroll')) return;
+
+    class AiInfiniteScroll extends HTMLElement {
+      connectedCallback() {
+        this.sectionId = this.dataset.sectionId;
+        this.baseUrl = this.dataset.baseUrl;
+        this.currentPage = parseInt(this.dataset.currentPage, 10) || 1;
+        this.totalPages = parseInt(this.dataset.totalPages, 10) || 1;
+        this.loading = false;
+        this.sentinel = this.querySelector('.ai-collection__infinite-sentinel');
+        this.spinner = this.querySelector('.ai-collection__infinite-spinner');
+
+        this.observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) this.loadNextPage();
+            });
+          },
+          { rootMargin: '0px 0px 600px 0px' }
+        );
+
+        if (this.sentinel) this.observer.observe(this.sentinel);
+      }
+
+      disconnectedCallback() {
+        if (this.observer) this.observer.disconnect();
+      }
+
+      async loadNextPage() {
+        if (this.loading || this.currentPage >= this.totalPages) {
+          this.observer.disconnect();
+          return;
+        }
+
+        this.loading = true;
+        if (this.spinner) this.spinner.hidden = false;
+
+        const nextPage = this.currentPage + 1;
+        const url = `${this.baseUrl}?page=${nextPage}&section_id=${this.sectionId}`;
+
+        try {
+          const response = await fetch(url);
+          const text = await response.text();
+          const doc = new DOMParser().parseFromString(text, 'text/html');
+          const newGrid = doc.getElementById('product-grid');
+          const currentGrid = document.getElementById('product-grid');
+
+          if (newGrid && currentGrid) {
+            Array.from(newGrid.children).forEach((item) => {
+              currentGrid.appendChild(item);
+            });
+          }
+
+          this.currentPage = nextPage;
+        } catch (e) {
+          // Silently allow retry on next scroll intersection
+        } finally {
+          this.loading = false;
+          if (this.spinner) this.spinner.hidden = true;
+          if (this.currentPage >= this.totalPages) {
+            this.observer.disconnect();
+          }
+        }
+      }
+    }
+
+    customElements.define('ai-infinite-scroll', AiInfiniteScroll);
   })();
 </script>
 

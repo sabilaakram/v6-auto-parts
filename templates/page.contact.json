@@ -33,9 +33,9 @@
         "desktop_content_alignment": "left",
         "show_text_box": false,
         "color_scheme": "",
-        "stack_images_on_mobile": true,
-        "mobile_content_alignment": "center",
-        "show_text_below": true
+        "stack_images_on_mobile": false,
+        "mobile_content_alignment": "left",
+        "show_text_below": false
       }
     },
     "hero_section": {
@@ -133,15 +133,15 @@
             "item_1_enabled": true,
             "item_1_icon": "<svg viewbox=\"0 0 24 24\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M12 22s7-7.05 7-12A7 7 0 1 0 5 10c0 4.95 7 12 7 12Z\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linejoin=\"round\"></path><circle cx=\"12\" cy=\"10\" r=\"2.4\" stroke=\"currentColor\" stroke-width=\"1.6\"></circle></svg>",
             "item_1_title": "Store Location",
-            "item_1_body": "<p>V6 Auto Parts Ltd<br>104 Nechells Place, Birmingham, B7 5AB</p>",
+            "item_1_body": "<p>4 Kelbrook road Manchester M11 2QA</p>",
             "item_2_enabled": true,
             "item_2_icon": "<svg viewbox=\"0 0 24 24\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M6.5 3h3l1.5 4.5-2.2 1.8a12 12 0 0 0 5.9 5.9l1.8-2.2L21 14.5v3a2 2 0 0 1-2.2 2A17.5 17.5 0 0 1 4.5 5.2 2 2 0 0 1 6.5 3Z\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linejoin=\"round\"></path></svg>",
             "item_2_title": "Get In Touch With Us",
-            "item_2_body": "<p>Hotline<br>07308 675129</p><p>Email<br>v6ceo@aol.com</p>",
+            "item_2_body": "<p>Hotline<br/>07308 675129</p><p>Email<br/>Sales@v6autoparts.com</p>",
             "item_3_enabled": true,
             "item_3_icon": "<svg viewbox=\"0 0 24 24\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><circle cx=\"12\" cy=\"12\" r=\"8.2\" stroke=\"currentColor\" stroke-width=\"1.6\"></circle><path d=\"M12 7.8V12l3 2\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\"></path></svg>",
             "item_3_title": "Opening Hours",
-            "item_3_body": "<p>Monday to Friday<br>9am - 5pm</p><p>Saturday &amp; Sunday<br>10am - 6pm</p>",
+            "item_3_body": "<p>Monday to Friday<br/>9am - 5pm</p>",
             "item_4_enabled": false,
             "item_4_icon": "<svg viewbox=\"0 0 24 24\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><rect x=\"3.5\" y=\"5.5\" width=\"17\" height=\"13\" rx=\"1.5\" stroke=\"currentColor\" stroke-width=\"1.6\"></rect><path d=\"M4 7l8 6 8-6\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\"></path></svg>",
             "item_4_title": "",

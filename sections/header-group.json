@@ -114,7 +114,7 @@
         "ai_gen_block_c40279b_CDaLBy": {
           "type": "ai_gen_block_c40279b",
           "settings": {
-            "logo": "shopify://shop_images/logo_v6autoparts.png",
+            "logo": "shopify://shop_images/V6_Autoparts_logo-01.png",
             "logo_width": 90,
             "mobile_logo_width": 90,
             "show_search": false,
@@ -138,6 +138,7 @@
             "benefit_3_sub_text": "Promise",
             "benefit_3_link": "",
             "menu": "main-menu",
+            "mobile_menu": "mobile_menu",
             "nav_alignment": "center",
             "nav_row_height": 45,
             "nav_font_family": "inter_n7",

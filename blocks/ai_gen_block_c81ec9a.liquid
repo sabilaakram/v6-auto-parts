@@ -2,7 +2,7 @@
   @prompt
     generate a section with the 2 heading: main heading and sub heading (both of their styles, font family, size line height , color and case will be managed from the frontend) below the headings their will be different tabs, (similarly their styles, font family, size line height , color and case will be managed from the frontend) in every tabs their will be the grid (the number of rows and colum of the grid on mobile and desktop screens will be modified from frontend) of feature products shown from the selected collection, when that tab is hovered only the color of the text of that tab will be changed and their will be pointer appears below the text, all the other things will be same, and the background container will be of the 90% width, on the mobile screen the tabs will be in vertical, if more then 2.
 
-    Rebuilt to match the "New Arrivals" product-tabs section from the V6 Auto Parts Figma file pixel-for-pixel: bordered product cards with star rating, sale price + discount badge, a wishlist toggle and a working "Add to cart" button wired into the theme cart drawer, fully responsive tab navigation and grid.
+    Rebuilt to match the "New Arrivals" product-tabs section from the V6 Auto Parts Figma file pixel-for-pixel: bordered product cards with star rating, sale price + discount badge, a wishlist toggle and a working "Add to cart" button wired into the theme cart drawer, fully responsive tab navigation and grid. Desktop and mobile now have independent font size and tab spacing controls.
 {% enddoc %}
 {% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
 
@@ -50,7 +50,7 @@
 
   .ai-featured-tabs__tabs-{{ai_gen_id}} {
     display: flex;
-    gap: clamp(24px, 5vw, 100px);
+    gap: {{ block.settings.tabs_spacing }}px;
     margin: 0 0 40px;
     padding: 0;
     justify-content: {{ block.settings.tabs_alignment }};
@@ -427,6 +427,11 @@
     .ai-featured-tabs__tabs-{{ai_gen_id}} {
       margin-bottom: 28px;
       flex-direction: {{ block.settings.mobile_tabs_layout }};
+      gap: {{ block.settings.tabs_spacing_mobile }}px;
+    }
+
+    .ai-featured-tabs__tab-{{ai_gen_id}} {
+      font-size: {{ block.settings.tab_size_mobile }}px;
     }
 
     {% if block.settings.mobile_tabs_layout == 'column' %}
@@ -499,7 +504,7 @@
 {% endif %}
 <script src="{{ 'product-form.js' | asset_url }}" defer="defer"></script>
 
-<featured-tabs-{{ai_gen_id}} class="ai-featured-tabs-{{ai_gen_id}}" {{ block.shopify_attributes }}>
+<featured-tabs-{{ ai_gen_id }} class="ai-featured-tabs-{{ai_gen_id}}" {{ block.shopify_attributes }}>
   <div class="ai-featured-tabs__container-{{ai_gen_id}}">
     <div class="ai-featured-tabs__header-{{ai_gen_id}}">
       {% if block.settings.main_heading != blank %}
@@ -607,7 +612,9 @@
                             {{ 'product-1' | placeholder_svg_tag }}
                           {% endif %}
                           <span class="loading__spinner hidden">{% render 'loading-spinner' %}</span>
-                          <span class="ai-featured-tabs__quickview-hint-{{ai_gen_id}}">{{ 'products.product.view_full_details' | t | default: 'Quick view' }}</span>
+                          <span class="ai-featured-tabs__quickview-hint-{{ai_gen_id}}">
+                            {{- 'products.product.view_full_details' | t | default: 'Quick view' -}}
+                          </span>
                         </button>
                       </modal-opener>
                     {% else %}
@@ -636,10 +643,17 @@
                       <div class="ai-featured-tabs__rating-{{ai_gen_id}}">
                         <span class="ai-featured-tabs__stars-{{ai_gen_id}}" aria-hidden="true">
                           <span class="ai-featured-tabs__stars-track-{{ai_gen_id}}">
-                            {% for star in (1..5) %}{{ 'icon-star.svg' | inline_asset_content }}{% endfor %}
+                            {% for star in (1..5) -%}
+                              {{- 'icon-star.svg' | inline_asset_content -}}
+                            {%- endfor %}
                           </span>
-                          <span class="ai-featured-tabs__stars-fill-{{ai_gen_id}}" style="width: {{ rating | times: 20.0 | at_most: 100 }}%;">
-                            {% for star in (1..5) %}{{ 'icon-star.svg' | inline_asset_content }}{% endfor %}
+                          <span
+                            class="ai-featured-tabs__stars-fill-{{ai_gen_id}}"
+                            style="width: {{ rating | times: 20.0 | at_most: 100 }}%;"
+                          >
+                            {% for star in (1..5) -%}
+                              {{- 'icon-star.svg' | inline_asset_content -}}
+                            {%- endfor %}
                           </span>
                         </span>
                         {% if rating_count != blank %}
@@ -651,7 +665,9 @@
                     <div class="ai-featured-tabs__footer-{{ai_gen_id}}">
                       <div class="ai-featured-tabs__price-{{ai_gen_id}}{% if on_sale %} has-sale{% endif %}">
                         {% if on_sale %}
-                          <span class="ai-featured-tabs__price-compare-{{ai_gen_id}}">{{ product.compare_at_price | money }}</span>
+                          <span class="ai-featured-tabs__price-compare-{{ai_gen_id}}">
+                            {{- product.compare_at_price | money -}}
+                          </span>
                         {% endif %}
                         <span class="ai-featured-tabs__price-current-{{ai_gen_id}}">{{ product.price | money }}</span>
                       </div>
@@ -660,11 +676,20 @@
                         {% if product.has_only_default_variant %}
                           <product-form data-hide-errors="true">
                             {% form 'product', product %}
-                              <input type="hidden" name="id" value="{{ variant.id }}" {% unless variant.available %}disabled{% endunless %}>
+                              <input
+                                type="hidden"
+                                name="id"
+                                value="{{ variant.id }}"
+                                {% unless variant.available %}
+                                  disabled
+                                {% endunless %}
+                              >
                               <button
                                 type="submit"
                                 class="ai-featured-tabs__cta-{{ai_gen_id}}"
-                                {% unless variant.available %}disabled{% endunless %}
+                                {% unless variant.available %}
+                                  disabled
+                                {% endunless %}
                               >
                                 <span>
                                   {% if variant.available %}
@@ -687,21 +712,23 @@
                   </div>
                 </div>
                 {% if block.settings.enable_quick_view %}
-                  {% render 'ai-quick-view-modal', product: product, modal_id: quick_view_modal_id, skip_styles: skip_quick_view_styles %}
+                  {% render 'ai-quick-view-modal',
+                    product: product,
+                    modal_id: quick_view_modal_id,
+                    skip_styles: skip_quick_view_styles
+                  %}
                   {% assign skip_quick_view_styles = true %}
                 {% endif %}
               {% endfor %}
             </div>
           {% else %}
-            <div class="ai-featured-tabs__empty-{{ai_gen_id}}">
-              Next, select a collection for this tab
-            </div>
+            <div class="ai-featured-tabs__empty-{{ai_gen_id}}">Next, select a collection for this tab</div>
           {% endif %}
         </div>
       {% endif %}
     {% endfor %}
   </div>
-</featured-tabs-{{ai_gen_id}}>
+</featured-tabs-{{ ai_gen_id }}>
 
 <script>
   (function() {
@@ -915,8 +942,18 @@
       "max": 32,
       "step": 2,
       "unit": "px",
-      "label": "Size",
+      "label": "Size (desktop)",
       "default": 16
+    },
+    {
+      "type": "range",
+      "id": "tab_size_mobile",
+      "min": 10,
+      "max": 28,
+      "step": 1,
+      "unit": "px",
+      "label": "Size (mobile)",
+      "default": 14
     },
     {
       "type": "range",
@@ -961,6 +998,26 @@
         { "value": "flex-end", "label": "Right" }
       ],
       "default": "center"
+    },
+    {
+      "type": "range",
+      "id": "tabs_spacing",
+      "min": 8,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Spacing between tabs (desktop)",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "tabs_spacing_mobile",
+      "min": 4,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "label": "Spacing between tabs (mobile)",
+      "default": 16
     },
     {
       "type": "select",
