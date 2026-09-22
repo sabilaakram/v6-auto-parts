@@ -60,7 +60,6 @@
     position: relative;
     overflow: hidden;
     border-radius: {{ block.settings.item_border_radius }}px;
-    transition: width 0.3s ease;
   }
 
   .ai-carousel-slide-{{ ai_gen_id }} a {
@@ -372,9 +371,10 @@
       }
 
       // Rebuilds the leading/trailing clone slides used for seamless infinite
-      // looping. Real page width isn't constant (the center item is wider),
-      // so navigation is driven by measuring each slide's actual offsetLeft
-      // rather than assuming every "page" is the same width.
+      // looping. Navigation now steps one real slide at a time (not a group
+      // of 3), so only a small peek buffer needs cloning on each side -
+      // enough that the neighbour of the first/last real slide is always a
+      // real-looking item rather than empty space.
       rebuildInfiniteLoop() {
         this.wrapper.querySelectorAll('[data-carousel-clone]').forEach((el) => el.remove());
 
@@ -383,19 +383,19 @@
 
         if (this.slideCount === 0) {
           this.allSlides = this.slides;
-          this.itemsPerPage = 1;
+          this.bufferCount = 0;
           this.totalPages = 0;
           this.loopEnabled = false;
           return;
         }
 
         const itemsPerPage = this.getItemsPerPage();
-        this.itemsPerPage = itemsPerPage;
-        this.totalPages = Math.ceil(this.slideCount / itemsPerPage);
-        this.loopEnabled = this.totalPages > 1;
+        this.bufferCount = Math.max(1, Math.floor(itemsPerPage / 2));
+        this.totalPages = this.slideCount;
+        this.loopEnabled = this.slideCount > 1;
 
         if (this.loopEnabled) {
-          const cloneCount = Math.min(itemsPerPage, this.slideCount);
+          const cloneCount = Math.min(this.bufferCount, this.slideCount);
           const slideArray = Array.from(this.slides);
           const leadSlides = slideArray.slice(0, cloneCount);
           const tailSlides = slideArray.slice(-cloneCount);
@@ -415,6 +415,8 @@
             clone.querySelectorAll('a').forEach((a) => a.setAttribute('tabindex', '-1'));
             this.wrapper.appendChild(clone);
           });
+
+          this.bufferCount = cloneCount;
         }
 
         this.allSlides = this.wrapper.querySelectorAll('.ai-carousel-slide-{{ ai_gen_id }}');
@@ -432,23 +434,35 @@
         }
       }
 
-      // Maps a logical page index to its position in the DOM (which includes
-      // the leading clone group when looping is enabled). -1 and totalPages
-      // are valid "one past the boundary" clone positions.
+      // Maps a logical (real) slide index to its position in the DOM, which
+      // includes the leading clone group when looping is enabled. -1 and
+      // totalPages are valid "one past the boundary" clone positions.
       logicalToDomIndex(logicalIndex) {
         if (this.loopEnabled) {
-          return this.itemsPerPage * (logicalIndex + 1);
+          return this.bufferCount + logicalIndex;
         }
-        return logicalIndex * this.itemsPerPage;
+        return logicalIndex;
       }
 
+      // Centers whichever slide logicalIndex points at in the middle of the
+      // viewport, using its real measured position - not an assumed page
+      // width - so this works correctly for every slide, not just the ones
+      // that happened to land in a fixed "middle of 3" DOM slot.
       positionAt(logicalIndex, animate) {
         const domIndex = this.logicalToDomIndex(logicalIndex);
         const targetSlide = this.allSlides[domIndex];
         if (!targetSlide) return;
 
-        this.setTranslate(-targetSlide.offsetLeft, animate);
+        // Apply the center width class first so the measurement below
+        // reflects the slide's final (post-toggle) size, not its size
+        // before it became the centered item.
         this.updateCenterSlideForLogical(logicalIndex);
+
+        const containerWidth = this.container.getBoundingClientRect().width || 1;
+        const slideCenter = targetSlide.offsetLeft + targetSlide.offsetWidth / 2;
+        const translateX = containerWidth / 2 - slideCenter;
+
+        this.setTranslate(translateX, animate);
       }
 
       goToLogical(logicalIndex, animate = true) {
@@ -489,9 +503,7 @@
       }
 
       updateCenterSlideForLogical(logicalIndex) {
-        if (this.itemsPerPage <= 1) return;
-
-        const domIndex = this.logicalToDomIndex(logicalIndex) + Math.floor(this.itemsPerPage / 2);
+        const domIndex = this.logicalToDomIndex(logicalIndex);
 
         this.allSlides.forEach((slide, index) => {
           slide.classList.toggle('is-carousel-center-{{ ai_gen_id }}', index === domIndex);
