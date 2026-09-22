@@ -685,6 +685,14 @@ class ModalOpener extends HTMLElement {
 
     if (!button) return;
     button.addEventListener('click', () => {
+      if (this.hasAttribute('data-mobile-direct-link') && window.matchMedia('(max-width: 749px)').matches) {
+        const productUrl = button.getAttribute('data-product-url');
+        if (productUrl) {
+          window.location.href = productUrl;
+          return;
+        }
+      }
+
       const modal = document.querySelector(this.getAttribute('data-modal'));
       if (modal) modal.show(button);
     });
