@@ -11,7 +11,7 @@
       @media screen and (max-width: 749px) {
       .ai-collection-{{ section.id }} .facets-vertical-sort.small-hide {
         display: block !important;
-      }
+      }}
       .ai-collection-{{ section.id }} .ai-collection__infinite-scroll {
     display: block;
     width: 100%;
@@ -618,8 +618,6 @@
           });
         });
 
-        // Dawn's facets.js replaces #product-grid wholesale on every
-        // filter/sort change, so re-apply the current view after that happens.
         this.observer = new MutationObserver(() => this.reapply());
         const container = document.getElementById('ProductGridContainer');
         if (container) {
@@ -667,7 +665,9 @@
 
     customElements.define('ai-grid-view-toggle', AiGridViewToggle);
   })();
-  <script>
+</script>
+
+<script>
   (function () {
     if (customElements.get('ai-infinite-scroll')) return;
 
@@ -737,7 +737,6 @@
 
     customElements.define('ai-infinite-scroll', AiInfiniteScroll);
   })();
-</script>
 </script>
 
 {% schema %}
