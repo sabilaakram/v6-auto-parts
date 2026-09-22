@@ -605,6 +605,9 @@
     font-size: {{ block.settings.drawer_font_size }}px;
     font-weight: {{ block.settings.drawer_font_weight }};
   }
+  .ai-header-drawer-title-{{ ai_gen_id }} {
+  font-weight: 700;
+}
 
   .ai-header-drawer-close-{{ ai_gen_id }} {
     background: none;
@@ -1000,7 +1003,7 @@
 
   <div class="ai-header-drawer-{{ ai_gen_id }}" data-drawer>
     <div class="ai-header-drawer-header-{{ ai_gen_id }}">
-      <span>Menu</span>
+      <span class="ai-header-drawer-title-{{ ai_gen_id }}">Menu</span>
       <button class="ai-header-drawer-close-{{ ai_gen_id }}" aria-label="Close menu" data-drawer-close>
         <svg style="width: 24px; height: 24px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -1008,6 +1011,7 @@
         </svg>
       </button>
     </div>
+    
 
     <div class="ai-header-drawer-search-{{ ai_gen_id }}">
       <form action="/search" method="get" class="ai-header-drawer-search-form-{{ ai_gen_id }}" role="search">
