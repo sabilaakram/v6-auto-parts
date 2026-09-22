@@ -1,19 +1,19 @@
 {% doc %}
   @prompt
     Create a custom responsive Shopify header section with two rows.
-    
+
     Top row:
-    
+
     Logo on the left
     Search bar in the center
     Utility buttons on the right for Stores, Sign In, Reward Points, and Cart
-    
+
     Bottom row:
-    
+
     Shopify navigation menu with dropdown support
-    
+
     Requirements:
-    
+
     Full width
     Clean automotive ecommerce style
     Desktop layout similar to a professional auto-parts website
@@ -26,11 +26,11 @@
     Use only Liquid, CSS, and minimal vanilla JavaScript
     Do not use external libraries
     Make it compatible with Dawn and Shopify Online Store 2.0 themes
-    
+
     Keep the code simple and lightweight. Do not add advanced styling controls yet., Modify the existing header only. Do not create a new section and do not replace the current functionality.
-    
+
     Match the layout and proportions more closely to this structure:
-    
+
     Make the whole header more compact in height.
     Reduce the top row height significantly.
     Make the logo smaller and align it vertically centered on the left.
@@ -38,24 +38,24 @@
     Keep the search bar as a long horizontal rectangle with only a small border radius, not a large rounded pill.
     Add a small search icon/indicator on the left inside the search field.
     Keep the search fully functional using Shopify search.
-    
+
     On the right side of the top row:
-    
+
     Convert Stores, Sign In, Rewards, and Cart into compact pill-style buttons.
     Each button must contain a small circular icon area on the left and text on the right.
     Use a very light grey background, thin light border, and fully rounded corners.
     Reduce icon and text size so the buttons look compact.
     Keep equal spacing between all four buttons.
-    
+
     Make all utility items functional:
-    
+
     Stores button should use an editable link from Theme Editor.
     Sign In should link to the Shopify customer account/login page.
     Rewards should use an editable link from Theme Editor.
     Cart should open or link to the Shopify cart and show the real cart item count and live cart total price.
-    
+
     For the navigation row:
-    
+
     Reduce its height.
     Make the navigation start close to the left side of the content area.
     Use smaller bold uppercase text.
@@ -64,18 +64,18 @@
     Keep dropdown arrows very small.
     Remove the large empty vertical space between the top row and navigation.
     Add only a very subtle bottom border.
-    
+
     Use a centered content container with approximately 1120–1200px maximum width while the overall header remains full width.
-    
+
     Important visual proportions:
-    
+
     Logo should take roughly 8–10% of the row.
     Search area roughly 40%.
     Utility buttons roughly 35–40%.
     Keep the entire desktop header visually dense and compact.
-    
+
     Also make these values editable in the Theme Editor:
-    
+
     logo width
     search width
     search height
@@ -87,20 +87,20 @@
     horizontal spacing
     border color
     button background color
-    
+
     Do not redesign the mobile version yet.
-    
+
     Do not add large icons above text.
     Do not use oversized spacing.
     Do not use large rounded search fields.
     Do not change this into a generic Dawn-style header.
-    
+
     Preserve all existing Shopify functionality and only refine the current layout and styling., Modify the existing header only. Do not create a new section and do not rebuild the entire header.
-    
+
     Mobile Header Changes
-    
+
     On mobile:
-    
+
     Keep only these visible in the main header row:
     Hamburger menu
     Logo
@@ -110,19 +110,19 @@
     Move Search and Rewards inside the mobile side drawer/menu.
     Keep Search fully functional inside the drawer.
     Rewards should also remain functional and use its editable link.
-    
+
     Reduce the spacing between the mobile utility icons so they sit closer together and look balanced.
-    
+
     Do not spread the icons across the full width. Keep them grouped neatly on the right side.
-    
+
     Mobile Utility Icon Styling
-    
+
     Remove the white circular background behind the mobile utility icons.
-    
+
     The icons should appear directly on the header background with no separate white circle or pill behind them.
-    
+
     Add Theme Editor controls for:
-    
+
     Icon color
     Icon size
     Gap between icons
@@ -134,18 +134,18 @@
     Account icon size
     Cart icon size
     Mobile Side Drawer
-    
+
     Add these items inside the mobile side menu:
-    
+
     Search field
     Rewards link
     Main navigation menu
     Optional account link
-    
+
     The search field inside the drawer must use Shopify native search and must actually work.
-    
+
     Add Theme Editor controls for the drawer:
-    
+
     Drawer background color
     Drawer text color
     Search field background
@@ -158,11 +158,11 @@
     Divider color
     Drawer width
     Global Typography and Styling Controls
-    
+
     Make all important visual settings editable from the Shopify Theme Editor.
-    
+
     Add controls for:
-    
+
     Text color
     Font family
     Font size
@@ -177,16 +177,16 @@
     Spacing
     Padding
     Heights
-    
+
     Apply separate settings where appropriate for:
-    
+
     Desktop
     Tablet
     Mobile
     Desktop Navigation Row
-    
+
     For the desktop navigation menu, add Theme Editor controls for:
-    
+
     Menu alignment:
     Left
     Center
@@ -211,25 +211,26 @@
     Divider color
     Divider thickness
     Navigation background color
-    
+
     When menu alignment is set to Center, the entire navigation group should be centered as one group, not distributed with space-between.
-    
+
     When Left is selected, all menu items should stay grouped on the left.
-    
+
     When Right is selected, all menu items should stay grouped on the right.
-    
+
     Important
-    
+
     Preserve all existing functionality.
-    
+
     Do not remove desktop search.
     Do not remove desktop utility buttons.
     Do not change the desktop layout structure.
     Do not create a new header section.
-    
+
     Only improve the current section and add these Theme Editor controls.
 {% enddoc %}
 {% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+{% assign active_mobile_menu = block.settings.mobile_menu | default: block.settings.menu %}
 
 {% style %}
   .ai-header-{{ ai_gen_id }} {
@@ -751,7 +752,13 @@
       {% if block.settings.show_search %}
         <div class="ai-header-search-{{ ai_gen_id }}">
           <form action="/search" method="get" class="ai-header-search-form-{{ ai_gen_id }}" role="search">
-            <svg class="ai-header-search-icon-{{ ai_gen_id }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <svg
+              class="ai-header-search-icon-{{ ai_gen_id }}"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
               <circle cx="11" cy="11" r="8"></circle>
               <path d="M21 21l-4.35-4.35"></path>
             </svg>
@@ -769,10 +776,10 @@
       {% if block.settings.show_header_benefits %}
         <div class="ai-header-benefits-{{ ai_gen_id }}">
           {% for i in (1..3) %}
-            {% assign benefit_icon = nil %}
-            {% assign benefit_main = nil %}
-            {% assign benefit_sub = nil %}
-            {% assign benefit_link = nil %}
+            {% assign benefit_icon = null %}
+            {% assign benefit_main = null %}
+            {% assign benefit_sub = null %}
+            {% assign benefit_link = null %}
             {% case i %}
               {% when 1 %}
                 {% assign benefit_icon = block.settings.benefit_1_icon %}
@@ -795,11 +802,19 @@
               <a
                 href="{{ benefit_link | default: '#' }}"
                 class="ai-header-benefit-item-{{ ai_gen_id }}"
-                {% if benefit_link == blank %}onclick="return false;" tabindex="-1" aria-hidden="true"{% endif %}
+                {% if benefit_link == blank %}
+                  onclick="return false;" tabindex="-1" aria-hidden="true"
+                {% endif %}
               >
                 {% if benefit_icon != blank %}
                   <span class="ai-header-benefit-icon-{{ ai_gen_id }}">
-                    <img src="{{ benefit_icon | image_url: width: 100 }}" alt="{{ benefit_main | escape }}" loading="lazy" width="100" height="100">
+                    <img
+                      src="{{ benefit_icon | image_url: width: 100 }}"
+                      alt="{{ benefit_main | escape }}"
+                      loading="lazy"
+                      width="100"
+                      height="100"
+                    >
                   </span>
                 {% endif %}
                 <span class="ai-header-benefit-text-{{ ai_gen_id }}">
@@ -820,7 +835,13 @@
         {% if block.settings.show_stores %}
           <a href="{{ block.settings.stores_link }}" class="ai-header-utility-button-{{ ai_gen_id }}">
             <span class="ai-header-utility-icon-wrapper-{{ ai_gen_id }}">
-              <svg class="ai-header-utility-icon-{{ ai_gen_id }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <svg
+                class="ai-header-utility-icon-{{ ai_gen_id }}"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
                 <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
                 <circle cx="12" cy="10" r="3"></circle>
               </svg>
@@ -831,7 +852,13 @@
 
         <a href="/account" class="ai-header-utility-button-{{ ai_gen_id }}">
           <span class="ai-header-utility-icon-wrapper-{{ ai_gen_id }}">
-            <svg class="ai-header-utility-icon-{{ ai_gen_id }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <svg
+              class="ai-header-utility-icon-{{ ai_gen_id }}"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
               <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
               <circle cx="12" cy="7" r="4"></circle>
             </svg>
@@ -842,7 +869,13 @@
         {% if block.settings.show_rewards %}
           <a href="{{ block.settings.rewards_link }}" class="ai-header-utility-button-{{ ai_gen_id }}">
             <span class="ai-header-utility-icon-wrapper-{{ ai_gen_id }}">
-              <svg class="ai-header-utility-icon-{{ ai_gen_id }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <svg
+                class="ai-header-utility-icon-{{ ai_gen_id }}"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
                 <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
               </svg>
             </span>
@@ -852,7 +885,13 @@
 
         <a href="/cart" class="ai-header-utility-button-{{ ai_gen_id }}">
           <span class="ai-header-utility-icon-wrapper-{{ ai_gen_id }}">
-            <svg class="ai-header-utility-icon-{{ ai_gen_id }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <svg
+              class="ai-header-utility-icon-{{ ai_gen_id }}"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
               <circle cx="9" cy="21" r="1"></circle>
               <circle cx="20" cy="21" r="1"></circle>
               <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
@@ -875,7 +914,13 @@
                 <a href="{{ link.url }}" class="ai-header-nav-link-{{ ai_gen_id }}">
                   {{ link.title }}
                   {% if link.links.size > 0 %}
-                    <svg class="ai-header-nav-arrow-{{ ai_gen_id }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <svg
+                      class="ai-header-nav-arrow-{{ ai_gen_id }}"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    >
                       <polyline points="6 9 12 15 18 9"></polyline>
                     </svg>
                   {% endif %}
@@ -883,7 +928,9 @@
                 {% if link.links.size > 0 %}
                   <div class="ai-header-nav-dropdown-{{ ai_gen_id }}">
                     {% for child_link in link.links %}
-                      <a href="{{ child_link.url }}" class="ai-header-nav-dropdown-link-{{ ai_gen_id }}">{{ child_link.title }}</a>
+                      <a href="{{ child_link.url }}" class="ai-header-nav-dropdown-link-{{ ai_gen_id }}">
+                        {{- child_link.title -}}
+                      </a>
                     {% endfor %}
                   </div>
                 {% endif %}
@@ -897,7 +944,13 @@
     <div class="ai-header-mobile-bar-{{ ai_gen_id }}">
       <div class="ai-header-mobile-left-{{ ai_gen_id }}">
         <button class="ai-header-mobile-button-{{ ai_gen_id }}" aria-label="Open menu" data-drawer-toggle>
-          <svg class="ai-header-mobile-hamburger-icon-{{ ai_gen_id }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <svg
+            class="ai-header-mobile-hamburger-icon-{{ ai_gen_id }}"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
             <line x1="3" y1="12" x2="21" y2="12"></line>
             <line x1="3" y1="6" x2="21" y2="6"></line>
             <line x1="3" y1="18" x2="21" y2="18"></line>
@@ -917,13 +970,25 @@
 
       <div class="ai-header-mobile-right-{{ ai_gen_id }}">
         <a href="/account" class="ai-header-mobile-button-{{ ai_gen_id }}" aria-label="Account">
-          <svg class="ai-header-mobile-account-icon-{{ ai_gen_id }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <svg
+            class="ai-header-mobile-account-icon-{{ ai_gen_id }}"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
             <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
             <circle cx="12" cy="7" r="4"></circle>
           </svg>
         </a>
         <a href="/cart" class="ai-header-mobile-button-{{ ai_gen_id }}" aria-label="Cart">
-          <svg class="ai-header-mobile-cart-icon-{{ ai_gen_id }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <svg
+            class="ai-header-mobile-cart-icon-{{ ai_gen_id }}"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
             <circle cx="9" cy="21" r="1"></circle>
             <circle cx="20" cy="21" r="1"></circle>
             <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
@@ -969,15 +1034,17 @@
     {% endif %}
 
     <nav class="ai-header-drawer-nav-{{ ai_gen_id }}">
-      {% if block.settings.menu != blank %}
+      {% if active_mobile_menu != blank %}
         <ul class="ai-header-drawer-nav-list-{{ ai_gen_id }}">
-          {% for link in block.settings.menu.links %}
+          {% for link in active_mobile_menu.links %}
             <li class="ai-header-drawer-nav-item-{{ ai_gen_id }}">
               <a href="{{ link.url }}" class="ai-header-drawer-nav-link-{{ ai_gen_id }}">{{ link.title }}</a>
               {% if link.links.size > 0 %}
                 <div class="ai-header-drawer-nav-dropdown-{{ ai_gen_id }}">
                   {% for child_link in link.links %}
-                    <a href="{{ child_link.url }}" class="ai-header-drawer-nav-dropdown-link-{{ ai_gen_id }}">{{ child_link.title }}</a>
+                    <a href="{{ child_link.url }}" class="ai-header-drawer-nav-dropdown-link-{{ ai_gen_id }}">
+                      {{- child_link.title -}}
+                    </a>
                   {% endfor %}
                 </div>
               {% endif %}
@@ -1003,7 +1070,7 @@
         this.overlay = this.querySelector('[data-overlay]');
         this.drawerToggle = this.querySelector('[data-drawer-toggle]');
         this.drawerClose = this.querySelector('[data-drawer-close]');
-        
+
         this.setupEventListeners();
       }
 
@@ -1270,6 +1337,12 @@
       "id": "menu",
       "label": "Menu",
       "default": "main-menu"
+    },
+    {
+      "type": "link_list",
+      "id": "mobile_menu",
+      "label": "Mobile menu",
+      "info": "Optional — leave blank to reuse the desktop menu above in the mobile drawer."
     },
     {
       "type": "select",
