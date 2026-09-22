@@ -87,9 +87,14 @@
     transition: color 0.25s ease, border-color 0.25s ease;
   }
 
-  .ai-featured-tabs__tab-{{ai_gen_id}}:hover,
   .ai-featured-tabs__tab-{{ai_gen_id}}.active {
     color: {{ block.settings.tab_hover_color }};
+  }
+
+  @media (hover: hover) {
+    .ai-featured-tabs__tab-{{ai_gen_id}}:hover {
+      color: {{ block.settings.tab_hover_color }};
+    }
   }
 
   .ai-featured-tabs__tab-{{ai_gen_id}}.active {
@@ -127,8 +132,10 @@
     transition: box-shadow 0.25s ease;
   }
 
-  .ai-featured-tabs__card-{{ai_gen_id}}:hover {
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.14);
+  @media (hover: hover) {
+    .ai-featured-tabs__card-{{ai_gen_id}}:hover {
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.14);
+    }
   }
 
   .ai-featured-tabs__thumb-{{ai_gen_id}} {
@@ -180,9 +187,11 @@
     white-space: nowrap;
   }
 
-  .ai-featured-tabs__card-{{ai_gen_id}}:hover .ai-featured-tabs__quickview-hint-{{ai_gen_id}} {
-    opacity: 1;
-    transform: translate(-50%, 0);
+  @media (hover: hover) {
+    .ai-featured-tabs__card-{{ai_gen_id}}:hover .ai-featured-tabs__quickview-hint-{{ai_gen_id}} {
+      opacity: 1;
+      transform: translate(-50%, 0);
+    }
   }
 
   .ai-featured-tabs__thumb-btn-{{ai_gen_id}} .loading__spinner {
@@ -195,8 +204,10 @@
     z-index: 3;
   }
 
-  .ai-featured-tabs__card-{{ai_gen_id}}:hover .ai-featured-tabs__thumb-{{ai_gen_id}} img {
-    transform: scale(1.04);
+  @media (hover: hover) {
+    .ai-featured-tabs__card-{{ai_gen_id}}:hover .ai-featured-tabs__thumb-{{ai_gen_id}} img {
+      transform: scale(1.04);
+    }
   }
 
   .ai-featured-tabs__badge-{{ai_gen_id}} {
@@ -235,11 +246,17 @@
     transition: opacity 0.2s ease, transform 0.2s ease, border-color 0.2s ease;
   }
 
-  .ai-featured-tabs__card-{{ai_gen_id}}:hover .ai-featured-tabs__wishlist-{{ai_gen_id}},
   .ai-featured-tabs__wishlist-{{ai_gen_id}}:focus-visible,
   .ai-featured-tabs__wishlist-{{ai_gen_id}}.is-active {
     opacity: 1;
     transform: translateY(0);
+  }
+
+  @media (hover: hover) {
+    .ai-featured-tabs__card-{{ai_gen_id}}:hover .ai-featured-tabs__wishlist-{{ai_gen_id}} {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 
   .ai-featured-tabs__wishlist-{{ai_gen_id}} svg {
@@ -276,8 +293,10 @@
     transition: color 0.2s ease;
   }
 
-  .ai-featured-tabs__card-{{ai_gen_id}}:hover .ai-featured-tabs__title-{{ai_gen_id}} {
-    color: {{ block.settings.accent_color }};
+  @media (hover: hover) {
+    .ai-featured-tabs__card-{{ai_gen_id}}:hover .ai-featured-tabs__title-{{ai_gen_id}} {
+      color: {{ block.settings.accent_color }};
+    }
   }
 
   .ai-featured-tabs__rating-{{ai_gen_id}} {
@@ -380,8 +399,10 @@
     transition: background-color 0.2s ease, opacity 0.2s ease;
   }
 
-  .ai-featured-tabs__cta-{{ai_gen_id}}:hover {
-    background: #111111;
+  @media (hover: hover) {
+    .ai-featured-tabs__cta-{{ai_gen_id}}:hover {
+      background: #111111;
+    }
   }
 
   .ai-featured-tabs__cta-{{ai_gen_id}}[aria-disabled='true'],

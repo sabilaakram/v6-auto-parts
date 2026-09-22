@@ -293,22 +293,20 @@
     grid-template-columns: 1fr;
   }
 
-  /* Load more — applies at all screen widths, not just mobile */
-  .ai-collection-{{ section.id }} .ai-collection__load-more {
+  /* Infinite scroll — applies at all screen widths, not just mobile */
+  .ai-collection-{{ section.id }} .ai-collection__infinite-scroll {
+    display: block;
+    width: 100%;
+  }
+
+  .ai-collection-{{ section.id }} .ai-collection__infinite-sentinel {
+    height: 1px;
+  }
+
+  .ai-collection-{{ section.id }} .ai-collection__infinite-spinner {
     display: flex;
     justify-content: center;
-    width: 100%;
     padding: 30px 0;
-  }
-
-  .ai-collection-{{ section.id }} .ai-collection__load-more-button {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .ai-collection-{{ section.id }} .ai-collection__load-more-spinner {
-    display: inline-flex;
   }
 
   @media screen and (max-width: 989px) {
@@ -578,20 +576,20 @@
               </ul>
 
               {%- if paginate.pages > 1 -%}
-                <ai-load-more
-                  class="ai-collection__load-more"
+                <ai-infinite-scroll
+                  class="ai-collection__infinite-scroll"
                   data-section-id="{{ section.id }}"
                   data-current-page="{{ paginate.current_page }}"
                   data-total-pages="{{ paginate.pages }}"
                   data-base-url="{{ collection.url }}"
                 >
-                  <button type="button" class="ai-collection__load-more-button button button--secondary">
-                    <span class="ai-collection__load-more-label">Load more</span>
-                    <span class="ai-collection__load-more-spinner loading__spinner hidden">
+                  <div class="ai-collection__infinite-sentinel" aria-hidden="true"></div>
+                  <div class="ai-collection__infinite-spinner">
+                    <span class="loading__spinner hidden">
                       {%- render 'loading-spinner' -%}
                     </span>
-                  </button>
-                </ai-load-more>
+                  </div>
+                </ai-infinite-scroll>
               {%- endif -%}
             </div>
           {%- endif -%}
@@ -676,36 +674,42 @@
 
 <script>
   (function () {
-    if (customElements.get('ai-load-more')) return;
+    if (customElements.get('ai-infinite-scroll')) return;
 
-    class AiLoadMore extends HTMLElement {
+    class AiInfiniteScroll extends HTMLElement {
       connectedCallback() {
         this.sectionId = this.dataset.sectionId;
         this.baseUrl = this.dataset.baseUrl;
         this.currentPage = parseInt(this.dataset.currentPage, 10) || 1;
         this.totalPages = parseInt(this.dataset.totalPages, 10) || 1;
         this.loading = false;
-        this.button = this.querySelector('.ai-collection__load-more-button');
-        this.label = this.querySelector('.ai-collection__load-more-label');
-        this.spinner = this.querySelector('.ai-collection__load-more-spinner');
+        this.sentinel = this.querySelector('.ai-collection__infinite-sentinel');
+        this.spinner = this.querySelector('.ai-collection__infinite-spinner .loading__spinner');
 
-        if (this.currentPage >= this.totalPages) {
-          this.classList.add('hidden');
-          return;
-        }
+        this.observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) this.loadNextPage();
+            });
+          },
+          { rootMargin: '0px 0px 600px 0px' }
+        );
 
-        if (this.button) {
-          this.button.addEventListener('click', () => this.loadNextPage());
-        }
+        if (this.sentinel) this.observer.observe(this.sentinel);
+      }
+
+      disconnectedCallback() {
+        if (this.observer) this.observer.disconnect();
       }
 
       async loadNextPage() {
-        if (this.loading || this.currentPage >= this.totalPages) return;
+        if (this.loading || this.currentPage >= this.totalPages) {
+          this.observer.disconnect();
+          return;
+        }
 
         this.loading = true;
-        if (this.button) this.button.disabled = true;
         if (this.spinner) this.spinner.classList.remove('hidden');
-        if (this.label) this.label.classList.add('hidden');
 
         const nextPage = this.currentPage + 1;
         const url = `${this.baseUrl}?page=${nextPage}&section_id=${this.sectionId}`;
@@ -725,21 +729,18 @@
 
           this.currentPage = nextPage;
         } catch (e) {
-          // Leave the button enabled so the shopper can retry
+          // Silently allow retry on next scroll intersection
         } finally {
           this.loading = false;
+          if (this.spinner) this.spinner.classList.add('hidden');
           if (this.currentPage >= this.totalPages) {
-            this.classList.add('hidden');
-          } else {
-            if (this.button) this.button.disabled = false;
-            if (this.spinner) this.spinner.classList.add('hidden');
-            if (this.label) this.label.classList.remove('hidden');
+            this.observer.disconnect();
           }
         }
       }
     }
 
-    customElements.define('ai-load-more', AiLoadMore);
+    customElements.define('ai-infinite-scroll', AiInfiniteScroll);
   })();
 </script>
 
