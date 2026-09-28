@@ -36,17 +36,21 @@
       customElements.define('collection-component', StandardEvents.createViewEventElement());
       customElements.define(
         'product-component',
-        StandardEvents.createViewEventElement(HTMLElement, { defaultTrigger: 'intersect' }),
+        StandardEvents.createViewEventElement(HTMLElement, { defaultTrigger: 'intersect' })
       );
 
-      document.addEventListener('DOMContentLoaded', () => {
-        const template = document.querySelector('main[data-template]')?.dataset.template || '';
-        document.dispatchEvent(
-          new StandardEvents.PageViewEvent({
-            page: { template, title: document.title, url: window.location.href },
-          })
-        );
-      }, { once: true });
+      document.addEventListener(
+        'DOMContentLoaded',
+        () => {
+          const template = document.querySelector('main[data-template]')?.dataset.template || '';
+          document.dispatchEvent(
+            new StandardEvents.PageViewEvent({
+              page: { template, title: document.title, url: window.location.href },
+            })
+          );
+        },
+        { once: true }
+      );
     </script>
 
     <script src="{{ 'constants.js' | asset_url }}" defer="defer"></script>
@@ -313,6 +317,40 @@
         onload="this.media='all'"
       >
     {%- endif -%}
+    <script src="https://apis.google.com/js/platform.js?onload=renderOptIn" async defer></script>
+
+    <script>
+      window.renderOptIn = function () {
+        window.gapi.load('surveyoptin', function () {
+          window.gapi.surveyoptin.render({
+            // REQUIRED FIELDS
+            merchant_id: 456825353,
+            order_id: 'ORDER_ID',
+            email: 'CUSTOMER_EMAIL',
+            delivery_country: 'COUNTRY_CODE',
+            estimated_delivery_date: 'YYYY-MM-DD',
+
+            // OPTIONAL FIELDS
+            products: [{ gtin: 'GTIN1' }, { gtin: 'GTIN2' }],
+          });
+        });
+      };
+    </script>
+
+    <script id="merchantWidgetScript" src="https://www.gstatic.com/shopping/merchant/merchantwidget.js" defer></script>
+
+    <script>
+      merchantWidgetScript.addEventListener('load', function () {
+        merchantwidget.start({
+          // REQUIRED FIELDS
+          merchant_id: 456825353,
+
+          // OPTIONAL FIELDS
+          position: POSITION,
+          region: REGION,
+        });
+      });
+    </script>
 
     <script>
       if (Shopify.designMode) {
