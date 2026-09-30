@@ -40,7 +40,57 @@
 {% enddoc %}
 {% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
 
+{%- liquid
+  # Font weight overrides: 'default' keeps the weight chosen in the font picker.
+  # When a weight is picked, load that variant of the font if the family has it
+  # (otherwise the browser synthesises it from the base variant).
+  assign small_heading_font = block.settings.small_heading_font
+  assign small_heading_weight = small_heading_font.weight
+  if block.settings.small_heading_weight != 'default' and block.settings.small_heading_weight != blank
+    assign small_heading_weight = block.settings.small_heading_weight
+    assign modified_font = small_heading_font | font_modify: 'weight', small_heading_weight
+    if modified_font
+      assign small_heading_font = modified_font
+    endif
+  endif
+
+  assign main_heading_font = block.settings.main_heading_font
+  assign main_heading_weight = main_heading_font.weight
+  if block.settings.main_heading_weight != 'default' and block.settings.main_heading_weight != blank
+    assign main_heading_weight = block.settings.main_heading_weight
+    assign modified_font = main_heading_font | font_modify: 'weight', main_heading_weight
+    if modified_font
+      assign main_heading_font = modified_font
+    endif
+  endif
+
+  assign title_font = block.settings.title_font
+  assign title_weight = title_font.weight
+  if block.settings.title_weight != 'default' and block.settings.title_weight != blank
+    assign title_weight = block.settings.title_weight
+    assign modified_font = title_font | font_modify: 'weight', title_weight
+    if modified_font
+      assign title_font = modified_font
+    endif
+  endif
+
+  assign description_font = block.settings.description_font
+  assign description_weight = description_font.weight
+  if block.settings.description_weight != 'default' and block.settings.description_weight != blank
+    assign description_weight = block.settings.description_weight
+    assign modified_font = description_font | font_modify: 'weight', description_weight
+    if modified_font
+      assign description_font = modified_font
+    endif
+  endif
+-%}
+
 {% style %}
+  {{ small_heading_font | font_face: font_display: 'swap' }}
+  {{ main_heading_font | font_face: font_display: 'swap' }}
+  {{ title_font | font_face: font_display: 'swap' }}
+  {{ description_font | font_face: font_display: 'swap' }}
+
   .ai-why-choose-us-{{ ai_gen_id }} {
     display: block;
     position: relative;
@@ -86,8 +136,8 @@
 
   .ai-why-choose-us-small-heading-{{ ai_gen_id }} {
     color: {{ block.settings.small_heading_color }};
-    font-family: {{ block.settings.small_heading_font.family }}, {{ block.settings.small_heading_font.fallback_families }};
-    font-weight: {{ block.settings.small_heading_font.weight }};
+    font-family: {{ small_heading_font.family }}, {{ small_heading_font.fallback_families }};
+    font-weight: {{ small_heading_weight }};
     font-size: {{ block.settings.small_heading_size }}px;
     letter-spacing: {{ block.settings.small_heading_letter_spacing }}px;
     text-transform: uppercase;
@@ -96,8 +146,8 @@
 
   .ai-why-choose-us-main-heading-{{ ai_gen_id }} {
     color: {{ block.settings.main_heading_color }};
-    font-family: {{ block.settings.main_heading_font.family }}, {{ block.settings.main_heading_font.fallback_families }};
-    font-weight: {{ block.settings.main_heading_font.weight }};
+    font-family: {{ main_heading_font.family }}, {{ main_heading_font.fallback_families }};
+    font-weight: {{ main_heading_weight }};
     font-size: {{ block.settings.main_heading_size }}px;
     line-height: {{ block.settings.main_heading_line_height }};
     margin: 0;
@@ -152,20 +202,28 @@
 
   .ai-why-choose-us-feature-title-{{ ai_gen_id }} {
     color: {{ block.settings.title_color }};
-    font-family: {{ block.settings.title_font.family }}, {{ block.settings.title_font.fallback_families }};
-    font-weight: {{ block.settings.title_font.weight }};
+    font-family: {{ title_font.family }}, {{ title_font.fallback_families }};
+    font-weight: {{ title_weight }};
     font-size: {{ block.settings.title_size }}px;
     margin: 0 0 {{ block.settings.title_bottom_spacing }}px 0;
   }
 
   .ai-why-choose-us-feature-description-{{ ai_gen_id }} {
     color: {{ block.settings.description_color }};
-    font-family: {{ block.settings.description_font.family }}, {{ block.settings.description_font.fallback_families }};
-    font-weight: {{ block.settings.description_font.weight }};
+    font-family: {{ description_font.family }}, {{ description_font.fallback_families }};
+    font-weight: {{ description_weight }};
     font-size: {{ block.settings.description_size }}px;
     line-height: {{ block.settings.description_line_height }};
     margin: 0;
   }
+
+  {%- if block.settings.columns_desktop == '5' -%}
+    @media screen and (min-width: 990px) and (max-width: 1199px) {
+      .ai-why-choose-us-grid-{{ ai_gen_id }} {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+  {%- endif -%}
 
   @media screen and (max-width: 989px) {
     .ai-why-choose-us-grid-{{ ai_gen_id }} {
@@ -232,7 +290,7 @@
     </div>
 
     <div class="ai-why-choose-us-grid-{{ ai_gen_id }}">
-      {% for i in (1..4) %}
+      {% for i in (1..5) %}
         {% liquid
           assign feature_enabled_key = 'feature_' | append: i | append: '_enabled'
           assign feature_icon_key = 'feature_' | append: i | append: '_icon'
@@ -400,6 +458,23 @@
       "default": "assistant_n4"
     },
     {
+      "type": "select",
+      "id": "small_heading_weight",
+      "label": "Font weight",
+      "info": "Font default uses the weight chosen in the font picker",
+      "options": [
+        { "value": "default", "label": "Font default" },
+        { "value": "300", "label": "Light (300)" },
+        { "value": "400", "label": "Regular (400)" },
+        { "value": "500", "label": "Medium (500)" },
+        { "value": "600", "label": "Semi-bold (600)" },
+        { "value": "700", "label": "Bold (700)" },
+        { "value": "800", "label": "Extra-bold (800)" },
+        { "value": "900", "label": "Black (900)" }
+      ],
+      "default": "default"
+    },
+    {
       "type": "range",
       "id": "small_heading_size",
       "min": 10,
@@ -450,6 +525,23 @@
       "id": "main_heading_font",
       "label": "Font",
       "default": "assistant_n4"
+    },
+    {
+      "type": "select",
+      "id": "main_heading_weight",
+      "label": "Font weight",
+      "info": "Font default uses the weight chosen in the font picker",
+      "options": [
+        { "value": "default", "label": "Font default" },
+        { "value": "300", "label": "Light (300)" },
+        { "value": "400", "label": "Regular (400)" },
+        { "value": "500", "label": "Medium (500)" },
+        { "value": "600", "label": "Semi-bold (600)" },
+        { "value": "700", "label": "Bold (700)" },
+        { "value": "800", "label": "Extra-bold (800)" },
+        { "value": "900", "label": "Black (900)" }
+      ],
+      "default": "default"
     },
     {
       "type": "range",
@@ -526,6 +618,10 @@
         {
           "value": "4",
           "label": "4"
+        },
+        {
+          "value": "5",
+          "label": "5"
         }
       ],
       "default": "3"
@@ -617,6 +713,23 @@
       "default": "assistant_n4"
     },
     {
+      "type": "select",
+      "id": "title_weight",
+      "label": "Title font weight",
+      "info": "Font default uses the weight chosen in the font picker",
+      "options": [
+        { "value": "default", "label": "Font default" },
+        { "value": "300", "label": "Light (300)" },
+        { "value": "400", "label": "Regular (400)" },
+        { "value": "500", "label": "Medium (500)" },
+        { "value": "600", "label": "Semi-bold (600)" },
+        { "value": "700", "label": "Bold (700)" },
+        { "value": "800", "label": "Extra-bold (800)" },
+        { "value": "900", "label": "Black (900)" }
+      ],
+      "default": "default"
+    },
+    {
       "type": "range",
       "id": "title_size",
       "min": 14,
@@ -647,6 +760,23 @@
       "id": "description_font",
       "label": "Description font",
       "default": "assistant_n4"
+    },
+    {
+      "type": "select",
+      "id": "description_weight",
+      "label": "Description font weight",
+      "info": "Font default uses the weight chosen in the font picker",
+      "options": [
+        { "value": "default", "label": "Font default" },
+        { "value": "300", "label": "Light (300)" },
+        { "value": "400", "label": "Regular (400)" },
+        { "value": "500", "label": "Medium (500)" },
+        { "value": "600", "label": "Semi-bold (600)" },
+        { "value": "700", "label": "Bold (700)" },
+        { "value": "800", "label": "Extra-bold (800)" },
+        { "value": "900", "label": "Black (900)" }
+      ],
+      "default": "default"
     },
     {
       "type": "range",
@@ -780,6 +910,33 @@
       "id": "feature_4_description",
       "label": "Description",
       "default": "Competitive pricing on all our products."
+    },
+    {
+      "type": "header",
+      "content": "Feature 5"
+    },
+    {
+      "type": "checkbox",
+      "id": "feature_5_enabled",
+      "label": "Enable feature 5",
+      "default": false
+    },
+    {
+      "type": "html",
+      "id": "feature_5_icon",
+      "label": "SVG icon code"
+    },
+    {
+      "type": "text",
+      "id": "feature_5_title",
+      "label": "Title",
+      "default": "10-Year Warranty"
+    },
+    {
+      "type": "textarea",
+      "id": "feature_5_description",
+      "label": "Description",
+      "default": "Peace of mind on every part we sell."
     }
   ],
   "presets": [
