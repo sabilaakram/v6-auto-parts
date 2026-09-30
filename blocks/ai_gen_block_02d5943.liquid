@@ -153,14 +153,22 @@
     margin: 0;
   }
 
+  /* Flex-wrap instead of grid so an incomplete last row is centered
+     (e.g. 5 items on 3 columns = 3 + 2 centered). --cols is set per breakpoint. */
   .ai-why-choose-us-grid-{{ ai_gen_id }} {
-    display: grid;
-    grid-template-columns: repeat({{ block.settings.columns_desktop }}, 1fr);
-    gap: {{ block.settings.grid_gap }}px;
+    --cols: {{ block.settings.columns_desktop }};
+    --gap: {{ block.settings.grid_gap }}px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--gap);
     margin: 0 auto;
   }
 
   .ai-why-choose-us-feature-{{ ai_gen_id }} {
+    flex: 0 0 calc((100% - (var(--cols) - 1) * var(--gap)) / var(--cols));
+    min-width: 0;
+    box-sizing: border-box;
     text-align: center;
     padding: {{ block.settings.feature_padding }}px;
   }
@@ -220,14 +228,14 @@
   {%- if block.settings.columns_desktop == '5' -%}
     @media screen and (min-width: 990px) and (max-width: 1199px) {
       .ai-why-choose-us-grid-{{ ai_gen_id }} {
-        grid-template-columns: repeat(3, 1fr);
+        --cols: 3;
       }
     }
   {%- endif -%}
 
   @media screen and (max-width: 989px) {
     .ai-why-choose-us-grid-{{ ai_gen_id }} {
-      grid-template-columns: repeat(2, 1fr);
+      --cols: {{ block.settings.columns_tablet | default: 2 }};
     }
 
     .ai-why-choose-us-main-heading-{{ ai_gen_id }} {
@@ -241,7 +249,10 @@
 
   @media screen and (max-width: 749px) {
     .ai-why-choose-us-grid-{{ ai_gen_id }} {
-      grid-template-columns: repeat({{ block.settings.columns_mobile }}, 1fr);
+      --cols: {{ block.settings.columns_mobile }};
+      {%- if block.settings.columns_mobile == '2' %}
+        --gap: {{ block.settings.grid_gap | times: 0.6 | round }}px;
+      {%- endif %}
     }
 
     .ai-why-choose-us-{{ ai_gen_id }} {
@@ -625,6 +636,23 @@
         }
       ],
       "default": "3"
+    },
+    {
+      "type": "select",
+      "id": "columns_tablet",
+      "label": "Tablet columns",
+      "info": "Screens 750–989px wide. A short last row is centered.",
+      "options": [
+        {
+          "value": "2",
+          "label": "2"
+        },
+        {
+          "value": "3",
+          "label": "3"
+        }
+      ],
+      "default": "2"
     },
     {
       "type": "select",
