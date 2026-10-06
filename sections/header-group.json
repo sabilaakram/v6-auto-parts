@@ -11,6 +11,38 @@
   "name": "t:sections.header.name",
   "type": "header",
   "sections": {
+    "179127076058ec2392": {
+      "type": "_blocks",
+      "blocks": {
+        "ai_gen_block_9eb887a_qBPbUK": {
+          "type": "ai_gen_block_9eb887a",
+          "settings": {
+            "message": "Don't Miss Out - Sale Ends Soon",
+            "button_label": "Shop now",
+            "button_link": "https://v6autoparts.com/collections/all",
+            "desktop_width_percent": 100,
+            "body_font": "assistant_n4",
+            "text_size_desktop": 20,
+            "text_size_mobile": 14,
+            "text_weight": "700",
+            "button_size_desktop": 14,
+            "button_size_mobile": 14,
+            "button_weight": "600",
+            "vertical_padding": 14,
+            "button_radius": 4,
+            "background_color": "#A50000",
+            "text_color": "#FFFFFF",
+            "button_color": "#FFFFFF",
+            "button_text_color": "#A50000"
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "ai_gen_block_9eb887a_qBPbUK"
+      ],
+      "settings": {}
+    },
     "1788505006da1b9e33": {
       "type": "_blocks",
       "blocks": {
@@ -208,6 +240,7 @@
     }
   },
   "order": [
+    "179127076058ec2392",
     "1788505006da1b9e33",
     "header",
     "17885077076ed46822"
