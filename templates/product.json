@@ -16,10 +16,6 @@
           "type": "title",
           "settings": {}
         },
-        "rating": {
-          "type": "rating",
-          "settings": {}
-        },
         "repocean_google_reviews_repocean_reviews_badge_arjBFp": {
           "type": "shopify://apps/repocean-google-reviews/blocks/repocean-reviews-badge/019aa132-98b1-7055-b64e-581f915ade43",
           "settings": {
@@ -225,7 +221,6 @@
       },
       "block_order": [
         "title",
-        "rating",
         "repocean_google_reviews_repocean_reviews_badge_arjBFp",
         "quick_facts",
         "sold_progress",
