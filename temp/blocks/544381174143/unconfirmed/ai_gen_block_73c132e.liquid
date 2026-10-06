@@ -1,6 +1,205 @@
+{% doc %}
+  @prompt
+    generate a simple top bar, containing text and a button and must be responsive, and all the things like colors, font families, and font sizes will be handled from the forntend
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-top-bar-{{ ai_gen_id }} {
+    display: block;
+    width: {{ block.settings.desktop_width_percent }}%;
+    max-width: 100%;
+    box-sizing: border-box;
+    background: {{ block.settings.background_color }};
+    color: {{ block.settings.text_color }};
+    font-family: {{ block.settings.body_font.family }}, {{ block.settings.body_font.fallback_families }};
+    padding: {{ block.settings.vertical_padding }}px 20px;
+  }
+
+  .ai-top-bar__inner-{{ ai_gen_id }} {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+    text-align: center;
+  }
+
+  .ai-top-bar__text-{{ ai_gen_id }} {
+    margin: 0;
+    color: inherit;
+    font-size: {{ block.settings.text_size }}px;
+    line-height: 1.4;
+  }
+
+  .ai-top-bar__button-{{ ai_gen_id }} {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    flex: 0 0 auto;
+    min-height: 40px;
+    padding: 9px 18px;
+    border: 1px solid {{ block.settings.button_color }};
+    border-radius: {{ block.settings.button_radius }}px;
+    background: {{ block.settings.button_color }};
+    color: {{ block.settings.button_text_color }};
+    font: inherit;
+    font-size: {{ block.settings.button_size }}px;
+    line-height: 1.2;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .ai-top-bar__button-{{ ai_gen_id }}:hover {
+    opacity: 0.88;
+  }
+
+  .ai-top-bar__button-{{ ai_gen_id }}:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 3px;
+  }
+
+  @media screen and (max-width: 600px) {
+    .ai-top-bar-{{ ai_gen_id }} {
+      padding-right: 16px;
+      padding-left: 16px;
+    }
+
+    .ai-top-bar__inner-{{ ai_gen_id }} {
+      flex-direction: column;
+      gap: 10px;
+    }
+  }
+{% endstyle %}
+
+<div class="ai-top-bar-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-top-bar__inner-{{ ai_gen_id }}">
+    {% if block.settings.message != blank %}
+      <p class="ai-top-bar__text-{{ ai_gen_id }}">{{ block.settings.message | escape }}</p>
+    {% endif %}
+    {% if block.settings.button_label != blank %}
+      {% if block.settings.button_link != blank %}
+        <a class="ai-top-bar__button-{{ ai_gen_id }}" href="{{ block.settings.button_link }}">{{ block.settings.button_label | escape }}</a>
+      {% else %}
+        <span class="ai-top-bar__button-{{ ai_gen_id }}">{{ block.settings.button_label | escape }}</span>
+      {% endif %}
+    {% endif %}
+  </div>
+</div>
+
 {% schema %}
- {
-   "name": "AI_Block",
-   "tag": "shopify-ai-generated-block"
- }
+{
+  "name": "Responsive top bar",
+  "settings": [
+    {
+      "type": "text",
+      "id": "message",
+      "label": "Text",
+      "default": "Find the right parts for your vehicle"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "default": "Shop now"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
+    },
+    {
+      "type": "header",
+      "content": "Appearance"
+    },
+    {
+      "type": "range",
+      "id": "desktop_width_percent",
+      "label": "Desktop width",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    },
+    {
+      "type": "font_picker",
+      "id": "body_font",
+      "label": "Font family",
+      "default": "assistant_n4"
+    },
+    {
+      "type": "range",
+      "id": "text_size",
+      "label": "Text size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "button_size",
+      "label": "Button text size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "vertical_padding",
+      "label": "Vertical padding",
+      "min": 8,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "button_radius",
+      "label": "Button corner radius",
+      "min": 0,
+      "max": 30,
+      "step": 2,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background",
+      "default": "#242833"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "button_color",
+      "label": "Button background",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Button text",
+      "default": "#121212"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Responsive top bar"
+    }
+  ],
+  "tag": null,
+  "class": "responsive-top-bar"
+}
 {% endschema %}
