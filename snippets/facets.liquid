@@ -28,8 +28,8 @@
     assign terms = results.terms | escape
     assign results_url = '?q=' | append: terms | append: '&options%5Bprefix%5D=last&sort_by=' | append: sort_by
   endif
-  assign category_names = 'Air & Fuel Delivery|Front Grilles & Headlights|Power Steering|Heater Blower Motor|Interior Parts & Accessories|Engine Cooling|Electrical & Starting|Exhaust & Emission System|Brake Parts|Wiper Linkages & Motors|Suspension|Other (Engine, Drivetrain & Misc.)' | split: '|'
-  assign category_handles = 'air-fuel-delivery|front-grilles|steering-suspension|ac-heating|interior-parts-accessories|engine-cooling-components|electrical-starting|exhaust-emission-system|brakes-brake-parts|wiper-linkage-motors-fiat-nissan-vauxhall-peugeot-v6-auto-parts|suspension|other-engine-drivetrain-misc' | split: '|'
+  assign category_names = 'Air & Fuel Delivery|Front Grilles & Headlights|Lights & Bulbs|Power Steering|Heater Blower Motor|Interior Parts & Accessories|Engine Cooling|Electrical & Starting|Exhaust & Emission System|Brake Parts|Wiper Linkages & Motors|Suspension|Other (Engine, Drivetrain & Misc.)' | split: '|'
+  assign category_handles = 'air-fuel-delivery|front-grilles|lights-bulbs|steering-suspension|ac-heating|interior-parts-accessories|engine-cooling-components|electrical-starting|exhaust-emission-system|brakes-brake-parts|wiper-linkage-motors-fiat-nissan-vauxhall-peugeot-v6-auto-parts|suspension|other-engine-drivetrain-misc' | split: '|'
   assign current_category_handle = ''
   if results.handle != blank
     if category_handles contains results.handle
