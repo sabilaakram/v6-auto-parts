@@ -208,6 +208,26 @@
       "name": "image carousel",
       "settings": {}
     },
+    "manufacturer_logos": {
+      "type": "manufacturer-logos",
+      "blocks": {
+        "logo_mercedes": { "type": "logo", "settings": { "name": "Mercedes" } },
+        "logo_bmw": { "type": "logo", "settings": { "name": "BMW" } },
+        "logo_audi": { "type": "logo", "settings": { "name": "Audi" } },
+        "logo_lexus": { "type": "logo", "settings": { "name": "Lexus" } },
+        "logo_toyota": { "type": "logo", "settings": { "name": "Toyota" } },
+        "logo_nissan": { "type": "logo", "settings": { "name": "Nissan" } }
+      },
+      "block_order": [
+        "logo_mercedes",
+        "logo_bmw",
+        "logo_audi",
+        "logo_lexus",
+        "logo_toyota",
+        "logo_nissan"
+      ],
+      "settings": {}
+    },
     "1788343453c1cb3136": {
       "type": "_blocks",
       "blocks": {
@@ -945,6 +965,7 @@
     "1788342816778cbeb6",
     "vehicle_finder_home",
     "1788344374aa9fe7c0",
+    "manufacturer_logos",
     "1788343453c1cb3136",
     "178834836307edac85",
     "featured_collection",

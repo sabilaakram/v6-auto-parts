@@ -1,0 +1,568 @@
+{% comment %}
+  Manufacturer logos grid. Each block is one brand; if no image is picked,
+  falls back to the theme asset logo-<name>.png (e.g. "Mercedes" -> logo-mercedes.png).
+  If no link is set, the logo links to a store search for the brand name.
+{% endcomment %}
+
+{%- liquid
+  assign sid = section.id | replace: '_', '' | downcase
+  assign heading_font = section.settings.heading_font
+-%}
+
+{% style %}
+  {{ heading_font | font_face: font_display: 'swap' }}
+
+  .mfr-logos-{{ sid }} {
+    background: {{ section.settings.background_color }};
+    padding: {{ section.settings.padding_top_mobile }}px 16px {{ section.settings.padding_bottom_mobile }}px;
+  }
+
+  .mfr-logos-{{ sid }} .mfr-logos__inner {
+    max-width: {{ section.settings.max_width }}px;
+    margin: 0 auto;
+  }
+
+  .mfr-logos-{{ sid }} .mfr-logos__heading {
+    text-align: center;
+    margin: 0 0 {{ section.settings.heading_bottom_spacing_mobile }}px;
+    font-family: {{ heading_font.family }}, {{ heading_font.fallback_families }};
+    font-weight: {{ heading_font.weight }};
+    font-style: {{ heading_font.style }};
+    font-size: {{ section.settings.heading_size_mobile }}px;
+    line-height: 1.2;
+    letter-spacing: 0.02em;
+    color: {{ section.settings.heading_color }};
+    text-transform: {{ section.settings.heading_text_transform }};
+  }
+
+  .mfr-logos-{{ sid }} .mfr-logos__subheading {
+    text-align: center;
+    margin: -{{ section.settings.heading_bottom_spacing_mobile | divided_by: 2 }}px auto {{ section.settings.heading_bottom_spacing_mobile }}px;
+    max-width: 640px;
+    font-size: 14px;
+    line-height: 1.5;
+    color: {{ section.settings.text_color }};
+  }
+
+  .mfr-logos-{{ sid }} .mfr-logos__grid {
+    display: grid;
+    grid-template-columns: repeat({{ section.settings.columns_mobile }}, minmax(0, 1fr));
+    gap: {{ section.settings.gap_mobile }}px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .mfr-logos-{{ sid }} .mfr-logos__item {
+    margin: 0;
+  }
+
+  .mfr-logos-{{ sid }} .mfr-logos__card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    height: 100%;
+    padding: 14px 8px;
+    background: {{ section.settings.card_background }};
+    border: 1px solid {{ section.settings.card_border_color }};
+    border-radius: {{ section.settings.card_radius }}px;
+    text-decoration: none;
+    color: {{ section.settings.text_color }};
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+  }
+
+  .mfr-logos-{{ sid }} a.mfr-logos__card:hover,
+  .mfr-logos-{{ sid }} a.mfr-logos__card:focus-visible {
+    transform: translateY(-4px);
+    border-color: {{ section.settings.heading_color }};
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08);
+  }
+
+  .mfr-logos-{{ sid }} .mfr-logos__img {
+    display: block;
+    width: 100%;
+    max-width: {{ section.settings.logo_size_mobile }}px;
+    aspect-ratio: 1 / 1;
+    height: auto;
+    object-fit: contain;
+    {%- if section.settings.grayscale %}
+      filter: grayscale(1);
+      opacity: 0.8;
+      transition: filter 0.25s ease, opacity 0.25s ease;
+    {%- endif %}
+  }
+
+  {%- if section.settings.grayscale %}
+    .mfr-logos-{{ sid }} .mfr-logos__card:hover .mfr-logos__img,
+    .mfr-logos-{{ sid }} .mfr-logos__card:focus-visible .mfr-logos__img {
+      filter: none;
+      opacity: 1;
+    }
+  {%- endif %}
+
+  .mfr-logos-{{ sid }} .mfr-logos__name {
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.2;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  @media screen and (min-width: 750px) {
+    .mfr-logos-{{ sid }} {
+      padding: {{ section.settings.padding_top }}px 24px {{ section.settings.padding_bottom }}px;
+    }
+
+    .mfr-logos-{{ sid }} .mfr-logos__heading {
+      font-size: {{ section.settings.heading_size_tablet }}px;
+      margin-bottom: {{ section.settings.heading_bottom_spacing }}px;
+    }
+
+    .mfr-logos-{{ sid }} .mfr-logos__subheading {
+      margin-top: -{{ section.settings.heading_bottom_spacing | divided_by: 2 }}px;
+      margin-bottom: {{ section.settings.heading_bottom_spacing }}px;
+      font-size: 16px;
+    }
+
+    .mfr-logos-{{ sid }} .mfr-logos__grid {
+      grid-template-columns: repeat({{ section.settings.columns_tablet }}, minmax(0, 1fr));
+      gap: {{ section.settings.gap }}px;
+    }
+
+    .mfr-logos-{{ sid }} .mfr-logos__card {
+      padding: 20px 12px;
+    }
+
+    .mfr-logos-{{ sid }} .mfr-logos__img {
+      max-width: {{ section.settings.logo_size_tablet }}px;
+    }
+
+    .mfr-logos-{{ sid }} .mfr-logos__name {
+      font-size: 14px;
+    }
+  }
+
+  @media screen and (min-width: 990px) {
+    .mfr-logos-{{ sid }} .mfr-logos__heading {
+      font-size: {{ section.settings.heading_size }}px;
+    }
+
+    .mfr-logos-{{ sid }} .mfr-logos__grid {
+      grid-template-columns: repeat({{ section.settings.columns_desktop }}, minmax(0, 1fr));
+    }
+
+    .mfr-logos-{{ sid }} .mfr-logos__card {
+      padding: 24px 16px;
+    }
+
+    .mfr-logos-{{ sid }} .mfr-logos__img {
+      max-width: {{ section.settings.logo_size }}px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mfr-logos-{{ sid }} .mfr-logos__card,
+    .mfr-logos-{{ sid }} .mfr-logos__img {
+      transition: none;
+    }
+
+    .mfr-logos-{{ sid }} a.mfr-logos__card:hover {
+      transform: none;
+    }
+  }
+{% endstyle %}
+
+<div class="mfr-logos-{{ sid }}">
+  <div class="mfr-logos__inner">
+    {%- if section.settings.heading != blank -%}
+      <h2 class="mfr-logos__heading">{{ section.settings.heading | escape }}</h2>
+    {%- endif -%}
+    {%- if section.settings.subheading != blank -%}
+      <p class="mfr-logos__subheading">{{ section.settings.subheading | escape }}</p>
+    {%- endif -%}
+
+    <ul class="mfr-logos__grid" role="list">
+      {%- for block in section.blocks -%}
+        {%- liquid
+          assign brand = block.settings.name | strip
+          if block.settings.link != blank
+            assign brand_url = block.settings.link
+          elsif brand != blank
+            assign brand_query = brand | url_encode
+            assign brand_url = routes.search_url | append: '?q=' | append: brand_query
+          else
+            assign brand_url = blank
+          endif
+        -%}
+        <li class="mfr-logos__item" {{ block.shopify_attributes }}>
+          {%- if brand_url != blank -%}
+            <a class="mfr-logos__card" href="{{ brand_url }}" aria-label="{{ brand | escape }}">
+          {%- else -%}
+            <div class="mfr-logos__card">
+          {%- endif -%}
+
+          {%- if block.settings.image != blank -%}
+            {{
+              block.settings.image
+              | image_url: width: 400
+              | image_tag:
+                class: 'mfr-logos__img',
+                loading: 'lazy',
+                widths: '120, 200, 300, 400',
+                sizes: '(min-width: 990px) 160px, (min-width: 750px) 120px, 90px',
+                alt: brand
+            }}
+          {%- elsif brand != blank -%}
+            {%- assign asset_name = 'logo-' | append: brand | handleize | append: '.png' -%}
+            <img
+              class="mfr-logos__img"
+              src="{{ asset_name | asset_url }}"
+              alt="{{ brand | escape }}"
+              width="300"
+              height="300"
+              loading="lazy"
+            >
+          {%- endif -%}
+
+          {%- if section.settings.show_names and brand != blank -%}
+            <span class="mfr-logos__name">{{ brand | escape }}</span>
+          {%- endif -%}
+
+          {%- if brand_url != blank -%}
+            </a>
+          {%- else -%}
+            </div>
+          {%- endif -%}
+        </li>
+      {%- endfor -%}
+    </ul>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Manufacturer logos",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Heading"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Shop by Manufacturer"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading"
+    },
+    {
+      "type": "font_picker",
+      "id": "heading_font",
+      "label": "Heading font",
+      "default": "bebas_neue_n4"
+    },
+    {
+      "type": "select",
+      "id": "heading_text_transform",
+      "label": "Heading case",
+      "options": [
+        { "value": "none", "label": "As typed" },
+        { "value": "uppercase", "label": "Uppercase" },
+        { "value": "capitalize", "label": "Capitalize" }
+      ],
+      "default": "uppercase"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading color",
+      "default": "#a50000"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "label": "Heading size (desktop)",
+      "min": 20,
+      "max": 80,
+      "step": 1,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "heading_size_tablet",
+      "label": "Heading size (tablet)",
+      "min": 16,
+      "max": 64,
+      "step": 1,
+      "unit": "px",
+      "default": 38
+    },
+    {
+      "type": "range",
+      "id": "heading_size_mobile",
+      "label": "Heading size (mobile)",
+      "min": 16,
+      "max": 48,
+      "step": 1,
+      "unit": "px",
+      "default": 28
+    },
+    {
+      "type": "range",
+      "id": "heading_bottom_spacing",
+      "label": "Space below heading (desktop)",
+      "min": 0,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "heading_bottom_spacing_mobile",
+      "label": "Space below heading (mobile)",
+      "min": 0,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "header",
+      "content": "Logos"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_names",
+      "label": "Show brand names under logos",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "grayscale",
+      "label": "Grayscale logos, color on hover",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "logo_size",
+      "label": "Logo size (desktop)",
+      "min": 60,
+      "max": 240,
+      "step": 4,
+      "unit": "px",
+      "default": 140
+    },
+    {
+      "type": "range",
+      "id": "logo_size_tablet",
+      "label": "Logo size (tablet)",
+      "min": 48,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 112
+    },
+    {
+      "type": "range",
+      "id": "logo_size_mobile",
+      "label": "Logo size (mobile)",
+      "min": 40,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 84
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "columns_desktop",
+      "label": "Logos per row (desktop)",
+      "min": 2,
+      "max": 8,
+      "step": 1,
+      "default": 6
+    },
+    {
+      "type": "range",
+      "id": "columns_tablet",
+      "label": "Logos per row (tablet)",
+      "min": 2,
+      "max": 6,
+      "step": 1,
+      "default": 3
+    },
+    {
+      "type": "range",
+      "id": "columns_mobile",
+      "label": "Logos per row (mobile)",
+      "min": 1,
+      "max": 4,
+      "step": 1,
+      "default": 3
+    },
+    {
+      "type": "range",
+      "id": "gap",
+      "label": "Space between logos (desktop)",
+      "min": 0,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "gap_mobile",
+      "label": "Space between logos (mobile)",
+      "min": 0,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "default": 10
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "label": "Maximum content width",
+      "min": 800,
+      "max": 1800,
+      "step": 20,
+      "unit": "px",
+      "default": 1200
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Section background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "card_background",
+      "label": "Card background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "card_border_color",
+      "label": "Card border",
+      "default": "#e8e8e8"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#121212"
+    },
+    {
+      "type": "range",
+      "id": "card_radius",
+      "label": "Card corner radius",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top padding (desktop)",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom padding (desktop)",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "label": "Top padding (mobile)",
+      "min": 0,
+      "max": 80,
+      "step": 4,
+      "unit": "px",
+      "default": 28
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "label": "Bottom padding (mobile)",
+      "min": 0,
+      "max": 80,
+      "step": 4,
+      "unit": "px",
+      "default": 28
+    }
+  ],
+  "blocks": [
+    {
+      "type": "logo",
+      "name": "Logo",
+      "settings": [
+        {
+          "type": "text",
+          "id": "name",
+          "label": "Brand name",
+          "info": "Used as alt text. If no image is chosen, the theme file logo-<brand-name>.png is used."
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Logo image (optional override)"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link",
+          "info": "Leave empty to link to a store search for the brand name."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Manufacturer logos",
+      "blocks": [
+        { "type": "logo", "settings": { "name": "Mercedes" } },
+        { "type": "logo", "settings": { "name": "BMW" } },
+        { "type": "logo", "settings": { "name": "Audi" } },
+        { "type": "logo", "settings": { "name": "Lexus" } },
+        { "type": "logo", "settings": { "name": "Toyota" } },
+        { "type": "logo", "settings": { "name": "Nissan" } }
+      ]
+    }
+  ]
+}
+{% endschema %}
