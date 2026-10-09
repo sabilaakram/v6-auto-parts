@@ -91,7 +91,7 @@
           "settings": {
             "heading": "Find Parts For Your Vehicle",
             "search_tab_label": "Search by Parts",
-            "reg_tab_label": "Reg Lookup",
+            "reg_tab_label": "",
             "search_label": "",
             "search_placeholder": "Search for parts...",
             "search_input_bg_color": "#fbe4e4",
