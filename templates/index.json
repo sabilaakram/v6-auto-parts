@@ -1025,6 +1025,10 @@
         "ai_gen_block_fc6d095_i9pHjg"
       ],
       "settings": {}
+    },
+    "v6_blog_carousel": {
+      "type": "v6-blog-carousel",
+      "settings": {}
     }
   },
   "order": [
@@ -1042,6 +1046,7 @@
     "blocks_jyPGbM",
     "17884263143fc80e44",
     "17884269157ad5bb6c",
+    "v6_blog_carousel",
     "1788429138711c2820",
     "178843482546215bf0"
   ]
