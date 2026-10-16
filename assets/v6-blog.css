@@ -406,6 +406,7 @@
   gap: 1.6rem;
   align-items: flex-start;
   margin-top: 5rem;
+  margin-bottom: 4rem;
   padding: 3.2rem 2.4rem;
   border-radius: var(--v6-radius);
   background: var(--v6-accent);
@@ -463,6 +464,7 @@
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
+    margin-bottom: 6rem;
     padding: 4rem 4.8rem;
   }
 }
