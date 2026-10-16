@@ -1,0 +1,273 @@
+{{ 'v6-blog.css' | asset_url | stylesheet_tag }}
+
+{%- liquid
+  assign heading = section.settings.heading | default: blog.title
+  assign is_first_page = true
+-%}
+
+<div
+  class="v6-blog"
+  style="--v6-accent: {{ section.settings.accent_color }}; --v6-dark: {{ section.settings.hero_color }};"
+>
+  <header class="v6-blog__hero">
+    <div class="v6-wrap">
+      <nav aria-label="Breadcrumb">
+        <ol class="v6-crumbs">
+          <li><a href="{{ routes.root_url }}">Home</a></li>
+          {%- if current_tags -%}
+            <li><a href="{{ blog.url }}">{{ heading | escape }}</a></li>
+            <li><span aria-current="page">{{ current_tags.first | escape }}</span></li>
+          {%- else -%}
+            <li><span aria-current="page">{{ heading | escape }}</span></li>
+          {%- endif -%}
+        </ol>
+      </nav>
+
+      {%- if section.settings.eyebrow != blank -%}
+        <span class="v6-blog__eyebrow">{{ section.settings.eyebrow | escape }}</span>
+      {%- endif -%}
+      <h1 class="v6-blog__title">
+        {%- if current_tags -%}
+          {{ current_tags.first | escape }}
+        {%- else -%}
+          {{ heading | escape }}
+        {%- endif -%}
+      </h1>
+      {%- if section.settings.intro != blank -%}
+        <div class="v6-blog__intro">{{ section.settings.intro }}</div>
+      {%- endif -%}
+    </div>
+  </header>
+
+  <div class="v6-blog__body">
+    <div class="v6-wrap">
+      {%- if section.settings.show_tags and blog.all_tags.size > 0 -%}
+        <nav aria-label="Filter articles by topic">
+          <ul class="v6-chips">
+            <li>
+              <a href="{{ blog.url }}"{% unless current_tags %} aria-current="page"{% endunless %}>All articles</a>
+            </li>
+            {%- for tag in blog.all_tags -%}
+              <li>
+                <a
+                  href="{{ blog.url }}/tagged/{{ tag | handleize }}"
+                  {% if current_tags contains tag %}
+                    aria-current="page"
+                  {% endif %}
+                >
+                  {{- tag | escape -}}
+                </a>
+              </li>
+            {%- endfor -%}
+          </ul>
+        </nav>
+      {%- endif -%}
+
+      {%- paginate blog.articles by section.settings.per_page -%}
+        {%- liquid
+          if paginate.current_page > 1 or current_tags
+            assign is_first_page = false
+          endif
+          assign feature_first = false
+          if section.settings.feature_first and is_first_page and blog.articles.size > 0
+            assign feature_first = true
+          endif
+        -%}
+
+        {%- if blog.articles.size == 0 -%}
+          <p class="v6-blog__empty">
+            No articles here yet. <a href="{{ blog.url }}">See all articles</a>
+          </p>
+        {%- else -%}
+          {%- if feature_first -%}
+            <div class="v6-blog__featured">
+              {% render 'v6-article-card',
+                article: blog.articles.first,
+                featured: true,
+                heading_tag: 'h2',
+                lazy: false,
+                show_date: section.settings.show_date,
+                show_author: section.settings.show_author,
+                show_excerpt: section.settings.show_excerpt
+              %}
+            </div>
+          {%- endif -%}
+
+          {%- if blog.articles.size > 1 or feature_first == false -%}
+            <ul class="v6-blog__grid" role="list">
+              {%- for article in blog.articles -%}
+                {%- if feature_first and forloop.first -%}
+                  {%- continue -%}
+                {%- endif -%}
+                <li>
+                  {% render 'v6-article-card',
+                    article: article,
+                    heading_tag: 'h2',
+                    show_date: section.settings.show_date,
+                    show_author: section.settings.show_author,
+                    show_excerpt: section.settings.show_excerpt
+                  %}
+                </li>
+              {%- endfor -%}
+            </ul>
+          {%- endif -%}
+        {%- endif -%}
+
+        {%- if paginate.pages > 1 -%}
+          <nav aria-label="Pagination">
+            <ul class="v6-pagination" role="list">
+              {%- if paginate.previous -%}
+                <li><a href="{{ paginate.previous.url }}" aria-label="Previous page">&larr;</a></li>
+              {%- endif -%}
+              {%- for part in paginate.parts -%}
+                <li>
+                  {%- if part.is_link -%}
+                    <a href="{{ part.url }}" aria-label="Page {{ part.title }}">{{ part.title }}</a>
+                  {%- elsif part.title == paginate.current_page -%}
+                    <span class="is-current" aria-current="page">{{ part.title }}</span>
+                  {%- else -%}
+                    <span>{{ part.title }}</span>
+                  {%- endif -%}
+                </li>
+              {%- endfor -%}
+              {%- if paginate.next -%}
+                <li><a href="{{ paginate.next.url }}" aria-label="Next page">&rarr;</a></li>
+              {%- endif -%}
+            </ul>
+          </nav>
+        {%- endif -%}
+      {%- endpaginate -%}
+
+      {%- if section.settings.cta_heading != blank -%}
+        <div class="v6-cta">
+          <div>
+            <h2 class="v6-cta__title">{{ section.settings.cta_heading | escape }}</h2>
+            {%- if section.settings.cta_text != blank -%}
+              <p class="v6-cta__text">{{ section.settings.cta_text | escape }}</p>
+            {%- endif -%}
+          </div>
+          {%- if section.settings.cta_label != blank -%}
+            <a href="{{ section.settings.cta_link | default: routes.all_products_collection_url }}" class="v6-btn">
+              {{- section.settings.cta_label | escape -}}
+            </a>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "V6 blog listing",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Header"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Small label above title",
+      "default": "V6 Auto Parts Blog"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Title",
+      "info": "Leave blank to use the blog's own title"
+    },
+    {
+      "type": "richtext",
+      "id": "intro",
+      "label": "Intro text",
+      "default": "<p>Expert guides, fault-finding tips and buying advice for alternators, starter motors, lights and more — written for UK drivers and DIY mechanics.</p>"
+    },
+    {
+      "type": "color",
+      "id": "hero_color",
+      "label": "Header background",
+      "default": "#242833"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent colour",
+      "default": "#a50000"
+    },
+    {
+      "type": "header",
+      "content": "Articles"
+    },
+    {
+      "type": "range",
+      "id": "per_page",
+      "label": "Articles per page",
+      "min": 3,
+      "max": 24,
+      "step": 3,
+      "default": 12
+    },
+    {
+      "type": "checkbox",
+      "id": "feature_first",
+      "label": "Show newest article as a large featured card",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_tags",
+      "label": "Show topic filter (article tags)",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_excerpt",
+      "label": "Show excerpt",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_date",
+      "label": "Show date",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_author",
+      "label": "Show author",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Call to action"
+    },
+    {
+      "type": "text",
+      "id": "cta_heading",
+      "label": "Heading",
+      "default": "Find the right part for your car",
+      "info": "Leave blank to hide the call to action"
+    },
+    {
+      "type": "text",
+      "id": "cta_text",
+      "label": "Text",
+      "default": "Brand-new OE-spec parts, 12-month warranty and free next-day UK delivery."
+    },
+    {
+      "type": "text",
+      "id": "cta_label",
+      "label": "Button label",
+      "default": "Shop parts"
+    },
+    {
+      "type": "url",
+      "id": "cta_link",
+      "label": "Button link"
+    }
+  ]
+}
+{% endschema %}

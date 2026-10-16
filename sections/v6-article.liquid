@@ -1,0 +1,449 @@
+{{ 'v6-blog.css' | asset_url | stylesheet_tag }}
+
+{%- liquid
+  assign word_count = article.content | strip_html | split: ' ' | size
+  assign read_minutes = word_count | divided_by: 200
+  if read_minutes < 1
+    assign read_minutes = 1
+  endif
+  assign has_sidebar = false
+  if section.settings.show_toc or section.settings.promo_heading != blank
+    assign has_sidebar = true
+  endif
+  assign share_url = request.origin | append: article.url
+  assign share_url_enc = share_url | url_encode
+  assign share_title_enc = article.title | url_encode
+-%}
+
+<article
+  class="v6-article"
+  id="V6Article-{{ section.id }}"
+  style="--v6-accent: {{ section.settings.accent_color }}; --v6-dark: {{ section.settings.dark_color }};"
+>
+  <header class="v6-article__header">
+    <div class="v6-wrap">
+      <div class="v6-article__header-inner">
+        <nav aria-label="Breadcrumb">
+          <ol class="v6-crumbs">
+            <li><a href="{{ routes.root_url }}">Home</a></li>
+            <li><a href="{{ blog.url }}">{{ section.settings.blog_label | default: blog.title | escape }}</a></li>
+            <li><span aria-current="page">{{ article.title | escape | truncatewords: 6 }}</span></li>
+          </ol>
+        </nav>
+
+        {%- if article.tags.size > 0 -%}
+          <ul class="v6-article__tags" role="list">
+            {%- for tag in article.tags limit: 3 -%}
+              <li><a href="{{ blog.url }}/tagged/{{ tag | handleize }}">{{ tag | escape }}</a></li>
+            {%- endfor -%}
+          </ul>
+        {%- endif -%}
+
+        <h1 class="v6-article__title">{{ article.title | escape }}</h1>
+
+        <div class="v6-article__meta">
+          {%- if section.settings.show_author -%}
+            <span>
+              <svg aria-hidden="true" focusable="false" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
+              {{ article.author | escape }}
+            </span>
+          {%- endif -%}
+          {%- if section.settings.show_date -%}
+            <span>
+              <svg aria-hidden="true" focusable="false" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
+              {{ article.published_at | time_tag: format: 'date' }}
+            </span>
+          {%- endif -%}
+          <span>
+            <svg aria-hidden="true" focusable="false" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+            {{ read_minutes }} min read
+          </span>
+        </div>
+      </div>
+
+      {%- if section.settings.show_image and article.image -%}
+        <div class="v6-article__hero">
+          {{
+            article.image
+            | image_url: width: 2000
+            | image_tag:
+              widths: '540, 750, 1100, 1500, 2000',
+              sizes: '(min-width: 1200px) 1100px, 100vw',
+              loading: 'eager',
+              fetchpriority: 'high',
+              alt: article.image.alt
+          }}
+        </div>
+      {%- endif -%}
+    </div>
+  </header>
+
+  <div class="v6-wrap">
+    <div class="v6-article__layout{% if has_sidebar %} v6-article__layout--sidebar{% endif %}">
+      <div class="v6-article__main">
+        <div class="v6-prose{% if section.settings.lead_callout %} v6-prose--lead{% endif %}" data-v6-content>
+          {{ article.content }}
+        </div>
+
+        {%- if section.settings.show_share -%}
+          <div class="v6-share">
+            <span class="v6-share__label">Share</span>
+            <a href="https://www.facebook.com/sharer/sharer.php?u={{ share_url_enc }}" target="_blank" rel="noopener" aria-label="Share on Facebook">
+              <svg aria-hidden="true" focusable="false" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M14 8V6.5c0-.8.2-1.3 1.4-1.3H17V2.2C16.7 2.1 15.7 2 14.6 2 12.2 2 10.6 3.4 10.6 6.1V8H8v3.3h2.6V22H14V11.3h2.7L17 8h-3z"/></svg>
+            </a>
+            <a href="https://twitter.com/intent/tweet?url={{ share_url_enc }}&text={{ share_title_enc }}" target="_blank" rel="noopener" aria-label="Share on X">
+              <svg aria-hidden="true" focusable="false" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.8 2h3.4l-7.4 8.5L22.5 22h-6.8l-5.3-7-6.1 7H.9l7.9-9.1L.5 2h7l4.8 6.4L17.8 2zm-1.2 18h1.9L6.5 3.9H4.5l12.1 16.1z"/></svg>
+            </a>
+            <a href="https://wa.me/?text={{ share_title_enc }}%20{{ share_url_enc }}" target="_blank" rel="noopener" aria-label="Share on WhatsApp">
+              <svg aria-hidden="true" focusable="false" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1-.7-.3-1.4-.7-2-1.2-.5-.5-1-1.1-1.3-1.7-.1-.2 0-.4.1-.5l.4-.4.3-.5v-.5l-.8-1.9c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.5.1-.7.3-.6.6-.9 1.4-.9 2.2.1 1 .5 2 1.1 2.8 1.2 1.7 2.7 3 4.6 3.8.5.2 1 .4 1.5.5.6.2 1.2.2 1.7.1.6-.1 1.4-.6 1.6-1.2.1-.3.1-.7.1-1-.1-.1-.3-.2-.5-.3z"/></svg>
+            </a>
+            <button type="button" data-v6-copy="{{ share_url | escape }}" aria-label="Copy link">
+              <svg aria-hidden="true" focusable="false" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 14a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 10a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/></svg>
+            </button>
+            <span class="v6-share__copied" role="status" hidden>Link copied</span>
+          </div>
+        {%- endif -%}
+
+        {%- liquid
+          assign prev = blog.previous_article
+          assign next = blog.next_article
+        -%}
+        {%- if prev or next -%}
+          <nav class="v6-pn" aria-label="More articles">
+            {%- if prev -%}
+              <a href="{{ prev.url | default: prev }}" class="v6-pn--prev">
+                <small>&larr; Previous</small>
+                {{ prev.title | default: 'Previous article' | escape }}
+              </a>
+            {%- endif -%}
+            {%- if next -%}
+              <a href="{{ next.url | default: next }}" class="v6-pn--next">
+                <small>Next &rarr;</small>
+                {{ next.title | default: 'Next article' | escape }}
+              </a>
+            {%- endif -%}
+          </nav>
+        {%- endif -%}
+      </div>
+
+      {%- if has_sidebar -%}
+        <aside class="v6-article__aside">
+          <div class="v6-article__aside-inner">
+            {%- if section.settings.show_toc -%}
+              <nav class="v6-box v6-toc" aria-label="In this article" data-v6-toc hidden>
+                <p class="v6-box__title">In this article</p>
+                <ol></ol>
+              </nav>
+            {%- endif -%}
+
+            {%- if section.settings.promo_heading != blank -%}
+              <div class="v6-promo">
+                <p class="v6-box__title">{{ section.settings.promo_heading | escape }}</p>
+                {%- if section.settings.promo_text != blank -%}
+                  <p>{{ section.settings.promo_text | escape }}</p>
+                {%- endif -%}
+                <ul role="list">
+                  {%- for i in (1..3) -%}
+                    {%- liquid
+                      assign key = 'promo_point_' | append: i
+                      assign point = section.settings[key]
+                    -%}
+                    {%- if point != blank -%}
+                      <li>
+                        <svg aria-hidden="true" focusable="false" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg>
+                        {{ point | escape }}
+                      </li>
+                    {%- endif -%}
+                  {%- endfor -%}
+                </ul>
+                {%- if section.settings.promo_label != blank -%}
+                  <a href="{{ section.settings.promo_link | default: routes.all_products_collection_url }}" class="v6-btn">
+                    {{- section.settings.promo_label | escape -}}
+                  </a>
+                {%- endif -%}
+              </div>
+            {%- endif -%}
+          </div>
+        </aside>
+      {%- endif -%}
+    </div>
+
+    {%- if section.settings.cta_heading != blank -%}
+      <div class="v6-cta">
+        <div>
+          <h2 class="v6-cta__title">{{ section.settings.cta_heading | escape }}</h2>
+          {%- if section.settings.cta_text != blank -%}
+            <p class="v6-cta__text">{{ section.settings.cta_text | escape }}</p>
+          {%- endif -%}
+        </div>
+        {%- if section.settings.cta_label != blank -%}
+          <a href="{{ section.settings.cta_link | default: routes.all_products_collection_url }}" class="v6-btn">
+            {{- section.settings.cta_label | escape -}}
+          </a>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+  </div>
+
+  {%- if section.settings.show_related -%}
+    {%- liquid
+      assign related_count = 0
+      for a in blog.articles
+        if a.id != article.id
+          assign related_count = related_count | plus: 1
+        endif
+      endfor
+    -%}
+    {%- if related_count > 0 -%}
+      <section class="v6-related" aria-labelledby="V6Related-{{ section.id }}" style="margin-top: 5rem;">
+        <div class="v6-wrap">
+          <div class="v6-related__head">
+            <h2 class="v6-related__title" id="V6Related-{{ section.id }}">{{ section.settings.related_heading | escape }}</h2>
+            <a href="{{ blog.url }}" class="v6-related__all">View all articles &rarr;</a>
+          </div>
+          <ul class="v6-blog__grid" role="list">
+            {%- assign shown = 0 -%}
+            {%- for a in blog.articles -%}
+              {%- if a.id == article.id -%}{%- continue -%}{%- endif -%}
+              {%- if shown >= 3 -%}{%- break -%}{%- endif -%}
+              {%- assign shown = shown | plus: 1 -%}
+              <li>{% render 'v6-article-card', article: a, show_date: section.settings.show_date %}</li>
+            {%- endfor -%}
+          </ul>
+        </div>
+      </section>
+    {%- endif -%}
+  {%- endif -%}
+</article>
+
+<script type="application/ld+json">
+  {{ article | structured_data }}
+</script>
+
+<script>
+  (function () {
+    var root = document.getElementById('V6Article-{{ section.id }}');
+    if (!root) return;
+
+    // Table of contents from the article's H2s
+    var toc = root.querySelector('[data-v6-toc]');
+    var content = root.querySelector('[data-v6-content]');
+    if (toc && content) {
+      var heads = content.querySelectorAll('h2');
+      if (heads.length >= 2) {
+        var list = toc.querySelector('ol');
+        var links = [];
+        heads.forEach(function (h, i) {
+          if (!h.id) {
+            var slug = (h.textContent || '')
+              .toLowerCase()
+              .trim()
+              .replace(/[^a-z0-9]+/g, '-')
+              .replace(/^-|-$/g, '');
+            h.id = (slug || 'section') + '-' + (i + 1);
+          }
+          var li = document.createElement('li');
+          var a = document.createElement('a');
+          a.href = '#' + h.id;
+          a.textContent = h.textContent.trim();
+          li.appendChild(a);
+          list.appendChild(li);
+          links.push(a);
+        });
+        toc.hidden = false;
+
+        if ('IntersectionObserver' in window) {
+          var io = new IntersectionObserver(
+            function (entries) {
+              entries.forEach(function (e) {
+                if (!e.isIntersecting) return;
+                links.forEach(function (l) {
+                  l.classList.toggle('is-active', l.getAttribute('href') === '#' + e.target.id);
+                });
+              });
+            },
+            { rootMargin: '0px 0px -70% 0px' }
+          );
+          heads.forEach(function (h) {
+            io.observe(h);
+          });
+        }
+      }
+    }
+
+    // Copy link
+    var copyBtn = root.querySelector('[data-v6-copy]');
+    if (copyBtn && navigator.clipboard) {
+      copyBtn.addEventListener('click', function () {
+        navigator.clipboard.writeText(copyBtn.getAttribute('data-v6-copy')).then(function () {
+          var msg = root.querySelector('.v6-share__copied');
+          if (!msg) return;
+          msg.hidden = false;
+          setTimeout(function () {
+            msg.hidden = true;
+          }, 2000);
+        });
+      });
+    }
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "V6 article",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Article"
+    },
+    {
+      "type": "text",
+      "id": "blog_label",
+      "label": "Breadcrumb label for the blog",
+      "default": "Blog",
+      "info": "Leave blank to use the blog's own title"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_image",
+      "label": "Show featured image",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_date",
+      "label": "Show date",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_author",
+      "label": "Show author",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "lead_callout",
+      "label": "Highlight first paragraph as a summary box",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_share",
+      "label": "Show share buttons",
+      "default": true
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent colour",
+      "default": "#a50000"
+    },
+    {
+      "type": "color",
+      "id": "dark_color",
+      "label": "Dark panel colour",
+      "default": "#242833"
+    },
+    {
+      "type": "header",
+      "content": "Sidebar"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_toc",
+      "label": "Show table of contents",
+      "info": "Built from the article's H2 headings (needs at least 2)",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "promo_heading",
+      "label": "Promo heading",
+      "default": "Need a replacement part?",
+      "info": "Leave blank to hide the promo box"
+    },
+    {
+      "type": "text",
+      "id": "promo_text",
+      "label": "Promo text",
+      "default": "Brand-new, OE-spec parts for most major UK makes and models."
+    },
+    {
+      "type": "text",
+      "id": "promo_point_1",
+      "label": "Point 1",
+      "default": "12-month warranty"
+    },
+    {
+      "type": "text",
+      "id": "promo_point_2",
+      "label": "Point 2",
+      "default": "Free next-day UK delivery"
+    },
+    {
+      "type": "text",
+      "id": "promo_point_3",
+      "label": "Point 3",
+      "default": "Order before 1pm, dispatched same day"
+    },
+    {
+      "type": "text",
+      "id": "promo_label",
+      "label": "Promo button label",
+      "default": "Shop parts"
+    },
+    {
+      "type": "url",
+      "id": "promo_link",
+      "label": "Promo button link"
+    },
+    {
+      "type": "header",
+      "content": "Bottom call to action"
+    },
+    {
+      "type": "text",
+      "id": "cta_heading",
+      "label": "Heading",
+      "default": "Find the right part for your car",
+      "info": "Leave blank to hide"
+    },
+    {
+      "type": "text",
+      "id": "cta_text",
+      "label": "Text",
+      "default": "Search by make and model, or by registration, to see parts that fit."
+    },
+    {
+      "type": "text",
+      "id": "cta_label",
+      "label": "Button label",
+      "default": "Shop parts"
+    },
+    {
+      "type": "url",
+      "id": "cta_link",
+      "label": "Button link"
+    },
+    {
+      "type": "header",
+      "content": "Related articles"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_related",
+      "label": "Show related articles",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "related_heading",
+      "label": "Heading",
+      "default": "More from the blog"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,93 @@
+{% comment %}
+  Article card used by the v6 blog listing and the "related articles" strip on v6 articles.
+  Styles live in assets/v6-blog.css.
+
+  Accepts:
+  - article: {Object} article (required)
+  - featured: {Boolean} render as the large horizontal card
+  - show_date: {Boolean}
+  - show_author: {Boolean}
+  - show_excerpt: {Boolean}
+  - heading_tag: {String} 'h2' or 'h3' (default 'h3')
+  - lazy: {Boolean} lazy-load image (default true)
+
+  Usage:
+  {% render 'v6-article-card', article: article, featured: true %}
+{% endcomment %}
+
+{%- liquid
+  assign heading_tag = heading_tag | default: 'h3'
+  assign word_count = article.content | strip_html | split: ' ' | size
+  assign read_minutes = word_count | divided_by: 200
+  if read_minutes < 1
+    assign read_minutes = 1
+  endif
+  if article.excerpt != blank
+    assign excerpt = article.excerpt | strip_html
+  else
+    assign excerpt = article.content | strip_html
+  endif
+  if featured
+    assign excerpt_words = 45
+    assign img_sizes = '(min-width: 990px) 640px, 100vw'
+  else
+    assign excerpt_words = 24
+    assign img_sizes = '(min-width: 990px) 380px, (min-width: 750px) 50vw, 100vw'
+  endif
+-%}
+
+<article class="v6-card{% if featured %} v6-card--featured{% endif %}">
+  <a href="{{ article.url }}" class="v6-card__media" tabindex="-1" aria-hidden="true">
+    {%- if article.image -%}
+      {%- liquid
+        if lazy == false
+          assign loading = 'eager'
+        else
+          assign loading = 'lazy'
+        endif
+      -%}
+      {{
+        article.image
+        | image_url: width: 1280
+        | image_tag:
+          widths: '360, 540, 720, 960, 1280',
+          sizes: img_sizes,
+          loading: loading,
+          alt: article.image.alt,
+          class: 'v6-card__img'
+      }}
+    {%- else -%}
+      <span class="v6-card__placeholder">{{ 'blog-apparel-1' | placeholder_svg_tag: 'v6-card__img' }}</span>
+    {%- endif -%}
+  </a>
+
+  <div class="v6-card__body">
+    {%- if article.tags.size > 0 -%}
+      <span class="v6-card__tag">{{ article.tags.first | escape }}</span>
+    {%- endif -%}
+
+    <{{ heading_tag }} class="v6-card__title">
+      <a href="{{ article.url }}">{{ article.title | escape }}</a>
+    </{{ heading_tag }}>
+
+    {%- if show_excerpt != false and excerpt != blank -%}
+      <p class="v6-card__excerpt">{{ excerpt | truncatewords: excerpt_words }}</p>
+    {%- endif -%}
+
+    <div class="v6-card__meta">
+      {%- if show_date != false -%}
+        <span>{{ article.published_at | time_tag: format: 'date' }}</span>
+      {%- endif -%}
+      {%- if show_author -%}
+        <span>{{ article.author | escape }}</span>
+      {%- endif -%}
+      <span>{{ read_minutes }} min read</span>
+    </div>
+
+    <a href="{{ article.url }}" class="v6-card__more">
+      Read article
+      <svg aria-hidden="true" focusable="false" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      <span class="visually-hidden">: {{ article.title | escape }}</span>
+    </a>
+  </div>
+</article>
