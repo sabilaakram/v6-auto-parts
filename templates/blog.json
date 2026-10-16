@@ -2,7 +2,15 @@
   "sections": {
     "main": {
       "type": "v6-blog",
-      "settings": {}
+      "settings": {
+        "eyebrow": "",
+        "heading": "Blog",
+        "intro": "",
+        "minimal_cards": true,
+        "feature_first": false,
+        "show_tags": false,
+        "cta_heading": ""
+      }
     }
   },
   "order": [

@@ -103,6 +103,7 @@
                   {% render 'v6-article-card',
                     article: article,
                     heading_tag: 'h2',
+                    minimal: section.settings.minimal_cards,
                     show_date: section.settings.show_date,
                     show_author: section.settings.show_author,
                     show_excerpt: section.settings.show_excerpt
@@ -209,6 +210,12 @@
       "max": 24,
       "step": 3,
       "default": 12
+    },
+    {
+      "type": "checkbox",
+      "id": "minimal_cards",
+      "label": "Simple cards (image, title, date and time only)",
+      "default": true
     },
     {
       "type": "checkbox",

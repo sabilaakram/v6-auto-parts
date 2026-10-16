@@ -10,6 +10,7 @@
   - show_excerpt: {Boolean}
   - heading_tag: {String} 'h2' or 'h3' (default 'h3')
   - lazy: {Boolean} lazy-load image (default true)
+  - minimal: {Boolean} image, title, date and time only
 
   Usage:
   {% render 'v6-article-card', article: article, featured: true %}
@@ -62,7 +63,7 @@
   </a>
 
   <div class="v6-card__body">
-    {%- if article.tags.size > 0 -%}
+    {%- if minimal != true and article.tags.size > 0 -%}
       <span class="v6-card__tag">{{ article.tags.first | escape }}</span>
     {%- endif -%}
 
@@ -70,24 +71,31 @@
       <a href="{{ article.url }}">{{ article.title | escape }}</a>
     </{{ heading_tag }}>
 
-    {%- if show_excerpt != false and excerpt != blank -%}
+    {%- if minimal != true and show_excerpt != false and excerpt != blank -%}
       <p class="v6-card__excerpt">{{ excerpt | truncatewords: excerpt_words }}</p>
     {%- endif -%}
 
     <div class="v6-card__meta">
-      {%- if show_date != false -%}
-        <span>{{ article.published_at | time_tag: format: 'date' }}</span>
+      {%- if minimal -%}
+        <span>{{ article.published_at | time_tag: '%-d %B %Y' }}</span>
+        <span>{{ article.published_at | time_tag: '%H:%M' }}</span>
+      {%- else -%}
+        {%- if show_date != false -%}
+          <span>{{ article.published_at | time_tag: format: 'date' }}</span>
+        {%- endif -%}
+        {%- if show_author -%}
+          <span>{{ article.author | escape }}</span>
+        {%- endif -%}
+        <span>{{ read_minutes }} min read</span>
       {%- endif -%}
-      {%- if show_author -%}
-        <span>{{ article.author | escape }}</span>
-      {%- endif -%}
-      <span>{{ read_minutes }} min read</span>
     </div>
 
-    <a href="{{ article.url }}" class="v6-card__more">
-      Read article
-      <svg aria-hidden="true" focusable="false" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-      <span class="visually-hidden">: {{ article.title | escape }}</span>
-    </a>
+    {%- unless minimal -%}
+      <a href="{{ article.url }}" class="v6-card__more">
+        Read article
+        <svg aria-hidden="true" focusable="false" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        <span class="visually-hidden">: {{ article.title | escape }}</span>
+      </a>
+    {%- endunless -%}
   </div>
 </article>

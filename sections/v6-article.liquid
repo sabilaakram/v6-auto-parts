@@ -207,7 +207,7 @@
               {%- if a.id == article.id -%}{%- continue -%}{%- endif -%}
               {%- if shown >= 3 -%}{%- break -%}{%- endif -%}
               {%- assign shown = shown | plus: 1 -%}
-              <li>{% render 'v6-article-card', article: a, show_date: section.settings.show_date %}</li>
+              <li>{% render 'v6-article-card', article: a, minimal: true %}</li>
             {%- endfor -%}
           </ul>
         </div>
