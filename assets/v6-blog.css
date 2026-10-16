@@ -221,7 +221,7 @@
 
 .v6-card__media {
   display: block;
-  aspect-ratio: 16 / 10;
+  aspect-ratio: 1.9 / 1;
   overflow: hidden;
   background: var(--v6-soft);
 }
@@ -325,12 +325,21 @@
 @media screen and (min-width: 750px) {
   .v6-card--featured {
     display: grid;
-    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+    align-items: center;
   }
 
   .v6-card--featured .v6-card__media {
+    align-self: stretch;
+    background: var(--v6-dark);
+    display: flex;
+    align-items: center;
     aspect-ratio: auto;
-    min-height: 34rem;
+  }
+
+  .v6-card--featured .v6-card__img {
+    height: auto;
+    aspect-ratio: 1.9 / 1;
   }
 
   .v6-card--featured .v6-card__body {
@@ -531,8 +540,6 @@
   display: block;
   width: 100%;
   height: auto;
-  max-height: 56rem;
-  object-fit: cover;
 }
 
 .v6-article__layout {
