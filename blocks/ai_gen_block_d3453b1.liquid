@@ -5,6 +5,7 @@
 {% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
 
 {% style %}
+ {{ block.settings.font_family | font_face: font_display: 'swap' }}
   .ai-infinite-masonry-{{ ai_gen_id }} {
     display: block;
     width: {{ block.settings.desktop_width_percent }}%;
@@ -16,11 +17,13 @@
   }
 
   .ai-infinite-masonry__track-{{ ai_gen_id }} {
-    display: flex;
-    gap: {{ block.settings.gap }}px;
-    animation: ai-masonry-scroll-{{ ai_gen_id }} {{ block.settings.animation_duration }}s linear infinite;
-    will-change: transform;
-  }
+  display: flex;
+  width: max-content;
+  gap: {{ block.settings.gap }}px;
+  padding-right: {{ block.settings.gap }}px;
+  animation: ai-masonry-scroll-{{ ai_gen_id }} var(--marquee-duration, 30s) linear infinite;
+  will-change: transform;
+}
 
   .ai-infinite-masonry__track-{{ ai_gen_id }}:hover {
     animation-play-state: paused;
@@ -49,17 +52,29 @@
   }
 
   @media screen and (max-width: 749px) {
-    .ai-infinite-masonry__item-{{ ai_gen_id }} {
-      font-size: {{ block.settings.font_size_mobile }}px;
-    }
-
-    .ai-infinite-masonry-{{ ai_gen_id }} {
-      padding: {{ block.settings.padding_vertical_mobile }}px 0;
-    }
+  .ai-infinite-masonry-{{ ai_gen_id }} {
+    padding: {{ block.settings.padding_vertical_mobile }}px 0;
   }
+
+  .ai-infinite-masonry__track-{{ ai_gen_id }} {
+    gap: {{ block.settings.gap_mobile }}px;
+    padding-right: {{ block.settings.gap_mobile }}px;
+  }
+
+  .ai-infinite-masonry__item-{{ ai_gen_id }} {
+    font-size: {{ block.settings.font_size_mobile }}px;
+    padding-left: {{ block.settings.item_padding_horizontal_mobile }}px;
+    padding-right: {{ block.settings.item_padding_horizontal_mobile }}px;
+  }
+}
 {% endstyle %}
 
-<infinite-text-masonry-{{ ai_gen_id }} class="ai-infinite-masonry-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+<infinite-text-masonry-{{ ai_gen_id }}
+  class="ai-infinite-masonry-{{ ai_gen_id }}"
+  data-speed-desktop="{{ block.settings.speed_desktop }}"
+  data-speed-mobile="{{ block.settings.speed_mobile }}"
+  {{ block.shopify_attributes }}
+>
   <div class="ai-infinite-masonry__track-{{ ai_gen_id }}">
     {% liquid
       assign text_items = block.settings.text_items | split: ','
@@ -94,38 +109,57 @@
 </infinite-text-masonry-{{ ai_gen_id }}>
 
 <script>
-  (function() {
-    class InfiniteTextMasonry{{ ai_gen_id }} extends HTMLElement {
-      constructor() {
-        super();
-      }
+  (function () {
+    const tag = 'infinite-text-masonry-{{ ai_gen_id }}';
+    if (customElements.get(tag)) return;
 
+    class InfiniteTextMasonry extends HTMLElement {
       connectedCallback() {
         this.track = this.querySelector('.ai-infinite-masonry__track-{{ ai_gen_id }}');
-        this.ensureSmoothLoop();
-      }
-
-      ensureSmoothLoop() {
         if (!this.track) return;
 
-        const trackWidth = this.track.scrollWidth / 2;
-        const containerWidth = this.offsetWidth;
+        const items = Array.from(this.track.children);
+        this.baseItems = items.slice(0, items.length / 2);
+        this.mobileQuery = window.matchMedia('(max-width: 749px)');
+        this.lastWidth = 0;
 
-        if (trackWidth < containerWidth * 2) {
-          const items = Array.from(this.track.children);
-          const halfLength = items.length / 2;
+        this.build();
+        if (document.fonts) document.fonts.ready.then(() => this.build());
 
-          for (let i = 0; i < halfLength; i++) {
-            const clone = items[i].cloneNode(true);
-            this.track.appendChild(clone);
-          }
+        this.observer = new ResizeObserver(() => {
+          if (this.offsetWidth !== this.lastWidth) this.build();
+        });
+        this.observer.observe(this);
+      }
 
-          this.ensureSmoothLoop();
+      disconnectedCallback() {
+        if (this.observer) this.observer.disconnect();
+      }
+
+      build() {
+        this.lastWidth = this.offsetWidth;
+        this.track.replaceChildren(...this.baseItems);
+
+        const setWidth = this.track.offsetWidth;
+        if (!setWidth || !this.lastWidth) return;
+
+        // Each half of the track must be at least as wide as the container
+        const copies = Math.ceil(this.lastWidth / setWidth);
+        const fragment = document.createDocumentFragment();
+
+        for (let i = 1; i < copies * 2; i++) {
+          this.baseItems.forEach((item) => fragment.appendChild(item.cloneNode(true)));
         }
+        this.track.appendChild(fragment);
+
+        const speed = Number(
+          this.mobileQuery.matches ? this.dataset.speedMobile : this.dataset.speedDesktop
+        );
+        this.track.style.setProperty('--marquee-duration', `${(setWidth * copies) / speed}s`);
       }
     }
 
-    customElements.define('infinite-text-masonry-{{ ai_gen_id }}', InfiniteTextMasonry{{ ai_gen_id }});
+    customElements.define(tag, InfiniteTextMasonry);
   })();
 </script>
 
@@ -271,20 +305,51 @@
       "default": 16
     },
     {
+  "type": "range",
+  "id": "gap_mobile",
+  "label": "Mobile gap between items",
+  "min": 4,
+  "max": 40,
+  "step": 4,
+  "unit": "px",
+  "default": 8
+},
+{
+  "type": "range",
+  "id": "item_padding_horizontal_mobile",
+  "label": "Mobile item horizontal padding",
+  "min": 4,
+  "max": 40,
+  "step": 2,
+  "unit": "px",
+  "default": 12
+},
+    {
       "type": "header",
       "content": "Animation"
     },
     {
-      "type": "range",
-      "id": "animation_duration",
-      "label": "Animation duration",
-      "min": 10,
-      "max": 60,
-      "step": 5,
-      "unit": "s",
-      "default": 30,
-      "info": "Time for one complete cycle"
-    }
+  "type": "range",
+  "id": "speed_desktop",
+  "label": "Desktop speed",
+  "min": 20,
+  "max": 200,
+  "step": 10,
+  "unit": "px",
+  "default": 80,
+  "info": "Pixels per second"
+},
+{
+  "type": "range",
+  "id": "speed_mobile",
+  "label": "Mobile speed",
+  "min": 20,
+  "max": 200,
+  "step": 10,
+  "unit": "px",
+  "default": 60,
+  "info": "Pixels per second"
+}
   ],
   "presets": [
     {
