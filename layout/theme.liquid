@@ -2,30 +2,51 @@
 <html class="js" lang="{{ request.locale.iso_code }}">
   <head>
     <meta name="facebook-domain-verification" content="t0ea6qs20f08oaqn0uh9j1fw0tobvg" />
-    <script type="text/javascript">
-      (function (c, l, a, r, i, t, y) {
-        c[a] =
-          c[a] ||
-          function () {
-            (c[a].q = c[a].q || []).push(arguments);
-          };
-        t = l.createElement(r);
-        t.async = 1;
-        t.src = 'https://www.clarity.ms/tag/' + i;
-        y = l.getElementsByTagName(r)[0];
-        y.parentNode.insertBefore(t, y);
-      })(window, document, 'clarity', 'script', 'yqdvufit4h');
-    </script>
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VHF10RXDQN"></script>
+    <!--
+      Microsoft Clarity + Google tag (gtag.js), loaded once the page has finished
+      loading and the browser is idle. Loading them up front kept the main thread
+      busy for ~850ms, delaying the response to early taps/clicks (INP).
+      Calls to clarity()/gtag() made before then are queued, not lost.
+    -->
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag() {
         dataLayer.push(arguments);
       }
-      gtag('js', new Date());
-
-      gtag('config', 'G-VHF10RXDQN');
+      window.clarity =
+        window.clarity ||
+        function () {
+          (window.clarity.q = window.clarity.q || []).push(arguments);
+        };
+      (function () {
+        var loaded = false;
+        function addScript(src) {
+          var s = document.createElement('script');
+          s.async = true;
+          s.src = src;
+          document.head.appendChild(s);
+        }
+        function loadTags() {
+          if (loaded) return;
+          loaded = true;
+          addScript('https://www.clarity.ms/tag/yqdvufit4h');
+          addScript('https://www.googletagmanager.com/gtag/js?id=G-VHF10RXDQN');
+          gtag('js', new Date());
+          gtag('config', 'G-VHF10RXDQN');
+        }
+        function schedule() {
+          if ('requestIdleCallback' in window) {
+            requestIdleCallback(loadTags, { timeout: 3000 });
+          } else {
+            setTimeout(loadTags, 1500);
+          }
+        }
+        if (document.readyState === 'complete') {
+          schedule();
+        } else {
+          window.addEventListener('load', schedule, { once: true });
+        }
+      })();
     </script>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">

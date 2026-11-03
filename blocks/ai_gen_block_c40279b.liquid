@@ -1079,6 +1079,14 @@
       }
 
       setupEventListeners() {
+        // Menu items linked to "#" only open a dropdown. Letting the browser follow
+        // "#" costs 60-200ms per click (same-page navigation, scroll, tracking
+        // listeners), which hurts the "response to clicks" (INP) score.
+        this.addEventListener('click', (event) => {
+          const link = event.target.closest('a[href="#"]');
+          if (link) event.preventDefault();
+        });
+
         if (this.drawerToggle) {
           this.drawerToggle.addEventListener('click', () => this.openDrawer());
         }
