@@ -45,6 +45,8 @@
           schedule();
         } else {
           window.addEventListener('load', schedule, { once: true });
+          // Safety net in case a slow resource holds up the load event.
+          setTimeout(loadTags, 5000);
         }
       })();
     </script>
