@@ -58,7 +58,7 @@
         "ai_gen_block_d3453b1_EyL6aY": {
           "type": "ai_gen_block_d3453b1",
           "settings": {
-            "text_items": "🏆 99.5% Positive eBay Feedback,\n🚚 Free Next-Day UK Delivery,\n⭐ 4.8★ on Google Reviews,\n↩️ Hassle-Free Returns,\n🛡️ Trusted for Over 20+ Years,",
+            "text_items": "🏆 99.5% Positive eBay Feedback,\n🚚 Free Next-Day UK Delivery,\n⭐ 4.9★ on Google Reviews,\n↩️ Hassle-Free Returns,\n🛡️ Trusted for Over 20+ Years,",
             "font_family": "inter_n4",
             "font_size": 18,
             "font_size_mobile": 12,
@@ -856,6 +856,7 @@
             "show_no_text_reviews": "auto",
             "only_with_photos": true,
             "hide_reviews_with_keywords": "",
+            "show_only_reviews_with_keywords": "",
             "max_reviews": 100,
             "autoplay_style": "slide",
             "autoplay_speed": 5,
@@ -871,6 +872,7 @@
             "reviewer_name_format": "none",
             "padding_top": 36,
             "padding_bottom": 36,
+            "max_width": 1400,
             "cards_per_row_desktop": "0",
             "card_radius": 20,
             "background_color": "#f3f3f3",
@@ -903,6 +905,23 @@
         ".repocean-section-title {font-family: \"Bebas Neue\", sans-serif !important; font-size: clamp(28px, 6vw, 48px) !important; line-height: 1.2 !important;}"
       ],
       "settings": {}
+    },
+    "v6_blog_carousel": {
+      "type": "v6-blog-carousel",
+      "settings": {
+        "blog": "",
+        "limit": 8,
+        "eyebrow": "Guides & advice",
+        "heading": "From the blog",
+        "view_all_label": "View all articles",
+        "background": "#ffffff",
+        "accent_color": "#a50000",
+        "dark_color": "#242833",
+        "padding_top": 60,
+        "padding_bottom": 60,
+        "padding_top_mobile": 40,
+        "padding_bottom_mobile": 40
+      }
     },
     "1788429138711c2820": {
       "type": "_blocks",
@@ -1024,10 +1043,6 @@
       "block_order": [
         "ai_gen_block_fc6d095_i9pHjg"
       ],
-      "settings": {}
-    },
-    "v6_blog_carousel": {
-      "type": "v6-blog-carousel",
       "settings": {}
     }
   },
