@@ -133,7 +133,7 @@
             "item_1_enabled": true,
             "item_1_icon": "<svg viewbox=\"0 0 24 24\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M12 22s7-7.05 7-12A7 7 0 1 0 5 10c0 4.95 7 12 7 12Z\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linejoin=\"round\"></path><circle cx=\"12\" cy=\"10\" r=\"2.4\" stroke=\"currentColor\" stroke-width=\"1.6\"></circle></svg>",
             "item_1_title": "Store Location",
-            "item_1_body": "<p>4 Kelbrook road Manchester M11 2QA</p>",
+            "item_1_body": "<p>Unit 3 Plox Brow, Tarleton, Preston PR4 6HB</p>",
             "item_2_enabled": true,
             "item_2_icon": "<svg viewbox=\"0 0 24 24\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M6.5 3h3l1.5 4.5-2.2 1.8a12 12 0 0 0 5.9 5.9l1.8-2.2L21 14.5v3a2 2 0 0 1-2.2 2A17.5 17.5 0 0 1 4.5 5.2 2 2 0 0 1 6.5 3Z\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linejoin=\"round\"></path></svg>",
             "item_2_title": "Get In Touch With Us",
