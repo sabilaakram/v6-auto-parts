@@ -227,6 +227,7 @@
         "variant_picker",
         "price",
         "delivery_note",
+        "share",
         "quantity_selector",
         "buy_buttons",
         "wishlist_compare",
@@ -235,8 +236,7 @@
         "specification",
         "google_reviews_repocean_repocean_reviews_carousel_dDz3gn",
         "feature_grid",
-        "compatibility",
-        "share"
+        "compatibility"
       ],
       "settings": {
         "enable_sticky_info": true,
