@@ -678,6 +678,7 @@
                           </span>
                         {% endif %}
                         <span class="ai-featured-tabs__price-current-{{ai_gen_id}}">{{ product.price | money }}</span>
+                        {% render 'v6-you-save', price: product.price, compare_at: product.compare_at_price %}
                       </div>
 
                       {% if block.settings.enable_add_to_cart %}

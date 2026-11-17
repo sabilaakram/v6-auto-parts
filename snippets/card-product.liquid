@@ -491,6 +491,7 @@
             <span class="product-card__price-compare">{{ card_product.compare_at_price | money }}</span>
           {% endif %}
           <span class="product-card__price-current">{{ card_product.price | money }}</span>
+          {% render 'v6-you-save', price: card_product.price, compare_at: card_product.compare_at_price %}
         </div>
 
         {% if quick_add %}

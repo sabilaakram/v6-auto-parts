@@ -1,0 +1,17 @@
+{% comment %}
+  "You save Rs.X" line for product cards. Shown only when compare_at_price > price.
+  Uses the same money format/currency as the card price.
+
+  Accepts:
+  - price: {Number} product price (cents)
+  - compare_at: {Number} compare-at price (cents)
+
+  Usage:
+  {% render 'v6-you-save', price: product.price, compare_at: product.compare_at_price %}
+{% endcomment %}
+{%- if compare_at > price -%}
+  {%- assign v6_saving = compare_at | minus: price -%}
+  <span class="v6-you-save" style="display:inline-block;margin-top:2px;font-size:12px;font-weight:700;line-height:1.3;color:#1a7f37;">
+    You save {{ v6_saving | money }}
+  </span>
+{%- endif -%}
