@@ -12,10 +12,9 @@
 (function () {
   if (window.V6Lists) return;
 
-  // Saved hearts render solid (the theme heart icon is an outline path).
+  // Saved hearts render solid red everywhere.
   var baseStyle = document.createElement('style');
-  baseStyle.textContent =
-    '[data-wishlist-toggle].is-active svg,[data-wishlist-toggle].is-active svg path{fill:#a50000;stroke:#a50000;fill-rule:nonzero}';
+  baseStyle.textContent = '[data-wishlist-toggle].is-active svg{fill:#a50000;stroke:#a50000}';
   document.head.appendChild(baseStyle);
 
   var cfg = window.v6ListsConfig || {};

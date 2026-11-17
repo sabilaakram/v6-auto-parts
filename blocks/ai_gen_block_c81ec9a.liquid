@@ -262,12 +262,15 @@
   .ai-featured-tabs__wishlist-{{ai_gen_id}} svg {
     width: 18px;
     height: 18px;
-    fill: #686868;
-    transition: fill 0.2s ease;
+    fill: none;
+    stroke: #686868;
+    stroke-width: 1.8;
+    transition: fill 0.2s ease, stroke 0.2s ease;
   }
 
   .ai-featured-tabs__wishlist-{{ai_gen_id}}.is-active svg {
     fill: {{ block.settings.accent_color }};
+    stroke: {{ block.settings.accent_color }};
   }
 
   .ai-featured-tabs__body-{{ai_gen_id}} {
