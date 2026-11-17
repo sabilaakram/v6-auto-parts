@@ -149,7 +149,7 @@
             "logo": "shopify://shop_images/V6_Autoparts_logo-01.png",
             "logo_width": 150,
             "mobile_logo_width": 90,
-            "show_search": false,
+            "show_search": true,
             "search_width": 400,
             "search_height": 36,
             "search_border_radius": 4,
