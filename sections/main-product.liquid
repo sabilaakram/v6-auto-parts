@@ -454,8 +454,8 @@
                   {%- assign v6_share_block = section.blocks | where: 'type', 'share' | first -%}
                   {%- if v6_share_block -%}
                     <style>
-                      .v6-qty-share{display:flex;align-items:flex-end;gap:1.2rem;flex-wrap:wrap}
-                      .v6-qty-share>.product-form__quantity{margin:0}
+                      .v6-qty-share{display:flex;align-items:flex-end;gap:1.2rem;flex-wrap:nowrap}
+                      .v6-qty-share>.product-form__quantity{margin:0;flex:0 0 auto;width:auto;max-width:none}
                       .v6-qty-share>.share-button{margin:0}
                       .v6-qty-share .share-button__button{
                         display:inline-flex;align-items:center;gap:.8rem;
