@@ -464,6 +464,7 @@
       class="product-card__wishlist"
       data-wishlist-toggle
       data-product-id="{{ card_product.id }}"
+      data-product-handle="{{ card_product.handle }}"
       aria-label="Add to wishlist"
     >
       {{ 'icon-heart.svg' | inline_asset_content }}
@@ -478,19 +479,9 @@
         <a href="{{ card_product.url }}">{{ card_product.title | escape }}</a>
       </h3>
 
-      {% if show_rating and rating != blank %}
+      {% if show_rating and template.name != 'product' %}
         <div class="product-card__rating">
-          <span class="product-card__stars" aria-hidden="true">
-            <span class="product-card__stars-track">
-              {% for star in (1..5) %}{{ 'icon-star.svg' | inline_asset_content }}{% endfor %}
-            </span>
-            <span class="product-card__stars-fill" style="width: {{ rating | times: 20.0 | at_most: 100 }}%;">
-              {% for star in (1..5) %}{{ 'icon-star.svg' | inline_asset_content }}{% endfor %}
-            </span>
-          </span>
-          {% if rating_count != blank %}
-            <span class="product-card__rating-count">({{ rating_count }})</span>
-          {% endif %}
+          {% render 'v6-rating-badge', size: 14 %}
         </div>
       {% endif %}
 

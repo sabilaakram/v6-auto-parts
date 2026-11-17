@@ -1,0 +1,6 @@
+{
+  "sections": {
+    "main": { "type": "v6-compare", "settings": {} }
+  },
+  "order": ["main"]
+}

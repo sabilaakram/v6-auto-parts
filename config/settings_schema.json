@@ -1472,5 +1472,29 @@
         "label": "t:settings_schema.customer_accounts.settings.customer_account_menu.label"
       }
     ]
+  },
+  {
+    "name": "V6 store rating & wishlist",
+    "settings": [
+      {
+        "type": "text",
+        "id": "v6_store_rating",
+        "label": "Store rating shown on product cards",
+        "default": "4.9",
+        "info": "Shown as stars plus \"4.9/5\" on collection and homepage product cards (not on product pages)."
+      },
+      {
+        "type": "text",
+        "id": "v6_wishlist_url",
+        "label": "Wishlist page URL",
+        "default": "/pages/wishlist"
+      },
+      {
+        "type": "text",
+        "id": "v6_compare_url",
+        "label": "Compare page URL",
+        "default": "/pages/compare"
+      }
+    ]
   }
 ]

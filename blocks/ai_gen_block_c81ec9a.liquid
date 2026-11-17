@@ -604,6 +604,7 @@
                         class="ai-featured-tabs__wishlist-{{ai_gen_id}}"
                         data-wishlist-toggle
                         data-product-id="{{ product.id }}"
+                        data-product-handle="{{ product.handle }}"
                         aria-label="Add to wishlist"
                       >
                         {{ 'icon-heart.svg' | inline_asset_content }}
@@ -660,26 +661,9 @@
                   <div class="ai-featured-tabs__body-{{ai_gen_id}}">
                     <a href="{{ product.url }}" class="ai-featured-tabs__title-{{ai_gen_id}}">{{ product.title }}</a>
 
-                    {% if block.settings.show_rating and rating != blank %}
+                    {% if block.settings.show_rating %}
                       <div class="ai-featured-tabs__rating-{{ai_gen_id}}">
-                        <span class="ai-featured-tabs__stars-{{ai_gen_id}}" aria-hidden="true">
-                          <span class="ai-featured-tabs__stars-track-{{ai_gen_id}}">
-                            {% for star in (1..5) -%}
-                              {{- 'icon-star.svg' | inline_asset_content -}}
-                            {%- endfor %}
-                          </span>
-                          <span
-                            class="ai-featured-tabs__stars-fill-{{ai_gen_id}}"
-                            style="width: {{ rating | times: 20.0 | at_most: 100 }}%;"
-                          >
-                            {% for star in (1..5) -%}
-                              {{- 'icon-star.svg' | inline_asset_content -}}
-                            {%- endfor %}
-                          </span>
-                        </span>
-                        {% if rating_count != blank %}
-                          <span class="ai-featured-tabs__rating-count-{{ai_gen_id}}">({{ rating_count }})</span>
-                        {% endif %}
+                        {% render 'v6-rating-badge', size: 15 %}
                       </div>
                     {% endif %}
 
@@ -762,7 +746,7 @@
         this.tabs = this.querySelectorAll('.ai-featured-tabs__tab-{{ai_gen_id}}');
         this.contents = this.querySelectorAll('.ai-featured-tabs__content-{{ai_gen_id}}');
         this.setupEventListeners();
-        this.setupWishlist();
+        // Wishlist hearts are handled site-wide by assets/v6-wishlist.js
       }
 
       setupEventListeners() {
@@ -786,37 +770,6 @@
         });
       }
 
-      setupWishlist() {
-        let saved = [];
-        try {
-          saved = JSON.parse(localStorage.getItem('v6-wishlist') || '[]');
-        } catch (e) {
-          saved = [];
-        }
-
-        this.querySelectorAll('[data-wishlist-toggle]').forEach((button) => {
-          const id = button.getAttribute('data-product-id');
-          if (saved.includes(id)) button.classList.add('is-active');
-
-          button.addEventListener('click', () => {
-            button.classList.toggle('is-active');
-            const isActive = button.classList.contains('is-active');
-            let list = [];
-            try {
-              list = JSON.parse(localStorage.getItem('v6-wishlist') || '[]');
-            } catch (e) {
-              list = [];
-            }
-            if (isActive && !list.includes(id)) list.push(id);
-            if (!isActive) list = list.filter((item) => item !== id);
-            try {
-              localStorage.setItem('v6-wishlist', JSON.stringify(list));
-            } catch (e) {
-              /* storage unavailable */
-            }
-          });
-        });
-      }
     }
 
     if (!customElements.get('featured-tabs-{{ai_gen_id}}')) {

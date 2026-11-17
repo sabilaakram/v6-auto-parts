@@ -1,0 +1,37 @@
+{% comment %}
+  Store rating badge for product cards: five stars filled to the store rating
+  plus "4.9/5". The value comes from Theme settings > V6 store rating & wishlist.
+
+  Accepts:
+  - size: {Number} star size in px (default 14)
+
+  Usage:
+  {% render 'v6-rating-badge', size: 14 %}
+{% endcomment %}
+{%- liquid
+  assign v6_rating = settings.v6_store_rating | default: '4.9' | strip
+  assign v6_rating_num = v6_rating | plus: 0
+  assign v6_rating_pct = v6_rating_num | times: 20.0 | at_most: 100 | at_least: 0
+  assign v6_star_size = size | default: 14
+-%}
+<style>
+  .v6-rating-badge{display:inline-flex;align-items:center;gap:6px;line-height:1}
+  .v6-rating-badge__stars{position:relative;display:inline-flex;line-height:0}
+  .v6-rating-badge__track,.v6-rating-badge__fill{display:flex;gap:2px}
+  .v6-rating-badge__fill{position:absolute;top:0;left:0;overflow:hidden;white-space:nowrap}
+  .v6-rating-badge svg{width:var(--v6-star,14px);height:var(--v6-star,14px);flex:0 0 var(--v6-star,14px)}
+  .v6-rating-badge__track svg{fill:#e2e2e2}
+  .v6-rating-badge__fill svg{fill:#f0a911}
+  .v6-rating-badge__value{font-size:calc(var(--v6-star,14px) - 1px);font-weight:600;color:#555;letter-spacing:.02em}
+</style>
+<div class="v6-rating-badge" style="--v6-star: {{ v6_star_size }}px;" role="img" aria-label="Rated {{ v6_rating }} out of 5">
+  <span class="v6-rating-badge__stars" aria-hidden="true">
+    <span class="v6-rating-badge__track">
+      {%- for i in (1..5) -%}{{- 'icon-star.svg' | inline_asset_content -}}{%- endfor -%}
+    </span>
+    <span class="v6-rating-badge__fill" style="width: {{ v6_rating_pct }}%;">
+      {%- for i in (1..5) -%}{{- 'icon-star.svg' | inline_asset_content -}}{%- endfor -%}
+    </span>
+  </span>
+  <span class="v6-rating-badge__value" aria-hidden="true">{{ v6_rating }}/5</span>
+</div>

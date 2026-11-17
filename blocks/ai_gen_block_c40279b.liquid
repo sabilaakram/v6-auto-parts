@@ -407,6 +407,39 @@
     font-weight: 600;
   }
 
+  .v6-header-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    border-radius: 999px;
+    background: #a50000;
+    color: #ffffff;
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  .v6-header-count.is-empty {
+    display: none;
+  }
+
+  .v6-header-mobile-wish {
+    position: relative;
+  }
+
+  .v6-header-mobile-wish .v6-header-count {
+    position: absolute;
+    top: -6px;
+    right: -8px;
+    min-width: 16px;
+    height: 16px;
+    font-size: 10px;
+    padding: 0 4px;
+  }
+
   .ai-header-bottom-row-{{ ai_gen_id }} {
     height: {{ block.settings.nav_row_height }}px;
     background-color: {{ block.settings.nav_background_color }};
@@ -886,6 +919,22 @@
           </a>
         {% endif %}
 
+        <a href="{{ settings.v6_wishlist_url | default: '/pages/wishlist' }}" class="ai-header-utility-button-{{ ai_gen_id }}" aria-label="Wishlist">
+          <span class="ai-header-utility-icon-wrapper-{{ ai_gen_id }}">
+            <svg
+              class="ai-header-utility-icon-{{ ai_gen_id }}"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+            </svg>
+          </span>
+          <span>Wishlist</span>
+          <span class="v6-header-count is-empty" data-wishlist-count>0</span>
+        </a>
+
         <a href="/cart" class="ai-header-utility-button-{{ ai_gen_id }}">
           <span class="ai-header-utility-icon-wrapper-{{ ai_gen_id }}">
             <svg
@@ -972,6 +1021,18 @@
       </div>
 
       <div class="ai-header-mobile-right-{{ ai_gen_id }}">
+        <a href="{{ settings.v6_wishlist_url | default: '/pages/wishlist' }}" class="ai-header-mobile-button-{{ ai_gen_id }} v6-header-mobile-wish" aria-label="Wishlist">
+          <svg
+            class="ai-header-mobile-account-icon-{{ ai_gen_id }}"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+          </svg>
+          <span class="v6-header-count is-empty" data-wishlist-count>0</span>
+        </a>
         <a href="/account" class="ai-header-mobile-button-{{ ai_gen_id }}" aria-label="Account">
           <svg
             class="ai-header-mobile-account-icon-{{ ai_gen_id }}"

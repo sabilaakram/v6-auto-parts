@@ -1,0 +1,14 @@
+{% layout none %}
+{%- comment -%}
+  Bare product card, loaded by the Wishlist page via /products/<handle>?view=v6card.
+  Card styles are included once by the wishlist section, so they are skipped here.
+{%- endcomment -%}
+{%- render 'card-product',
+  card_product: product,
+  show_vendor: false,
+  show_rating: false,
+  quick_add: true,
+  enable_quick_view: false,
+  skip_styles: true,
+  section_id: 'v6-wishlist'
+-%}
