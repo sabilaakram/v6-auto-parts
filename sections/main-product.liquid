@@ -451,6 +451,43 @@
                     </details>
                   </div>
                 {%- when 'quantity_selector' -%}
+                  {%- assign v6_share_block = section.blocks | where: 'type', 'share' | first -%}
+                  {%- if v6_share_block -%}
+                    <style>
+                      .v6-qty-share{display:flex;align-items:flex-end;gap:1.2rem;flex-wrap:wrap}
+                      .v6-qty-share>.product-form__quantity{margin:0}
+                      .v6-qty-share>.share-button{margin:0}
+                      .v6-qty-share .share-button__button{
+                        display:inline-flex;align-items:center;gap:.8rem;
+                        min-height:calc((var(--inputs-border-width) * 2) + 4.5rem);
+                        padding:0 2rem;margin:0;
+                        border:1px solid rgba(var(--color-foreground),.2);
+                        border-radius:999px;background:rgb(var(--color-background));
+                        color:rgb(var(--color-foreground));
+                        font-size:1.4rem;font-weight:600;letter-spacing:.02em;
+                        list-style:none;text-decoration:none;
+                        transition:border-color .2s ease,color .2s ease,background-color .2s ease,box-shadow .2s ease
+                      }
+                      .v6-qty-share .share-button__button::-webkit-details-marker{display:none}
+                      .v6-qty-share .share-button__button .svg-wrapper{width:1.6rem;height:1.6rem;display:inline-flex}
+                      .v6-qty-share .share-button__button .icon-share{width:1.6rem;height:1.6rem;margin:0}
+                      .v6-qty-share .share-button__button:hover,
+                      .v6-qty-share details[open]>.share-button__button{
+                        border-color:#a50000;color:#a50000;background:rgba(165,0,0,.04);
+                        text-decoration:none;box-shadow:0 2px 8px rgba(165,0,0,.12)
+                      }
+                      .v6-qty-share .share-button__fallback{
+                        top:calc(100% + .8rem);left:auto;right:0;width:30rem;max-width:calc(100vw - 3.2rem);
+                        min-width:0;border-radius:1rem;box-shadow:0 8px 24px rgba(0,0,0,.12)
+                      }
+                      .v6-qty-share .share-button__fallback:before{border-radius:1rem}
+                      .v6-qty-share .share-button__fallback .field{flex:1;min-width:0}
+                      @media screen and (max-width:749px){
+                        .v6-qty-share .share-button__fallback{left:auto;right:0}
+                      }
+                    </style>
+                    <div class="v6-qty-share">
+                  {%- endif -%}
                   <div
                     id="Quantity-Form-{{ section.id }}"
                     class="product-form__input product-form__quantity{% if settings.inputs_shadow_vertical_offset != 0 and settings.inputs_shadow_vertical_offset < 0 %} product-form__quantity-top{% endif %}"
@@ -677,6 +714,11 @@
                       </volume-pricing>
                     {%- endif -%}
                   </div>
+                  {%- if v6_share_block -%}
+                      {%- assign share_url = product.selected_variant.url | default: product.url | prepend: request.origin -%}
+                      {%- render 'share-button', block: v6_share_block, share_link: share_url -%}
+                    </div>
+                  {%- endif -%}
                 {%- when 'popup' -%}
                   <modal-opener
                     class="product-popup-modal__opener quick-add-hidden"
@@ -693,10 +735,14 @@
                     </button>
                   </modal-opener>
                 {%- when 'share' -%}
-                  {% liquid
-                    assign share_url = product.selected_variant.url | default: product.url | prepend: request.origin
-                    render 'share-button', block: block, share_link: share_url
-                  %}
+                  {%- comment -%} Rendered beside the quantity selector when that block exists {%- endcomment -%}
+                  {%- assign v6_qty_count = section.blocks | where: 'type', 'quantity_selector' | size -%}
+                  {%- if v6_qty_count == 0 -%}
+                    {% liquid
+                      assign share_url = product.selected_variant.url | default: product.url | prepend: request.origin
+                      render 'share-button', block: block, share_link: share_url
+                    %}
+                  {%- endif -%}
 
                 {%- when 'disclosures' -%}
                   {%- render 'product-disclosures',
