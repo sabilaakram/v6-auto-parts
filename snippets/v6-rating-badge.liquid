@@ -27,10 +27,10 @@
 <div class="v6-rating-badge" style="--v6-star: {{ v6_star_size }}px;" role="img" aria-label="Rated {{ v6_rating }} out of 5">
   <span class="v6-rating-badge__stars" aria-hidden="true">
     <span class="v6-rating-badge__track">
-      {%- for i in (1..5) -%}{{- 'icon-star.svg' | inline_asset_content -}}{%- endfor -%}
+      {%- for i in (1..5) -%}<svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10 1.3l2.63 5.52 6.07.78-4.45 4.2 1.13 6.02L10 14.9l-5.38 2.92 1.13-6.02L1.3 7.6l6.07-.78z"/></svg>{%- endfor -%}
     </span>
     <span class="v6-rating-badge__fill" style="width: {{ v6_rating_pct }}%;">
-      {%- for i in (1..5) -%}{{- 'icon-star.svg' | inline_asset_content -}}{%- endfor -%}
+      {%- for i in (1..5) -%}<svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10 1.3l2.63 5.52 6.07.78-4.45 4.2 1.13 6.02L10 14.9l-5.38 2.92 1.13-6.02L1.3 7.6l6.07-.78z"/></svg>{%- endfor -%}
     </span>
   </span>
   <span class="v6-rating-badge__value" aria-hidden="true">{{ v6_rating }}/5</span>
