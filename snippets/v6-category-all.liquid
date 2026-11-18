@@ -1,0 +1,71 @@
+{% comment %}
+  "All categories" option shown first in the Category (product type) filter.
+  Checked when no category is selected (and we're not on a single-category page).
+  Ticking it clears the category selection; it has no "name", so it never adds
+  anything to the filter URL. Behaviour is wired in facets.liquid (v6 category script).
+
+  Accepts:
+  - filter: {Object} the product_type filter
+  - mobile: {Boolean} render the mobile drawer markup
+  - current_category_handle: {String} handle when on a category collection page
+{% endcomment %}
+{%- liquid
+  assign v6_any_active = false
+  if current_category_handle == blank
+    for v in filter.values
+      if v.active
+        assign v6_any_active = true
+      endif
+    endfor
+  endif
+  assign v6_all_checked = false
+  if current_category_handle == blank and v6_any_active == false
+    assign v6_all_checked = true
+  endif
+  assign v6_all_id = 'Filter-v6-category-all'
+  if mobile
+    assign v6_all_id = 'Filter-v6-category-all-mobile'
+  endif
+  assign v6_all_count = collections['all'].products_count
+-%}
+{%- if mobile -%}
+  <li class="mobile-facets__item list-menu__item">
+    <label for="{{ v6_all_id }}" class="facets__label mobile-facets__label{% if v6_all_checked %} active{% endif %}">
+      <input
+        class="mobile-facets__checkbox"
+        type="checkbox"
+        id="{{ v6_all_id }}"
+        data-v6-cat-all
+        data-all-url="{{ routes.all_products_collection_url }}"
+        {% if v6_all_checked %}checked{% endif %}
+      >
+      <span class="mobile-facets__highlight"></span>
+      {{- 'square.svg' | inline_asset_content -}}
+      {{- 'icon-checkmark.svg' | inline_asset_content -}}
+      <span class="facet-checkbox__text" aria-hidden="true">
+        <span class="facet-checkbox__text-label">All categories</span> ({{ v6_all_count }})
+      </span>
+      <span class="visually-hidden">All categories ({{ v6_all_count }} products)</span>
+    </label>
+  </li>
+{%- else -%}
+  <li class="list-menu__item facets__item">
+    <label for="{{ v6_all_id }}" class="facets__label facet-checkbox{% if v6_all_checked %} active{% endif %}">
+      <input
+        type="checkbox"
+        id="{{ v6_all_id }}"
+        data-v6-cat-all
+        data-all-url="{{ routes.all_products_collection_url }}"
+        {% if v6_all_checked %}checked{% endif %}
+      >
+      {{- 'square.svg' | inline_asset_content -}}
+      <div class="svg-wrapper">
+        {{- 'icon-checkmark.svg' | inline_asset_content -}}
+      </div>
+      <span class="facet-checkbox__text" aria-hidden="true">
+        <span class="facet-checkbox__text-label">All categories</span> ({{ v6_all_count }})
+      </span>
+      <span class="visually-hidden">All categories ({{ v6_all_count }} products)</span>
+    </label>
+  </li>
+{%- endif -%}

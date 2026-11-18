@@ -234,6 +234,7 @@
                 assign loop_values = category_names
               endif
             -%}
+{%- if is_category_filter -%}{% render 'v6-category-all', filter: filter, mobile: false, current_category_handle: current_category_handle %}{%- endif -%}
 {%- for item in loop_values -%}
                             {% liquid
                 assign item_number = forloop.index
@@ -324,7 +325,7 @@
                                     name="{{ v_param }}"
                                     value="{{ v_value }}"
                                     id="{{ input_id }}"
-                                    {% if category_url != blank %}data-category-url="{{ category_url }}"{% if v_active %} data-category-current{% endif %}{% endif %}
+                                    {% if is_category_filter %}data-v6-cat="{{ v_value | escape }}"{% if current_category_handle != blank %} data-v6-cat-page data-v6-cat-url="{{ category_url }}"{% endif %}{% endif %}
                                     {% if v_active %}
                                       checked
                                     {% endif %}
@@ -660,6 +661,7 @@
                 assign loop_values = category_names
               endif
             -%}
+{%- if is_category_filter -%}{% render 'v6-category-all', filter: filter, mobile: true, current_category_handle: current_category_handle %}{%- endif -%}
 {%- for item in loop_values -%}
                               {% liquid
                 assign item_number = forloop.index
@@ -752,7 +754,7 @@
                                       name="{{ v_param }}"
                                       value="{{ v_value }}"
                                       id="{{ input_id }}"
-                                      {% if category_url != blank %}data-category-url="{{ category_url }}"{% if v_active %} data-category-current{% endif %}{% endif %}
+                                      {% if is_category_filter %}data-v6-cat="{{ v_value | escape }}"{% if current_category_handle != blank %} data-v6-cat-page data-v6-cat-url="{{ category_url }}"{% endif %}{% endif %}
                                       {% if v_active %}
                                         checked
                                       {% endif %}
@@ -1079,24 +1081,82 @@
   {%- endif -%}
 </div>
 
-{%- if current_category_handle != blank -%}
-  <script>
-    /* V6 Auto Parts: on a category page, ticking another category opens that category's page. */
-    if (!window.__v6CategoryNav) {
-      window.__v6CategoryNav = true;
-      var v6CategoryGo = function (event) {
-        var box = event.target;
-        if (!box || !box.matches || !box.matches('input[data-category-url]')) return;
+<script>
+  /*
+   * V6 Auto Parts – Category filter
+   * - "All categories" clears the category selection (shows every product).
+   * - Any number of categories can be ticked, including none.
+   * - On a single-category collection page (e.g. /collections/power-steering), changing the
+   *   ticks moves to: one category -> that category's page; several -> All products filtered
+   *   by those categories; none -> All products.
+   * - On other collection pages the theme's normal filtering handles multiple ticks.
+   */
+  if (!window.__v6CategoryNav) {
+    window.__v6CategoryNav = true;
+    var v6Navigating = false;
+    var v6AllUrl = {{ routes.all_products_collection_url | json }};
+
+    var v6Go = function (url) {
+      if (v6Navigating) return;
+      v6Navigating = true;
+      window.location.href = url;
+    };
+
+    var v6UrlWithoutCategories = function () {
+      var url = new URL(window.location.href);
+      url.searchParams.delete('filter.p.product_type');
+      url.searchParams.delete('page');
+      return url.pathname + (url.searchParams.toString() ? '?' + url.searchParams.toString() : '');
+    };
+
+    var v6CategoryChange = function (event) {
+      var box = event.target;
+      if (!box || !box.matches) return;
+
+      // "All categories"
+      if (box.matches('input[data-v6-cat-all]')) {
         event.stopImmediatePropagation();
-        event.preventDefault();
-        if (box.hasAttribute('data-category-current')) {
-          box.checked = true;
-          return;
+        if (event.type !== 'change') return;
+        if (!box.checked) return; // unticking it just leaves nothing ticked (all products still shown)
+        var onCategoryPage = !!document.querySelector('input[data-v6-cat-page]');
+        v6Go(onCategoryPage ? v6AllUrl : v6UrlWithoutCategories());
+        return;
+      }
+
+      // A category on a single-category page
+      if (box.matches('input[data-v6-cat-page]')) {
+        event.stopImmediatePropagation();
+        if (event.type !== 'change') return;
+        var list = box.closest('ul') || document;
+        var picked = Array.prototype.filter.call(list.querySelectorAll('input[data-v6-cat]'), function (b) {
+          return b.checked;
+        });
+        if (picked.length === 0) {
+          v6Go(v6AllUrl);
+        } else if (picked.length === 1 && picked[0].getAttribute('data-v6-cat-url')) {
+          v6Go(picked[0].getAttribute('data-v6-cat-url'));
+        } else {
+          var qs = picked
+            .map(function (b) {
+              return 'filter.p.product_type=' + encodeURIComponent(b.getAttribute('data-v6-cat'));
+            })
+            .join('&');
+          v6Go(v6AllUrl + '?' + qs);
         }
-        window.location.href = box.getAttribute('data-category-url');
-      };
-      document.addEventListener('input', v6CategoryGo, true);
-      document.addEventListener('change', v6CategoryGo, true);
-    }
-  </script>
-{%- endif -%}
+        return;
+      }
+
+      // Normal pages: keep "All categories" in sync while the theme filters in place.
+      if (box.matches('input[data-v6-cat]')) {
+        var ul = box.closest('ul');
+        var all = ul && ul.querySelector('input[data-v6-cat-all]');
+        if (all) {
+          all.checked = !ul.querySelector('input[data-v6-cat]:checked');
+        }
+      }
+    };
+
+    document.addEventListener('input', v6CategoryChange, true);
+    document.addEventListener('change', v6CategoryChange, true);
+  }
+</script>
