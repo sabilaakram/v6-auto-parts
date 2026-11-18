@@ -37,12 +37,14 @@
       ],
       "custom_css": [
         ".slideshow__controls.slideshow__controls--top {display: none !important;}",
-        "@media screen and (min-width: 750px) {.slideshow__text-wrapper.banner__content {max-width: 90%; margin: 0 auto; } .slideshow__text.banner__box {width: 46%; max-width: 640px !important; }}",
+        "@media screen and (min-width: 750px) {.slideshow__text-wrapper.banner__content {max-width: 90%; margin: 0 auto; }}",
         "@media screen and (max-width: 749px) {.slideshow__text.banner__box {width: 100% !important; max-width: 400px !important; background: rgba(255, 255, 255, 0.65) !important; backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border-radius: 16px; padding: 20px; }}"
       ],
       "name": "t:sections.slideshow.presets.name",
       "settings": {
         "layout": "full_bleed",
+        "text_box_width": 56,
+        "text_box_max_width": 0,
         "slide_height": "small",
         "slider_visual": "dots",
         "auto_rotate": true,
