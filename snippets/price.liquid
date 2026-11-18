@@ -124,7 +124,22 @@
         {%- else -%}
           {{ 'products.product.on_sale' | t }}
         {%- endif -%}
+        {%- if show_discount_details and compare_at_price > price -%}
+          {%- assign v6_discount_pct = compare_at_price | minus: price | times: 100.0 | divided_by: compare_at_price | round -%}
+          {{ ' ' }}{{ v6_discount_pct }}%
+        {%- endif -%}
       </span>
+      {%- if show_discount_details and compare_at_price > price -%}
+        {%- assign v6_saving = compare_at_price | minus: price -%}
+        <span class="v6-price-you-save" style="display:block;width:100%;margin-top:6px;font-size:1.5rem;font-weight:700;color:#1a7f37;">
+          You save
+          {% if settings.currency_code_enabled -%}
+            {{ v6_saving | money_with_currency }}
+          {%- else -%}
+            {{ v6_saving | money }}
+          {%- endif %}
+        </span>
+      {%- endif -%}
 
       <span class="badge price__badge-sold-out color-{{ settings.sold_out_badge_color_scheme }}">
         {{ 'products.product.sold_out' | t }}
