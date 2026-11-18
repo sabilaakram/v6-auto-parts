@@ -12,6 +12,6 @@
 {%- if compare_at > price -%}
   {%- assign v6_saving = compare_at | minus: price -%}
   <span class="v6-you-save" style="display:inline-block;margin-top:2px;font-size:12px;font-weight:700;line-height:1.3;color:#1a7f37;">
-    You save {{ v6_saving | money }}
+    You save {{ v6_saving | money_without_trailing_zeros }}
   </span>
 {%- endif -%}

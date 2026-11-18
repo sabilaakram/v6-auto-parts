@@ -674,10 +674,10 @@
                       <div class="ai-featured-tabs__price-{{ai_gen_id}}{% if on_sale %} has-sale{% endif %}">
                         {% if on_sale %}
                           <span class="ai-featured-tabs__price-compare-{{ai_gen_id}}">
-                            {{- product.compare_at_price | money -}}
+                            {{- product.compare_at_price | money_without_trailing_zeros -}}
                           </span>
                         {% endif %}
-                        <span class="ai-featured-tabs__price-current-{{ai_gen_id}}">{{ product.price | money }}</span>
+                        <span class="ai-featured-tabs__price-current-{{ai_gen_id}}">{{ product.price | money_without_trailing_zeros }}</span>
                         {% render 'v6-you-save', price: product.price, compare_at: product.compare_at_price %}
                       </div>
 

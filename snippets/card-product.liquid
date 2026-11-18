@@ -488,9 +488,9 @@
       <div class="product-card__footer">
         <div class="product-card__price{% if on_sale %} has-sale{% endif %}">
           {% if on_sale %}
-            <span class="product-card__price-compare">{{ card_product.compare_at_price | money }}</span>
+            <span class="product-card__price-compare">{{ card_product.compare_at_price | money_without_trailing_zeros }}</span>
           {% endif %}
-          <span class="product-card__price-current">{{ card_product.price | money }}</span>
+          <span class="product-card__price-current">{{ card_product.price | money_without_trailing_zeros }}</span>
           {% render 'v6-you-save', price: card_product.price, compare_at: card_product.compare_at_price %}
         </div>
 
@@ -541,7 +541,7 @@
       <h3 class="product-card__title"><a href="#">Product Title</a></h3>
       <div class="product-card__footer">
         <div class="product-card__price">
-          <span class="product-card__price-current">{{ 0 | money }}</span>
+          <span class="product-card__price-current">{{ 0 | money_without_trailing_zeros }}</span>
         </div>
         <button class="product-card__cta" disabled>Add to Cart</button>
       </div>

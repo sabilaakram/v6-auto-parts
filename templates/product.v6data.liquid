@@ -11,7 +11,7 @@
   endif
   assign compare_at = ''
   if product.compare_at_price > product.price
-    assign compare_at = product.compare_at_price | money
+    assign compare_at = product.compare_at_price | money_without_trailing_zeros
   endif
 -%}
-{"id":{{ product.id | json }},"handle":{{ product.handle | json }},"title":{{ product.title | json }},"url":{{ product.url | json }},"image":{{ image | json }},"price":{{ product.price | money | json }},"compare_at":{{ compare_at | json }},"available":{{ product.available | json }},"sku":{{ v.sku | json }},"vendor":{{ product.vendor | json }},"type":{{ product.type | json }},"variant_id":{{ v.id | json }},"single_variant":{{ product.has_only_default_variant | json }},"specs":{{ specs | default: '' | json }}}
+{"id":{{ product.id | json }},"handle":{{ product.handle | json }},"title":{{ product.title | json }},"url":{{ product.url | json }},"image":{{ image | json }},"price":{{ product.price | money_without_trailing_zeros | json }},"compare_at":{{ compare_at | json }},"available":{{ product.available | json }},"sku":{{ v.sku | json }},"vendor":{{ product.vendor | json }},"type":{{ product.type | json }},"variant_id":{{ v.id | json }},"single_variant":{{ product.has_only_default_variant | json }},"specs":{{ specs | default: '' | json }}}

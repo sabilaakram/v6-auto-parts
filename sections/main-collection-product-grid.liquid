@@ -503,7 +503,7 @@
                       </span>
                       <span>
                         <span class="ai-collection__latest-title">{{ latest_product.title }}</span>
-                        <span class="ai-collection__latest-price">{{ latest_product.price | money }}</span>
+                        <span class="ai-collection__latest-price">{{ latest_product.price | money_without_trailing_zeros }}</span>
                       </span>
                     </a>
                   {%- endfor -%}

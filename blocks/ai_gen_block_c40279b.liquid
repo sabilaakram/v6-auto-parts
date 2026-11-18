@@ -951,7 +951,7 @@
           </span>
           <span class="ai-header-cart-info-{{ ai_gen_id }}">
             <span class="ai-header-cart-count-{{ ai_gen_id }}">{{ cart.item_count }}</span>
-            <span>{{ cart.total_price | money }}</span>
+            <span>{{ cart.total_price | money_without_trailing_zeros }}</span>
           </span>
         </a>
       </div>
