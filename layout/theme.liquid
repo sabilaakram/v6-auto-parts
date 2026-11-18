@@ -380,17 +380,25 @@
       }
     </script>
     {%- if settings.v6_review_cap_height -%}
+      {%- liquid
+        # Card = 44px padding + 45px name row + 28px stars + ~22px "Read more"; each text line is 14px x 1.55.
+        assign v6_rev_h = settings.v6_review_max_height | default: 240
+        assign v6_rev_lines = v6_rev_h | minus: 139 | divided_by: 21.7 | floor
+        if v6_rev_lines < 1
+          assign v6_rev_lines = 1
+        endif
+      -%}
       <style>
-        /* Repocean Google reviews: cap card height (Theme settings > Google reviews) */
-        .repocean-reviews .repocean-card:not(.repocean-card--skeleton) {
-          max-height: {{ settings.v6_review_max_height | default: 240 }}px;
-          min-height: 0;
-          overflow-y: auto;
-          overscroll-behavior: contain;
-          scrollbar-width: thin;
+        /* Repocean Google reviews: fit cards within the max height (Theme settings > Google reviews).
+           Text is clamped to the number of lines that fit; the app shows "Read more" for the rest. */
+        .repocean-reviews {
+          --repocean-line-clamp: {{ v6_rev_lines }} !important;
         }
-        .repocean-reviews .repocean-card::-webkit-scrollbar { width: 4px; }
-        .repocean-reviews .repocean-card::-webkit-scrollbar-thumb { background: rgba(0, 0, 0, 0.2); border-radius: 4px; }
+        .repocean-reviews .repocean-card:not(.expanded):not(.repocean-card--skeleton) {
+          max-height: {{ v6_rev_h }}px;
+          min-height: 0;
+          overflow: hidden;
+        }
       </style>
     {%- endif -%}
   </head>
