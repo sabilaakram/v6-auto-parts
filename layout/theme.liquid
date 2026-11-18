@@ -379,6 +379,20 @@
         document.documentElement.classList.add('shopify-design-mode');
       }
     </script>
+    {%- if settings.v6_review_cap_height -%}
+      <style>
+        /* Repocean Google reviews: cap card height (Theme settings > Google reviews) */
+        .repocean-reviews .repocean-card:not(.repocean-card--skeleton) {
+          max-height: {{ settings.v6_review_max_height | default: 240 }}px;
+          min-height: 0;
+          overflow-y: auto;
+          overscroll-behavior: contain;
+          scrollbar-width: thin;
+        }
+        .repocean-reviews .repocean-card::-webkit-scrollbar { width: 4px; }
+        .repocean-reviews .repocean-card::-webkit-scrollbar-thumb { background: rgba(0, 0, 0, 0.2); border-radius: 4px; }
+      </style>
+    {%- endif -%}
   </head>
 
   <body class="gradient{% if settings.animations_hover_elements != 'none' %} animate--hover-{{ settings.animations_hover_elements }}{% endif %}">

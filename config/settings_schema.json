@@ -1496,5 +1496,27 @@
         "default": "/pages/compare"
       }
     ]
+  },
+  {
+    "name": "Google reviews (Repocean)",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "v6_review_cap_height",
+        "label": "Limit review card height",
+        "default": true
+      },
+      {
+        "type": "range",
+        "id": "v6_review_max_height",
+        "label": "Review card max height",
+        "min": 120,
+        "max": 600,
+        "step": 10,
+        "unit": "px",
+        "default": 240,
+        "info": "Applies to every Repocean reviews carousel. Longer reviews scroll inside the card."
+      }
+    ]
   }
 ]
