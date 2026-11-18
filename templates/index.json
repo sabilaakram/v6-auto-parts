@@ -260,6 +260,7 @@
           "type": "logo",
           "settings": {
             "name": "Volkswagen",
+            "image": "shopify://shop_images/logo-volkswagen.png",
             "link": "shopify://collections/volkswagen-parts"
           }
         },
@@ -267,6 +268,7 @@
           "type": "logo",
           "settings": {
             "name": "Vauxhall",
+            "image": "shopify://shop_images/logo-vauxhall.png",
             "link": "shopify://collections/vauxhall-parts"
           }
         },
@@ -274,6 +276,7 @@
           "type": "logo",
           "settings": {
             "name": "Ford",
+            "image": "shopify://shop_images/logo-ford.png",
             "link": "shopify://collections/ford-parts"
           }
         },
@@ -281,6 +284,7 @@
           "type": "logo",
           "settings": {
             "name": "Land Rover",
+            "image": "shopify://shop_images/logo-land-rover.png",
             "link": "shopify://collections/land-rover-parts"
           }
         },
@@ -288,6 +292,7 @@
           "type": "logo",
           "settings": {
             "name": "Renault",
+            "image": "shopify://shop_images/logo-renault.png",
             "link": "shopify://collections/renault-parts"
           }
         },
@@ -295,6 +300,7 @@
           "type": "logo",
           "settings": {
             "name": "Mitsubishi",
+            "image": "shopify://shop_images/logo-mitsubishi.png",
             "link": "shopify://collections/mitsubishi-parts"
           }
         }
@@ -329,6 +335,9 @@
         "logo_size": 140,
         "logo_size_tablet": 112,
         "logo_size_mobile": 84,
+        "layout": "grid",
+        "show_arrows": true,
+        "autoplay_seconds": 3,
         "columns_desktop": 6,
         "columns_tablet": 3,
         "columns_mobile": 3,
@@ -343,10 +352,7 @@
         "padding_top": 40,
         "padding_bottom": 40,
         "padding_top_mobile": 28,
-        "padding_bottom_mobile": 28,
-        "layout": "grid",
-        "show_arrows": true,
-        "autoplay_seconds": 3
+        "padding_bottom_mobile": 28
       }
     },
     "1788343453c1cb3136": {
