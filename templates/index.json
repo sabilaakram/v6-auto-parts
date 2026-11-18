@@ -335,7 +335,7 @@
         "logo_size": 140,
         "logo_size_tablet": 112,
         "logo_size_mobile": 84,
-        "layout": "grid",
+        "layout": "carousel",
         "show_arrows": true,
         "autoplay_seconds": 3,
         "columns_desktop": 6,
