@@ -1515,7 +1515,37 @@
         "step": 10,
         "unit": "px",
         "default": 240,
-        "info": "Applies to every Repocean reviews carousel. Longer reviews scroll inside the card."
+        "info": "Applies to every Repocean reviews carousel. Review text is shortened to fit, with a Read more link."
+      }
+    ]
+  },
+  {
+    "name": "Store location pin",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "v6_store_pin_enable",
+        "label": "Show floating store pin (bottom-left)",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "v6_store_address",
+        "label": "Store address",
+        "default": "Unit 3 Plox Brow, Tarleton, Preston PR4 6HB",
+        "info": "The pin opens Google Maps directions to this address. Keep it the same as the footer address."
+      },
+      {
+        "type": "text",
+        "id": "v6_store_pin_label",
+        "label": "Hover label",
+        "default": "Find our store"
+      },
+      {
+        "type": "color",
+        "id": "v6_store_pin_color",
+        "label": "Pin colour",
+        "default": "#a50000"
       }
     ]
   }

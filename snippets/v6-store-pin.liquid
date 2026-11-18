@@ -1,0 +1,92 @@
+{% comment %}
+  Floating "find our store" pin (bottom-left), replacing the Waze/Google Maps
+  Store Locator app. Opens Google Maps directions to the store address set in
+  Theme settings > Store location pin.
+
+  The #effectifyLocator element tells the old app's script not to draw its own
+  pin (it checks for this id before injecting), so only this one shows.
+{% endcomment %}
+<div id="effectifyLocator" hidden aria-hidden="true"></div>
+<style>
+  #ea-snts-store-locator-wrapper { display: none !important; }
+</style>
+
+{%- if settings.v6_store_pin_enable and settings.v6_store_address != blank -%}
+  {%- liquid
+    assign v6_pin_addr = settings.v6_store_address | strip
+    assign v6_pin_label = settings.v6_store_pin_label | default: 'Find our store'
+    assign v6_pin_url = v6_pin_addr | url_encode | prepend: 'https://www.google.com/maps/dir/?api=1&destination='
+  -%}
+  <style>
+    .v6-store-pin {
+      position: fixed;
+      left: 12px;
+      bottom: 12px;
+      z-index: 2147483000;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+    .v6-store-pin__btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: {{ settings.v6_store_pin_color | default: '#a50000' }};
+      color: #ffffff;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .v6-store-pin__btn svg {
+      width: 26px;
+      height: 26px;
+    }
+    .v6-store-pin:hover .v6-store-pin__btn,
+    .v6-store-pin:focus-visible .v6-store-pin__btn {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 26px rgba(0, 0, 0, 0.3);
+    }
+    .v6-store-pin__tip {
+      padding: 8px 12px;
+      border-radius: 8px;
+      background: #ffffff;
+      color: #1e2433;
+      font-size: 13px;
+      font-weight: 600;
+      line-height: 1.2;
+      white-space: nowrap;
+      box-shadow: 0 6px 24px rgba(0, 18, 46, 0.2);
+      opacity: 0;
+      transform: translateX(-6px);
+      pointer-events: none;
+      transition: opacity 0.15s ease, transform 0.15s ease;
+    }
+    .v6-store-pin:hover .v6-store-pin__tip,
+    .v6-store-pin:focus-visible .v6-store-pin__tip {
+      opacity: 1;
+      transform: translateX(0);
+    }
+    @media screen and (max-width: 749px) {
+      .v6-store-pin { left: 10px; bottom: 10px; }
+      .v6-store-pin__btn { width: 46px; height: 46px; }
+      .v6-store-pin__btn svg { width: 22px; height: 22px; }
+      .v6-store-pin__tip { display: none; }
+    }
+    @media print { .v6-store-pin { display: none; } }
+  </style>
+  <a
+    class="v6-store-pin"
+    href="{{ v6_pin_url }}"
+    target="_blank"
+    rel="noopener"
+    aria-label="{{ v6_pin_label | escape }}: {{ v6_pin_addr | escape }} (opens Google Maps)"
+  >
+    <span class="v6-store-pin__btn" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z"/></svg>
+    </span>
+    <span class="v6-store-pin__tip" aria-hidden="true">{{ v6_pin_label | escape }}</span>
+  </a>
+{%- endif -%}
