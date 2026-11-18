@@ -1,0 +1,161 @@
+{% comment %}
+  "Brand" filter shown under Category in the collection/search filters.
+  Each brand is its own smart collection (e.g. /collections/bmw-parts).
+  Behaviour (script at the bottom of facets.liquid):
+    - one brand ticked  -> that brand's collection page (Category filter still works inside it)
+    - several ticked    -> search results for those brands
+    - none / "All brands" -> All products
+  The inputs have no "name", so they never change the theme's own filter URL.
+
+  Accepts:
+  - mobile: {Boolean} render the mobile drawer markup
+  - filter_type: {String} 'vertical' | 'horizontal' | 'drawer'
+{% endcomment %}
+{%- liquid
+  assign b_names = 'Mercedes-Benz|BMW|Audi|Volkswagen|Vauxhall|Toyota|Lexus|Nissan|Ford|Land Rover|Renault|Mitsubishi' | split: '|'
+  assign b_handles = 'mercedes-benz-parts|bmw-parts|audi-parts|volkswagen-parts|vauxhall-parts|toyota-parts|lexus-parts|nissan-parts|ford-parts|land-rover-parts|renault-parts|mitsubishi-parts' | split: '|'
+  assign b_query = 'Mercedes|BMW|Audi|Volkswagen OR VW|Vauxhall|Toyota|Lexus|Nissan|Ford|"Land Rover" OR "Range Rover"|Renault|Mitsubishi' | split: '|'
+  assign b_match = 'mercedes|bmw|audi|volkswagen|vauxhall|toyota|lexus|nissan|ford|land rover|renault|mitsubishi' | split: '|'
+
+  assign current_handle = ''
+  if collection.handle != blank
+    assign current_handle = collection.handle
+  endif
+  assign terms_lc = ''
+  if search.performed and search.terms != blank
+    assign terms_lc = search.terms | downcase
+  endif
+
+  assign active_count = 0
+  for h in b_handles
+    assign i = forloop.index0
+    if h == current_handle
+      assign active_count = active_count | plus: 1
+    elsif terms_lc != blank and terms_lc contains b_match[i]
+      assign active_count = active_count | plus: 1
+    endif
+  endfor
+
+  assign suffix = ''
+  if mobile
+    assign suffix = '-mobile'
+  endif
+-%}
+
+{%- capture v6_brand_items -%}
+  {%- liquid
+    assign all_checked = false
+    if active_count == 0
+      assign all_checked = true
+    endif
+  -%}
+  <li class="{% if mobile %}mobile-facets__item list-menu__item{% else %}list-menu__item facets__item{% endif %}">
+    <label for="Filter-v6-brand-all{{ suffix }}" class="facets__label{% if mobile %} mobile-facets__label{% else %} facet-checkbox{% endif %}{% if all_checked %} active{% endif %}">
+      <input
+        type="checkbox"
+        {% if mobile %}class="mobile-facets__checkbox"{% endif %}
+        id="Filter-v6-brand-all{{ suffix }}"
+        data-v6-brand-all
+        {% if all_checked %}checked{% endif %}
+      >
+      {%- if mobile -%}<span class="mobile-facets__highlight"></span>{%- endif -%}
+      {{- 'square.svg' | inline_asset_content -}}
+      {%- if mobile -%}
+        {{- 'icon-checkmark.svg' | inline_asset_content -}}
+      {%- else -%}
+        <div class="svg-wrapper">{{- 'icon-checkmark.svg' | inline_asset_content -}}</div>
+      {%- endif -%}
+      <span class="facet-checkbox__text" aria-hidden="true">
+        <span class="facet-checkbox__text-label">All brands</span>
+      </span>
+      <span class="visually-hidden">All brands</span>
+    </label>
+  </li>
+  {%- for name in b_names -%}
+    {%- liquid
+      assign i = forloop.index0
+      assign h = b_handles[i]
+      assign c = collections[h]
+      if c == blank or c.products_count == 0
+        continue
+      endif
+      assign is_on = false
+      if h == current_handle
+        assign is_on = true
+      elsif terms_lc != blank and terms_lc contains b_match[i]
+        assign is_on = true
+      endif
+    -%}
+    <li class="{% if mobile %}mobile-facets__item list-menu__item{% else %}list-menu__item facets__item{% endif %}">
+      <label for="Filter-v6-brand-{{ forloop.index }}{{ suffix }}" class="facets__label{% if mobile %} mobile-facets__label{% else %} facet-checkbox{% endif %}{% if is_on %} active{% endif %}">
+        <input
+          type="checkbox"
+          {% if mobile %}class="mobile-facets__checkbox"{% endif %}
+          id="Filter-v6-brand-{{ forloop.index }}{{ suffix }}"
+          data-v6-brand
+          data-brand-url="{{ c.url }}"
+          data-brand-query="{{ b_query[i] | escape }}"
+          {% if is_on %}checked{% endif %}
+        >
+        {%- if mobile -%}<span class="mobile-facets__highlight"></span>{%- endif -%}
+        {{- 'square.svg' | inline_asset_content -}}
+        {%- if mobile -%}
+          {{- 'icon-checkmark.svg' | inline_asset_content -}}
+        {%- else -%}
+          <div class="svg-wrapper">{{- 'icon-checkmark.svg' | inline_asset_content -}}</div>
+        {%- endif -%}
+        <span class="facet-checkbox__text" aria-hidden="true">
+          <span class="facet-checkbox__text-label">{{ name | escape }}</span> ({{ c.products_count }})
+        </span>
+        <span class="visually-hidden">{{ name | escape }} ({{ c.products_count }} products)</span>
+      </label>
+    </li>
+  {%- endfor -%}
+{%- endcapture -%}
+
+{%- if mobile -%}
+  <details id="Details-Mobile-v6-brand-{{ section.id }}" class="mobile-facets__details js-filter" data-index="mobile-v6-brand">
+    <summary class="mobile-facets__summary focus-inset">
+      <div>
+        <span>Brand</span>
+        <span class="mobile-facets__arrow">{{- 'icon-arrow.svg' | inline_asset_content -}}</span>
+      </div>
+    </summary>
+    <div id="FacetMobile-v6-brand-{{ section.id }}" class="mobile-facets__submenu gradient">
+      <button class="mobile-facets__close-button link link--text focus-inset" aria-expanded="true" type="button">
+        {{- 'icon-arrow.svg' | inline_asset_content -}}
+        <span>Brand</span>
+      </button>
+      <ul class="facets-layout facets-layout-list facets-layout-list--text mobile-facets__list list-unstyled" role="list" data-v6-brand-list>
+        {{ v6_brand_items }}
+      </ul>
+    </div>
+  </details>
+{%- else -%}
+  <details
+    id="Details-v6-brand-{{ section.id }}"
+    class="{% if filter_type == 'horizontal' %}disclosure-has-popup facets__disclosure{% else %} facets__disclosure-vertical{% endif %} js-filter"
+    data-index="v6-brand"
+    {% if filter_type == 'vertical' %}open{% endif %}
+  >
+    <summary class="facets__summary caption-large focus-offset" aria-label="Brand">
+      <div>
+        <span class="facets__summary-label">
+          Brand
+          {%- if filter_type == 'vertical' -%}
+            <span class="facets__selected{% if active_count == 0 %} hidden{% endif %}"> ({{ active_count }})</span>
+          {%- endif -%}
+        </span>
+        {{- 'icon-caret.svg' | inline_asset_content -}}
+      </div>
+    </summary>
+    <div class="parent-display {% if filter_type == 'horizontal' %}facets__display{% else %}facets__display-vertical{% endif %}">
+      <fieldset class="facets-wrap parent-wrap {% if filter_type == 'vertical' %} facets-wrap-vertical{% endif %}">
+        <legend class="visually-hidden">Brand</legend>
+        <ul class="facets-layout facets-layout-list facets-layout-list--text{% if filter_type == 'vertical' %} facets__list--vertical{% else %} facets__list{% endif %} list-unstyled" role="list" data-v6-brand-list>
+          {{ v6_brand_items }}
+        </ul>
+      </fieldset>
+    </div>
+  </details>
+{%- endif -%}

@@ -7,6 +7,12 @@
 {%- liquid
   assign sid = section.id | replace: '_', '' | downcase
   assign heading_font = section.settings.heading_font
+  assign is_carousel = false
+  if section.settings.layout == 'carousel'
+    assign is_carousel = true
+  endif
+  # Brands that have a bundled theme logo file (assets/logo-<brand>.png)
+  assign bundled_logos = 'mercedes,bmw,audi,lexus,toyota,nissan' | split: ','
 -%}
 
 {% style %}
@@ -55,6 +61,86 @@
 
   .mfr-logos-{{ sid }} .mfr-logos__item {
     margin: 0;
+  }
+
+  /* Carousel layout */
+  .mfr-logos-{{ sid }} .mfr-logos__wrap {
+    position: relative;
+  }
+
+  .mfr-logos-{{ sid }}.is-carousel .mfr-logos__grid {
+    --cols: {{ section.settings.columns_mobile }};
+    --g: {{ section.settings.gap_mobile }}px;
+    display: flex;
+    gap: var(--g);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+    padding: 6px 2px 10px;
+  }
+
+  .mfr-logos-{{ sid }}.is-carousel .mfr-logos__grid::-webkit-scrollbar {
+    display: none;
+  }
+
+  .mfr-logos-{{ sid }}.is-carousel .mfr-logos__item {
+    flex: 0 0 calc((100% - (var(--cols) - 1) * var(--g)) / var(--cols));
+    scroll-snap-align: start;
+  }
+
+  .mfr-logos-{{ sid }} .mfr-logos__arrow {
+    position: absolute;
+    top: 50%;
+    z-index: 2;
+    width: 40px;
+    height: 40px;
+    margin-top: -24px;
+    border-radius: 50%;
+    border: 1px solid {{ section.settings.card_border_color }};
+    background: #ffffff;
+    color: {{ section.settings.text_color }};
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: color 0.2s ease, border-color 0.2s ease;
+  }
+
+  .mfr-logos-{{ sid }} .mfr-logos__arrow:hover {
+    color: {{ section.settings.heading_color }};
+    border-color: {{ section.settings.heading_color }};
+  }
+
+  .mfr-logos-{{ sid }} .mfr-logos__arrow svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .mfr-logos-{{ sid }} .mfr-logos__arrow--prev {
+    left: -6px;
+  }
+
+  .mfr-logos-{{ sid }} .mfr-logos__arrow--next {
+    right: -6px;
+  }
+
+  /* Brand name card when there's no logo image */
+  .mfr-logos-{{ sid }} .mfr-logos__wordmark {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: {{ section.settings.logo_size_mobile }}px;
+    aspect-ratio: 1 / 1;
+    font-weight: 800;
+    font-size: 14px;
+    line-height: 1.15;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    text-align: center;
+    color: {{ section.settings.text_color }};
   }
 
   .mfr-logos-{{ sid }} .mfr-logos__card {
@@ -136,8 +222,26 @@
       padding: 20px 12px;
     }
 
-    .mfr-logos-{{ sid }} .mfr-logos__img {
+    .mfr-logos-{{ sid }} .mfr-logos__img,
+    .mfr-logos-{{ sid }} .mfr-logos__wordmark {
       max-width: {{ section.settings.logo_size_tablet }}px;
+    }
+
+    .mfr-logos-{{ sid }} .mfr-logos__wordmark {
+      font-size: 17px;
+    }
+
+    .mfr-logos-{{ sid }}.is-carousel .mfr-logos__grid {
+      --cols: {{ section.settings.columns_tablet }};
+      --g: {{ section.settings.gap }}px;
+    }
+
+    .mfr-logos-{{ sid }} .mfr-logos__arrow--prev {
+      left: -20px;
+    }
+
+    .mfr-logos-{{ sid }} .mfr-logos__arrow--next {
+      right: -20px;
     }
 
     .mfr-logos-{{ sid }} .mfr-logos__name {
@@ -158,8 +262,17 @@
       padding: 24px 16px;
     }
 
-    .mfr-logos-{{ sid }} .mfr-logos__img {
+    .mfr-logos-{{ sid }} .mfr-logos__img,
+    .mfr-logos-{{ sid }} .mfr-logos__wordmark {
       max-width: {{ section.settings.logo_size }}px;
+    }
+
+    .mfr-logos-{{ sid }} .mfr-logos__wordmark {
+      font-size: 20px;
+    }
+
+    .mfr-logos-{{ sid }}.is-carousel .mfr-logos__grid {
+      --cols: {{ section.settings.columns_desktop }};
     }
   }
 
@@ -175,7 +288,7 @@
   }
 {% endstyle %}
 
-<div class="mfr-logos-{{ sid }}">
+<div class="mfr-logos-{{ sid }}{% if is_carousel %} is-carousel{% endif %}" id="mfr-logos-{{ sid }}">
   <div class="mfr-logos__inner">
     {%- if section.settings.heading != blank -%}
       <h2 class="mfr-logos__heading">{{ section.settings.heading | escape }}</h2>
@@ -184,10 +297,20 @@
       <p class="mfr-logos__subheading">{{ section.settings.subheading | escape }}</p>
     {%- endif -%}
 
-    <ul class="mfr-logos__grid" role="list">
+    <div class="mfr-logos__wrap">
+    {%- if is_carousel and section.settings.show_arrows -%}
+      <button type="button" class="mfr-logos__arrow mfr-logos__arrow--prev" data-mfr-prev aria-label="Previous brands">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <button type="button" class="mfr-logos__arrow mfr-logos__arrow--next" data-mfr-next aria-label="Next brands">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg>
+      </button>
+    {%- endif -%}
+    <ul class="mfr-logos__grid" role="list" data-mfr-track>
       {%- for block in section.blocks -%}
         {%- liquid
           assign brand = block.settings.name | strip
+          assign brand_key = brand | handleize
           if block.settings.link != blank
             assign brand_url = block.settings.link
           elsif brand != blank
@@ -215,8 +338,8 @@
                 sizes: '(min-width: 990px) 160px, (min-width: 750px) 120px, 90px',
                 alt: brand
             }}
-          {%- elsif brand != blank -%}
-            {%- assign asset_name = 'logo-' | append: brand | handleize | append: '.png' -%}
+          {%- elsif brand != blank and bundled_logos contains brand_key -%}
+            {%- assign asset_name = 'logo-' | append: brand_key | append: '.png' -%}
             <img
               class="mfr-logos__img"
               src="{{ asset_name | asset_url }}"
@@ -225,6 +348,8 @@
               height="300"
               loading="lazy"
             >
+          {%- elsif brand != blank -%}
+            <span class="mfr-logos__wordmark">{{ brand | escape }}</span>
           {%- endif -%}
 
           {%- if section.settings.show_names and brand != blank -%}
@@ -239,8 +364,58 @@
         </li>
       {%- endfor -%}
     </ul>
+    </div>
   </div>
 </div>
+
+{%- if is_carousel -%}
+  <script>
+    (function () {
+      var root = document.getElementById('mfr-logos-{{ sid }}');
+      if (!root) return;
+      var track = root.querySelector('[data-mfr-track]');
+      var prev = root.querySelector('[data-mfr-prev]');
+      var next = root.querySelector('[data-mfr-next]');
+      var delay = {{ section.settings.autoplay_seconds | default: 0 }} * 1000;
+      var timer = null;
+
+      function step() {
+        var item = track.querySelector('.mfr-logos__item');
+        if (!item) return track.clientWidth;
+        var gap = parseFloat(getComputedStyle(track).columnGap || getComputedStyle(track).gap) || 0;
+        return item.getBoundingClientRect().width + gap;
+      }
+      function atEnd() {
+        return track.scrollLeft + track.clientWidth >= track.scrollWidth - 4;
+      }
+      function go(dir) {
+        if (dir > 0 && atEnd()) {
+          track.scrollTo({ left: 0, behavior: 'smooth' });
+        } else if (dir < 0 && track.scrollLeft <= 4) {
+          track.scrollTo({ left: track.scrollWidth, behavior: 'smooth' });
+        } else {
+          track.scrollBy({ left: dir * step(), behavior: 'smooth' });
+        }
+      }
+      function stop() {
+        if (timer) clearInterval(timer);
+        timer = null;
+      }
+      function start() {
+        if (!delay || timer || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        timer = setInterval(function () { go(1); }, delay);
+      }
+
+      if (prev) prev.addEventListener('click', function () { stop(); go(-1); start(); });
+      if (next) next.addEventListener('click', function () { stop(); go(1); start(); });
+      root.addEventListener('mouseenter', stop);
+      root.addEventListener('mouseleave', start);
+      root.addEventListener('touchstart', stop, { passive: true });
+      root.addEventListener('focusin', stop);
+      start();
+    })();
+  </script>
+{%- endif -%}
 
 {% schema %}
 {
@@ -385,6 +560,33 @@
     {
       "type": "header",
       "content": "Layout"
+    },
+    {
+      "type": "select",
+      "id": "layout",
+      "label": "Display logos as",
+      "options": [
+        { "value": "grid", "label": "Rows (grid)" },
+        { "value": "carousel", "label": "Carousel (one sliding row)" }
+      ],
+      "default": "grid",
+      "info": "In the carousel, the 'Logos per row' settings below set how many logos are visible at once."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_arrows",
+      "label": "Show carousel arrows",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "autoplay_seconds",
+      "label": "Carousel auto-scroll (seconds, 0 = off)",
+      "min": 0,
+      "max": 10,
+      "step": 1,
+      "unit": "s",
+      "default": 3
     },
     {
       "type": "range",

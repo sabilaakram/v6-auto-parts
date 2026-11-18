@@ -415,6 +415,7 @@
                     </div>
                   </details>
               {% endcase %}
+              {%- if filter.param_name == 'filter.p.product_type' -%}{% render 'v6-brand-filter', mobile: false, filter_type: filter_type %}{%- endif -%}
             {%- endfor -%}
           </div>
           {% comment %} Pills after filtes on filter type horizontal {% endcomment %}
@@ -854,6 +855,7 @@
                         </div>
                       </details>
                   {% endcase %}
+                  {%- if filter.param_name == 'filter.p.product_type' -%}{% render 'v6-brand-filter', mobile: true, filter_type: filter_type %}{%- endif -%}
                 {%- endfor -%}
               {%- endif -%}
 
@@ -1120,6 +1122,37 @@
         if (!box.checked) return; // unticking it just leaves nothing ticked (all products still shown)
         var onCategoryPage = !!document.querySelector('input[data-v6-cat-page]');
         v6Go(onCategoryPage ? v6AllUrl : v6UrlWithoutCategories());
+        return;
+      }
+
+      // Brand filter: "All brands"
+      if (box.matches('input[data-v6-brand-all]')) {
+        event.stopImmediatePropagation();
+        if (event.type !== 'change') return;
+        if (box.checked) v6Go(v6AllUrl);
+        return;
+      }
+
+      // Brand filter: individual brands (each brand is its own collection)
+      if (box.matches('input[data-v6-brand]')) {
+        event.stopImmediatePropagation();
+        if (event.type !== 'change') return;
+        var brandList = box.closest('[data-v6-brand-list]') || document;
+        var brands = Array.prototype.filter.call(brandList.querySelectorAll('input[data-v6-brand]'), function (b) {
+          return b.checked;
+        });
+        if (brands.length === 0) {
+          v6Go(v6AllUrl);
+        } else if (brands.length === 1) {
+          v6Go(brands[0].getAttribute('data-brand-url'));
+        } else {
+          var q = brands
+            .map(function (b) {
+              return b.getAttribute('data-brand-query');
+            })
+            .join(' OR ');
+          v6Go({{ routes.search_url | json }} + '?type=product&q=' + encodeURIComponent(q));
+        }
         return;
       }
 

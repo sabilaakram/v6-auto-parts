@@ -255,6 +255,48 @@
             "name": "Nissan",
             "link": "shopify://collections/nissan-parts"
           }
+        },
+        "logo_volkswagen": {
+          "type": "logo",
+          "settings": {
+            "name": "Volkswagen",
+            "link": "shopify://collections/volkswagen-parts"
+          }
+        },
+        "logo_vauxhall": {
+          "type": "logo",
+          "settings": {
+            "name": "Vauxhall",
+            "link": "shopify://collections/vauxhall-parts"
+          }
+        },
+        "logo_ford": {
+          "type": "logo",
+          "settings": {
+            "name": "Ford",
+            "link": "shopify://collections/ford-parts"
+          }
+        },
+        "logo_landrover": {
+          "type": "logo",
+          "settings": {
+            "name": "Land Rover",
+            "link": "shopify://collections/land-rover-parts"
+          }
+        },
+        "logo_renault": {
+          "type": "logo",
+          "settings": {
+            "name": "Renault",
+            "link": "shopify://collections/renault-parts"
+          }
+        },
+        "logo_mitsubishi": {
+          "type": "logo",
+          "settings": {
+            "name": "Mitsubishi",
+            "link": "shopify://collections/mitsubishi-parts"
+          }
         }
       },
       "block_order": [
@@ -263,7 +305,13 @@
         "logo_audi",
         "logo_lexus",
         "logo_toyota",
-        "logo_nissan"
+        "logo_nissan",
+        "logo_volkswagen",
+        "logo_vauxhall",
+        "logo_ford",
+        "logo_landrover",
+        "logo_renault",
+        "logo_mitsubishi"
       ],
       "settings": {
         "heading": "Shop by Manufacturer",
@@ -295,7 +343,10 @@
         "padding_top": 40,
         "padding_bottom": 40,
         "padding_top_mobile": 28,
-        "padding_bottom_mobile": 28
+        "padding_bottom_mobile": 28,
+        "layout": "grid",
+        "show_arrows": true,
+        "autoplay_seconds": 3
       }
     },
     "1788343453c1cb3136": {
