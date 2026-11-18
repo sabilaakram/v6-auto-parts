@@ -1,0 +1,104 @@
+{% comment %}
+  "Dispatch countdown" block for the product page.
+  Same-day dispatch every day (weekends and holidays included) for orders before
+  the cut-off. Always uses UK time (Europe/London, incl. BST/GMT), not the
+  visitor's own clock.
+
+  Before cut-off: "Order within 1h 23m for same-day dispatch"
+  After cut-off:  "Order within 18h 05m for dispatch tomorrow"
+
+  Accepts:
+  - block: {Object} the "ai_dispatch_countdown" block
+  - product: {Object}
+{% endcomment %}
+{%- liquid
+  assign v6dc_show = true
+  if block.settings.hide_sold_out and product.available == false
+    assign v6dc_show = false
+  endif
+  assign v6dc_id = block.id | replace: '_', '' | downcase
+  assign v6dc_cutoff = block.settings.cutoff_hour | times: 60 | plus: block.settings.cutoff_minute
+-%}
+{%- if v6dc_show -%}
+  <style>
+    .v6-dispatch-{{ v6dc_id }} {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 10px 0 4px;
+      padding: 10px 14px;
+      border-radius: 10px;
+      background: {{ block.settings.background_color }};
+      color: {{ block.settings.text_color }};
+      font-size: 1.45rem;
+      line-height: 1.35;
+    }
+    .v6-dispatch-{{ v6dc_id }} svg {
+      flex: 0 0 20px;
+      width: 20px;
+      height: 20px;
+      color: {{ block.settings.accent_color }};
+    }
+    .v6-dispatch-{{ v6dc_id }} strong {
+      color: {{ block.settings.accent_color }};
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+    }
+    .v6-dispatch-{{ v6dc_id }}[hidden] { display: none; }
+  </style>
+  <div
+    class="v6-dispatch-{{ v6dc_id }} quick-add-hidden"
+    data-v6-dispatch
+    data-cutoff="{{ v6dc_cutoff }}"
+    data-text-today="{{ block.settings.text_today | escape }}"
+    data-text-tomorrow="{{ block.settings.text_tomorrow | escape }}"
+    role="status"
+    hidden
+    {{ block.shopify_attributes }}
+  >
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2.5M9 2h6M12 2v3"/></svg>
+    <span data-v6-dispatch-text></span>
+  </div>
+  <script>
+    (function () {
+      var el = document.currentScript && document.currentScript.previousElementSibling;
+      if (!el || !el.hasAttribute('data-v6-dispatch')) return;
+      var out = el.querySelector('[data-v6-dispatch-text]');
+      var cutoff = parseInt(el.getAttribute('data-cutoff'), 10) * 60; // seconds after midnight, UK time
+      var fmt;
+      try {
+        fmt = new Intl.DateTimeFormat('en-GB', { timeZone: 'Europe/London', hour: '2-digit', minute: '2-digit', second: '2-digit', hourCycle: 'h23' });
+      } catch (e) {
+        return; // very old browser: keep the block hidden
+      }
+
+      function ukSecondsNow() {
+        var parts = {};
+        fmt.formatToParts(new Date()).forEach(function (p) { parts[p.type] = p.value; });
+        return (parseInt(parts.hour, 10) % 24) * 3600 + parseInt(parts.minute, 10) * 60 + parseInt(parts.second, 10);
+      }
+
+      function pad(n) { return (n < 10 ? '0' : '') + n; }
+
+      function esc(s) {
+        return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; });
+      }
+
+      function render() {
+        var now = ukSecondsNow();
+        var today = now < cutoff;
+        var left = today ? cutoff - now : 86400 - now + cutoff;
+        var h = Math.floor(left / 3600);
+        var m = Math.floor((left % 3600) / 60);
+        var s = left % 60;
+        var time = h > 0 ? h + 'h ' + pad(m) + 'm' : m + 'm ' + pad(s) + 's';
+        var tpl = el.getAttribute(today ? 'data-text-today' : 'data-text-tomorrow') || '';
+        out.innerHTML = esc(tpl).replace('[time]', '<strong>' + time + '</strong>');
+        el.hidden = false;
+      }
+
+      render();
+      setInterval(render, 1000);
+    })();
+  </script>
+{%- endif -%}

@@ -76,6 +76,27 @@
       margin: 0;
     }
 
+    .ai-feature-grid__link-{{ ai_gen_id }} {
+      text-decoration: none;
+      color: inherit;
+      cursor: pointer;
+    }
+
+    .ai-feature-grid__link-{{ ai_gen_id }} .ai-feature-grid__icon-{{ ai_gen_id }} {
+      transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+    }
+
+    .ai-feature-grid__link-{{ ai_gen_id }}:hover .ai-feature-grid__icon-{{ ai_gen_id }},
+    .ai-feature-grid__link-{{ ai_gen_id }}:focus-visible .ai-feature-grid__icon-{{ ai_gen_id }} {
+      background-color: {{ block.settings.icon_color }};
+      color: #ffffff;
+      transform: translateY(-2px);
+    }
+
+    .ai-feature-grid__link-{{ ai_gen_id }}:hover .ai-feature-grid__heading-{{ ai_gen_id }} {
+      color: {{ block.settings.icon_color }};
+    }
+
     @media screen and (max-width: 749px) {
       .ai-feature-grid-{{ ai_gen_id }} {
         grid-template-columns: 1fr;
@@ -94,8 +115,24 @@
       {% assign icon_key = 'item_' | append: i | append: '_icon' %}
       {% assign heading_key = 'item_' | append: i | append: '_heading' %}
       {% assign text_key = 'item_' | append: i | append: '_text' %}
+      {% assign link_key = 'item_' | append: i | append: '_link' %}
+      {% assign item_link = block.settings[link_key] %}
       {% if block.settings[enabled_key] %}
+        {% if item_link != blank %}
+          {%- liquid
+            assign is_external = false
+            if item_link contains 'http'
+              assign is_external = true
+            endif
+          -%}
+          <a
+            class="ai-feature-grid__item-{{ ai_gen_id }} ai-feature-grid__link-{{ ai_gen_id }}"
+            href="{{ item_link }}"
+            {% if is_external %}target="_blank" rel="noopener"{% endif %}
+          >
+        {% else %}
         <div class="ai-feature-grid__item-{{ ai_gen_id }}">
+        {% endif %}
           {% if block.settings[icon_key] != blank %}
             <span class="ai-feature-grid__icon-{{ ai_gen_id }}">{{ block.settings[icon_key] }}</span>
           {% endif %}
@@ -105,7 +142,7 @@
           {% if block.settings[text_key] != blank %}
             <p class="ai-feature-grid__text-{{ ai_gen_id }}">{{ block.settings[text_key] }}</p>
           {% endif %}
-        </div>
+        {% if item_link != blank %}</a>{% else %}</div>{% endif %}
       {% endif %}
     {% endfor %}
     </div>

@@ -85,6 +85,19 @@
             "text_color": "#5c5c5c"
           }
         },
+        "dispatch_countdown": {
+          "type": "ai_dispatch_countdown",
+          "settings": {
+            "cutoff_hour": 14,
+            "cutoff_minute": "0",
+            "text_today": "Order within [time] for same-day dispatch",
+            "text_tomorrow": "Order within [time] for dispatch tomorrow",
+            "hide_sold_out": true,
+            "accent_color": "#1a7f37",
+            "text_color": "#333333",
+            "background_color": "#f1f8f3"
+          }
+        },
         "quantity_selector": {
           "type": "quantity_selector",
           "settings": {}
@@ -195,7 +208,8 @@
             "item_3_enabled": true,
             "item_3_icon": "<svg viewbox=\"0 0 24 24\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.4 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2Z\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linejoin=\"round\"></path></svg>",
             "item_3_heading": "24/7 Support",
-            "item_3_text": "Friendly help whenever you need it."
+            "item_3_text": "Friendly help whenever you need it.",
+            "item_3_link": "https://wa.me/447308675129"
           }
         },
         "compatibility": {
@@ -227,6 +241,7 @@
         "variant_picker",
         "price",
         "delivery_note",
+        "dispatch_countdown",
         "share",
         "quantity_selector",
         "buy_buttons",

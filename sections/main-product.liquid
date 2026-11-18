@@ -419,6 +419,8 @@
                   {% render 'ai-sold-progress', block: block %}
                 {%- when 'ai_delivery_note' -%}
                   {% render 'ai-delivery-note', block: block %}
+                {%- when 'ai_dispatch_countdown' -%}
+                  {% render 'ai-dispatch-countdown', block: block, product: product %}
                 {%- when 'ai_wishlist_compare' -%}
                   {% render 'ai-wishlist-compare', block: block %}
                 {%- when 'sku' -%}
@@ -2813,6 +2815,12 @@
           "default": "Quick, reliable shipping on every order."
         },
         {
+          "type": "url",
+          "id": "item_1_link",
+          "label": "Link (optional)",
+          "info": "Makes this item clickable."
+        },
+        {
           "type": "header",
           "content": "Item 2"
         },
@@ -2841,6 +2849,12 @@
           "default": "Every part is checked before it ships."
         },
         {
+          "type": "url",
+          "id": "item_2_link",
+          "label": "Link (optional)",
+          "info": "Makes this item clickable."
+        },
+        {
           "type": "header",
           "content": "Item 3"
         },
@@ -2867,6 +2881,78 @@
           "id": "item_3_text",
           "label": "Text",
           "default": "Friendly help whenever you need it."
+        },
+        {
+          "type": "url",
+          "id": "item_3_link",
+          "label": "Link (optional)",
+          "info": "Makes this item clickable. For WhatsApp use https://wa.me/447308675129"
+        }
+      ]
+    },
+    {
+      "type": "ai_dispatch_countdown",
+      "name": "Dispatch countdown",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "range",
+          "id": "cutoff_hour",
+          "label": "Daily cut-off hour (UK time, 24h)",
+          "min": 0,
+          "max": 23,
+          "step": 1,
+          "default": 14,
+          "info": "Orders before this time are dispatched the same day, every day of the week."
+        },
+        {
+          "type": "select",
+          "id": "cutoff_minute",
+          "label": "Cut-off minutes",
+          "options": [
+            { "value": "0", "label": ":00" },
+            { "value": "15", "label": ":15" },
+            { "value": "30", "label": ":30" },
+            { "value": "45", "label": ":45" }
+          ],
+          "default": "0"
+        },
+        {
+          "type": "text",
+          "id": "text_today",
+          "label": "Text before cut-off",
+          "default": "Order within [time] for same-day dispatch",
+          "info": "[time] is replaced by the live countdown, e.g. 1h 23m."
+        },
+        {
+          "type": "text",
+          "id": "text_tomorrow",
+          "label": "Text after cut-off",
+          "default": "Order within [time] for dispatch tomorrow"
+        },
+        {
+          "type": "checkbox",
+          "id": "hide_sold_out",
+          "label": "Hide when the product is sold out",
+          "default": true
+        },
+        {
+          "type": "color",
+          "id": "accent_color",
+          "label": "Countdown colour",
+          "default": "#1a7f37"
+        },
+        {
+          "type": "color",
+          "id": "text_color",
+          "label": "Text colour",
+          "default": "#333333"
+        },
+        {
+          "type": "color",
+          "id": "background_color",
+          "label": "Background colour",
+          "default": "#f1f8f3"
         }
       ]
     },
