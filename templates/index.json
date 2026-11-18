@@ -218,42 +218,42 @@
           "type": "logo",
           "settings": {
             "name": "Mercedes",
-            "link": "#"
+            "link": "shopify://collections/mercedes-benz-parts"
           }
         },
         "logo_bmw": {
           "type": "logo",
           "settings": {
             "name": "BMW",
-            "link": "#"
+            "link": "shopify://collections/bmw-parts"
           }
         },
         "logo_audi": {
           "type": "logo",
           "settings": {
             "name": "Audi",
-            "link": "#"
+            "link": "shopify://collections/audi-parts"
           }
         },
         "logo_lexus": {
           "type": "logo",
           "settings": {
             "name": "Lexus",
-            "link": "#"
+            "link": "shopify://collections/lexus-parts"
           }
         },
         "logo_toyota": {
           "type": "logo",
           "settings": {
             "name": "Toyota",
-            "link": "#"
+            "link": "shopify://collections/toyota-parts"
           }
         },
         "logo_nissan": {
           "type": "logo",
           "settings": {
             "name": "Nissan",
-            "link": "#"
+            "link": "shopify://collections/nissan-parts"
           }
         }
       },
