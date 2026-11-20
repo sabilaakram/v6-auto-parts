@@ -749,7 +749,19 @@
                   </div>
                 {% endif %}
                 <div class="ai-footer-support-text-{{ ai_gen_id }}">
-                  <a href="tel:{{ block.settings.support_phone }}">{{ block.settings.support_phone }}</a>
+                  {%- liquid
+                    # WhatsApp needs the number in international form without "+", spaces or a leading 0 (07... -> 447...)
+                    assign phone_digits = block.settings.support_phone | remove: '+' | remove: ' ' | remove: '-' | remove: '(' | remove: ')'
+                    assign phone_first = phone_digits | slice: 0
+                    if phone_first == '0'
+                      assign phone_digits = phone_digits | remove_first: '0' | prepend: '44'
+                    endif
+                  -%}
+                  {% if block.settings.phone_whatsapp %}
+                    <a href="https://wa.me/{{ phone_digits }}" target="_blank" rel="noopener" aria-label="Chat on WhatsApp: {{ block.settings.support_phone | escape }}">{{ block.settings.support_phone }}</a>
+                  {% else %}
+                    <a href="tel:{{ phone_digits | prepend: '+' }}">{{ block.settings.support_phone }}</a>
+                  {% endif %}
                 </div>
               </div>
             {% endif %}
@@ -1348,6 +1360,13 @@
       "id": "support_phone",
       "label": "Phone",
       "default": "+44 123 456 7890"
+    },
+    {
+      "type": "checkbox",
+      "id": "phone_whatsapp",
+      "label": "Open phone number in WhatsApp",
+      "info": "On: clicking the number opens a WhatsApp chat. Off: it starts a phone call.",
+      "default": true
     },
     {
       "type": "header",
