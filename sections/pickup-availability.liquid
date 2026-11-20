@@ -98,7 +98,19 @@
             {{ address | format_address }}
 
             {%- if address.phone.size > 0 -%}
-              <p>{{ address.phone }}</p>
+              {%- liquid
+                # Store phone opens a WhatsApp chat: wa.me needs digits only, international form (07... -> 447...)
+                assign wa_number = address.phone | remove: '+' | remove: ' ' | remove: '-' | remove: '(' | remove: ')'
+                assign wa_first = wa_number | slice: 0
+                if wa_first == '0'
+                  assign wa_number = wa_number | remove_first: '0' | prepend: '44'
+                endif
+              -%}
+              <p>
+                <a href="https://wa.me/{{ wa_number }}" target="_blank" rel="noopener" class="link" aria-label="Chat on WhatsApp: {{ address.phone | escape }}">
+                  {{- address.phone -}}
+                </a>
+              </p>
             {%- endif -%}
           </address>
         </li>

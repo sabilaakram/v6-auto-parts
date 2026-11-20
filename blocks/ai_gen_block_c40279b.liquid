@@ -233,6 +233,27 @@
 {% assign active_mobile_menu = block.settings.mobile_menu | default: block.settings.menu %}
 
 {% style %}
+  {%- comment -%}
+    Load the picked menu/drawer fonts on every page. Without these @font-face rules the
+    menu only got the real font on pages where some other section happened to load it
+    (the homepage), and fell back to a wider system font everywhere else.
+  {%- endcomment -%}
+  {%- liquid
+    assign nav_font = block.settings.nav_font_family
+    assign nav_font_weighted = nav_font | font_modify: 'weight', block.settings.nav_font_weight
+    if block.settings.nav_font_style == 'italic' and nav_font_weighted
+      assign nav_font_weighted = nav_font_weighted | font_modify: 'style', 'italic'
+    endif
+    assign drawer_font = block.settings.drawer_font_family
+    assign drawer_font_weighted = drawer_font | font_modify: 'weight', block.settings.drawer_font_weight
+    assign drawer_font_bold = drawer_font | font_modify: 'weight', 700
+  -%}
+  {{ nav_font | font_face: font_display: 'swap' }}
+  {%- if nav_font_weighted -%}{{ nav_font_weighted | font_face: font_display: 'swap' }}{%- endif -%}
+  {{ drawer_font | font_face: font_display: 'swap' }}
+  {%- if drawer_font_weighted -%}{{ drawer_font_weighted | font_face: font_display: 'swap' }}{%- endif -%}
+  {%- if drawer_font_bold -%}{{ drawer_font_bold | font_face: font_display: 'swap' }}{%- endif -%}
+
   .ai-header-{{ ai_gen_id }} {
     display: block;
     width: 100%;
