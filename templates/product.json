@@ -301,7 +301,7 @@
             "heading_color": "#a50000",
             "body_text_color": "#111111",
             "note_text_color": "#666666",
-            "dropdown_bg_color": "#ffffff",
+            "dropdown_bg_color": "#f1f1f1",
             "accent_color": "#a50000",
             "accent_hover_color": "#7a0000"
           },

@@ -63,7 +63,6 @@
     clip-path: polygon(0 0, 88% 0, 100% 50%, 88% 100%, 0 100%);
     background: {{ block.settings.dropdown_bg_color }};
     color: {{ block.settings.body_text_color }};
-    box-shadow: inset 0 0 0 1px #e0e0e0;
     transition: background-color 0.2s ease, color 0.2s ease;
     white-space: nowrap;
   }
@@ -71,7 +70,6 @@
   .vf-tab-{{ ai_gen_id }}.is-active {
     background: {{ block.settings.accent_color }};
     color: #ffffff;
-    box-shadow: none;
   }
 
   .vf-content-{{ ai_gen_id }} {
@@ -527,7 +525,7 @@
       "type": "color",
       "id": "dropdown_bg_color",
       "label": "Inactive tab background",
-      "default": "#ffffff"
+      "default": "#f1f1f1"
     },
     {
       "type": "color",
