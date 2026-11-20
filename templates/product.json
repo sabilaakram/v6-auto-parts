@@ -292,7 +292,7 @@
             "find_button_label": "Find Parts",
             "search_note": "",
             "reg_field_label": "Find vehicle by Reg:",
-            "reg_lookup_endpoint": "",
+            "reg_lookup_endpoint": "https://steep-pond-fa2c.cyberxstudio-development.workers.dev",
             "reg_placeholder": "YY26 ABC",
             "reg_button_label": "Find Parts",
             "reg_note": "Enter your number plate to see parts matched to your vehicle's make, year, engine and fuel.",
