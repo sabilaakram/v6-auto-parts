@@ -1,0 +1,22 @@
+{
+  "sections": {
+    "main": {
+      "type": "vehicle-parts-results",
+      "settings": {
+        "lookup_endpoint": "https://steep-pond-fa2c.cyberxstudio-development.workers.dev",
+        "heading": "Parts For Your Vehicle",
+        "reg_placeholder": "YY26 ABC",
+        "button_label": "Find Parts",
+        "page_size": 24,
+        "columns_desktop": 4,
+        "max_width": 1200,
+        "padding_top": 36,
+        "padding_bottom": 48,
+        "accent_color": "#a50000"
+      }
+    }
+  },
+  "order": [
+    "main"
+  ]
+}

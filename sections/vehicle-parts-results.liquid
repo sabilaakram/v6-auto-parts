@@ -1,0 +1,530 @@
+{%- comment -%}
+  Results page for the vehicle finder's "Vehicle Reg" tab: /pages/vehicle-parts?reg=AB12CDE
+  (page template templates/page.vehicle-parts.json). Looks the reg up through the DVLA Worker
+  (dvla-worker/), then shortlists parts with assets/vehicle-fitment.js.
+{%- endcomment -%}
+<script src="{{ 'vehicle-fitment.js' | asset_url }}" defer="defer"></script>
+
+{% style %}
+  .vpr-{{ section.id }} {
+    padding: {{ section.settings.padding_top }}px 20px {{ section.settings.padding_bottom }}px;
+    font-family: Inter, sans-serif;
+    color: #111111;
+  }
+  .vpr-inner {
+    max-width: {{ section.settings.max_width }}px;
+    margin: 0 auto;
+  }
+  .vpr-heading {
+    font-family: 'Bebas Neue', sans-serif;
+    font-weight: 400;
+    font-size: 44px;
+    line-height: 1.2;
+    color: {{ section.settings.accent_color }};
+    text-transform: uppercase;
+    text-align: center;
+    margin: 0 0 20px;
+  }
+  .vpr-form {
+    display: flex;
+    gap: 10px;
+    max-width: 560px;
+    margin: 0 auto 24px;
+  }
+  .vpr-plate {
+    display: flex;
+    flex: 1 1 auto;
+    height: 46px;
+    border: 2px solid #000000;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .vpr-plate-badge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    background: #003399;
+    color: #ffffff;
+    font-size: 9px;
+    font-weight: 700;
+  }
+  .vpr-plate input {
+    flex: 1 1 auto;
+    min-width: 0;
+    border: none;
+    background: #ffd400;
+    color: #111111;
+    font-family: 'Charles Wright', Arial, sans-serif;
+    font-weight: 700;
+    font-size: 22px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-align: center;
+  }
+  .vpr-plate input::placeholder {
+    color: #8a7a00;
+    opacity: 1;
+  }
+  .vpr-btn {
+    flex: 0 0 auto;
+    border: none;
+    cursor: pointer;
+    padding: 0 26px 0 22px;
+    height: 46px;
+    background: {{ section.settings.accent_color }};
+    color: #ffffff;
+    font-family: Inter, sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    clip-path: polygon(0 0, 88% 0, 100% 50%, 88% 100%, 0 100%);
+  }
+  .vpr-btn[disabled] {
+    opacity: 0.7;
+    cursor: wait;
+  }
+  .vpr-vehicle {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px 16px;
+    padding: 12px 14px;
+    border: 1px solid #e5e5e5;
+    border-left: 4px solid {{ section.settings.accent_color }};
+    border-radius: 4px;
+    background: #fafafa;
+  }
+  .vpr-vehicle-plate {
+    background: #ffd400;
+    border: 2px solid #000000;
+    border-radius: 3px;
+    padding: 2px 10px;
+    font-weight: 800;
+    font-size: 16px;
+    letter-spacing: 0.08em;
+  }
+  .vpr-vehicle-name {
+    font-weight: 700;
+    font-size: 16px;
+  }
+  .vpr-vehicle-meta,
+  .vpr-note {
+    font-size: 13px;
+    color: #666666;
+    margin: 0;
+  }
+  .vpr-summary {
+    margin: 18px 0 4px;
+    font-size: 15px;
+    font-weight: 600;
+  }
+  .vpr-message {
+    margin: 0;
+    padding: 14px 16px;
+    border-radius: 4px;
+    background: #fbe4e4;
+    font-size: 14px;
+    text-align: center;
+  }
+  .vpr-message.is-loading {
+    background: #f3f3f3;
+  }
+  .vpr-link {
+    color: {{ section.settings.accent_color }};
+    font-weight: 600;
+  }
+  .vpr-grid {
+    display: grid;
+    grid-template-columns: repeat({{ section.settings.columns_desktop }}, minmax(0, 1fr));
+    gap: 14px;
+    margin-top: 14px;
+  }
+  .vpr-card {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #e5e5e5;
+    border-radius: 4px;
+    overflow: hidden;
+    background: #ffffff;
+    color: inherit;
+    text-decoration: none;
+    transition: box-shadow 0.2s ease;
+  }
+  .vpr-card:hover {
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  }
+  .vpr-card-img {
+    aspect-ratio: 1 / 1;
+    background: #f3f3f3;
+  }
+  .vpr-card-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+  }
+  .vpr-card-body {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 10px;
+    flex: 1 1 auto;
+  }
+  .vpr-card-title {
+    font-size: 13px;
+    line-height: 1.35;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .vpr-card-price {
+    margin-top: auto;
+    font-weight: 700;
+    font-size: 15px;
+  }
+  .vpr-card-price s {
+    font-weight: 400;
+    font-size: 12px;
+    color: #888888;
+    margin-left: 6px;
+  }
+  .vpr-fit {
+    align-self: flex-start;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 3px;
+    background: #e6f4ea;
+    color: #1e6b34;
+  }
+  .vpr-fit.is-check {
+    background: #fff4d6;
+    color: #7a5a00;
+  }
+  .vpr-more {
+    display: block;
+    margin: 20px auto 0;
+    border: 2px solid {{ section.settings.accent_color }};
+    background: #ffffff;
+    color: {{ section.settings.accent_color }};
+    font-family: Inter, sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    text-transform: uppercase;
+    padding: 10px 22px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  .vpr-more[hidden] {
+    display: none;
+  }
+  @media screen and (max-width: 989px) {
+    .vpr-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+  @media screen and (max-width: 749px) {
+    .vpr-heading {
+      font-size: 30px;
+    }
+    .vpr-form {
+      flex-direction: column;
+    }
+    .vpr-btn {
+      clip-path: none;
+      border-radius: 4px;
+      width: 100%;
+    }
+    .vpr-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+  }
+{% endstyle %}
+
+<vehicle-parts-results
+  class="vpr-{{ section.id }}"
+  data-endpoint="{{ section.settings.lookup_endpoint | strip | escape }}"
+  data-catalog-url="{{ routes.collections_url }}/all"
+  data-search-url="{{ routes.search_url }}"
+  data-page-size="{{ section.settings.page_size }}"
+>
+  <div class="vpr-inner">
+    {% if section.settings.heading != blank %}
+      <h1 class="vpr-heading">{{ section.settings.heading }}</h1>
+    {% endif %}
+
+    <form class="vpr-form" data-vpr-form>
+      <div class="vpr-plate">
+        <span class="vpr-plate-badge">UK</span>
+        <input
+          type="text"
+          name="reg"
+          maxlength="8"
+          autocomplete="off"
+          autocapitalize="characters"
+          aria-label="Vehicle registration number"
+          placeholder="{{ section.settings.reg_placeholder }}"
+          data-vpr-input
+        >
+      </div>
+      <button type="submit" class="vpr-btn" data-vpr-btn>{{ section.settings.button_label }}</button>
+    </form>
+
+    <div data-vpr-results aria-live="polite">
+      <p class="vpr-message is-loading">Enter your registration above to see parts for your vehicle.</p>
+    </div>
+  </div>
+</vehicle-parts-results>
+
+<script>
+  (function () {
+    if (customElements.get('vehicle-parts-results')) return;
+
+    function el(tag, className, text) {
+      const node = document.createElement(tag);
+      if (className) node.className = className;
+      if (text != null) node.textContent = text;
+      return node;
+    }
+
+    function titleCase(s) {
+      return String(s || '').toLowerCase().replace(/(^|[\s-])([a-z])/g, (m, p, c) => p + c.toUpperCase());
+    }
+
+    class VehiclePartsResults extends HTMLElement {
+      connectedCallback() {
+        this.form = this.querySelector('[data-vpr-form]');
+        this.input = this.querySelector('[data-vpr-input]');
+        this.btn = this.querySelector('[data-vpr-btn]');
+        this.box = this.querySelector('[data-vpr-results]');
+        this.pageSize = parseInt(this.dataset.pageSize, 10) || 24;
+
+        this.input.addEventListener('input', () => {
+          this.input.value = this.input.value.toUpperCase();
+        });
+        this.form.addEventListener('submit', (event) => {
+          event.preventDefault();
+          const reg = this.cleanReg(this.input.value);
+          if (!reg) {
+            this.input.focus();
+            return;
+          }
+          const url = new URL(window.location.href);
+          url.searchParams.set('reg', reg);
+          history.pushState({}, '', url);
+          this.run(reg);
+        });
+        window.addEventListener('popstate', () => this.runFromUrl());
+        this.runFromUrl();
+      }
+
+      cleanReg(value) {
+        return String(value || '').toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 8);
+      }
+
+      runFromUrl() {
+        const reg = this.cleanReg(new URLSearchParams(window.location.search).get('reg'));
+        this.input.value = reg;
+        if (reg) this.run(reg);
+      }
+
+      message(text, loading) {
+        this.box.replaceChildren(el('p', 'vpr-message' + (loading ? ' is-loading' : ''), text));
+      }
+
+      async run(reg) {
+        const runId = (this.runId = (this.runId || 0) + 1);
+        const label = this.btn.textContent;
+        this.btn.disabled = true;
+        this.btn.textContent = 'Looking up...';
+        this.message('Looking up ' + reg + ' and finding matching parts...', true);
+        try {
+          const [vehicle, products] = await Promise.all([
+            V6Fitment.lookupVehicle(this.dataset.endpoint, reg),
+            V6Fitment.loadCatalog(this.dataset.catalogUrl),
+          ]);
+          if (runId !== this.runId) return;
+          this.render(vehicle, V6Fitment.shortlist(vehicle, products));
+          document.title = reg + ' parts – ' + document.title.replace(/^.* parts – /, '');
+        } catch (err) {
+          if (runId !== this.runId) return;
+          this.message(err && err.userMessage ? err.userMessage : 'Sorry, something went wrong. Please try again.');
+        } finally {
+          if (runId === this.runId) {
+            this.btn.disabled = false;
+            this.btn.textContent = label;
+          }
+        }
+      }
+
+      render(vehicle, matches) {
+        const year = vehicle.year || parseInt(vehicle.firstRegistered, 10) || '';
+        const fuel = titleCase(vehicle.fuel);
+        const name = [year, titleCase(vehicle.make)].filter(Boolean).join(' ');
+        const meta = [vehicle.engineLitres ? vehicle.engineLitres + 'L' : '', fuel, titleCase(vehicle.colour)]
+          .filter(Boolean)
+          .join(' · ');
+
+        const card = el('div', 'vpr-vehicle');
+        card.append(el('span', 'vpr-vehicle-plate', vehicle.registration || ''));
+        const info = el('div');
+        info.append(el('div', 'vpr-vehicle-name', name || 'Your vehicle'));
+        if (meta) info.append(el('p', 'vpr-vehicle-meta', meta));
+        card.append(info);
+        const nodes = [card];
+
+        const searchAll = el('a', 'vpr-link', 'Search all ' + titleCase(vehicle.make) + ' parts');
+        searchAll.href = this.dataset.searchUrl + '?type=product&q=' + encodeURIComponent(vehicle.make || '');
+
+        if (!matches.length) {
+          const p = el('p', 'vpr-summary', "We couldn't find parts listed for this vehicle yet. ");
+          p.append(searchAll);
+          nodes.push(p);
+          this.box.replaceChildren(...nodes);
+          return;
+        }
+
+        nodes.push(el('p', 'vpr-summary', matches.length + (matches.length === 1 ? ' part' : ' parts') + ' found for your ' + name));
+        const note = el('p', 'vpr-note', 'Matched on make, year, engine size and fuel. Please check the model in each listing before ordering. ');
+        note.append(searchAll);
+        nodes.push(note);
+
+        const grid = el('div', 'vpr-grid');
+        const more = el('button', 'vpr-more', 'Show more parts');
+        more.type = 'button';
+        let shown = 0;
+        const showNext = () => {
+          matches.slice(shown, shown + this.pageSize).forEach((m) => grid.append(this.productCard(m, year)));
+          shown += this.pageSize;
+          more.hidden = shown >= matches.length;
+        };
+        more.addEventListener('click', showNext);
+        showNext();
+        nodes.push(grid, more);
+        this.box.replaceChildren(...nodes);
+      }
+
+      productCard(match, year) {
+        const p = match.product;
+        const a = el('a', 'vpr-card');
+        a.href = p.u;
+        const img = el('div', 'vpr-card-img');
+        if (p.i) {
+          const image = document.createElement('img');
+          image.src = p.i;
+          image.alt = p.t;
+          image.loading = 'lazy';
+          image.width = 360;
+          image.height = 360;
+          img.append(image);
+        }
+        a.append(img);
+        const body = el('div', 'vpr-card-body');
+        const fits = match.fit === 'year';
+        body.append(el('span', 'vpr-fit' + (fits ? '' : ' is-check'), fits ? 'Fits ' + year : 'Check fitment'));
+        body.append(el('span', 'vpr-card-title', p.t));
+        const price = el('span', 'vpr-card-price', p.p || '');
+        if (p.c) price.append(el('s', null, p.c));
+        body.append(price);
+        a.append(body);
+        return a;
+      }
+    }
+
+    // vehicle-fitment.js is deferred; deferred scripts run before DOMContentLoaded.
+    const define = () => customElements.define('vehicle-parts-results', VehiclePartsResults);
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', define);
+    else define();
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Vehicle parts results",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "lookup_endpoint",
+      "label": "Registration lookup service URL",
+      "info": "The DVLA lookup Worker URL (see dvla-worker/README.md in the theme repo)."
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Parts For Your Vehicle"
+    },
+    {
+      "type": "text",
+      "id": "reg_placeholder",
+      "label": "Reg input placeholder",
+      "default": "YY26 ABC"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "default": "Find Parts"
+    },
+    {
+      "type": "range",
+      "id": "page_size",
+      "min": 8,
+      "max": 48,
+      "step": 4,
+      "label": "Parts shown before \"Show more\"",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "columns_desktop",
+      "min": 2,
+      "max": 6,
+      "step": 1,
+      "label": "Columns on desktop",
+      "default": 4
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "min": 800,
+      "max": 1600,
+      "step": 20,
+      "unit": "px",
+      "label": "Max width",
+      "default": 1200
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Top padding",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom padding",
+      "default": 48
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent color",
+      "default": "#a50000"
+    }
+  ]
+}
+{% endschema %}
