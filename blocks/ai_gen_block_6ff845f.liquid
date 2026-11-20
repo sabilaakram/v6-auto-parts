@@ -352,8 +352,31 @@
         this.goToLogical(0, false);
         this.startAutoplay();
 
-        this.addEventListener('mouseenter', () => this.stopAutoplay());
-        this.addEventListener('mouseleave', () => this.startAutoplay());
+        // Autoplay pauses while the pointer is over the carousel and while a right-click
+        // menu is open, so the card a customer right-clicks ("Open link in new tab")
+        // doesn't slide away under the cursor.
+        this.addEventListener('mouseenter', () => {
+          this.isHovered = true;
+          this.stopAutoplay();
+        });
+        this.addEventListener('mouseleave', () => {
+          this.isHovered = false;
+          this.startAutoplay();
+        });
+        this.addEventListener('contextmenu', () => {
+          this.menuOpen = true;
+          this.stopAutoplay();
+        });
+        // The menu has closed once the pointer moves or clicks again on the page.
+        this.handleMenuClosed = () => {
+          if (!this.menuOpen) return;
+          this.menuOpen = false;
+          this.startAutoplay();
+        };
+        document.addEventListener('pointermove', this.handleMenuClosed);
+        document.addEventListener('pointerdown', this.handleMenuClosed);
+        this.handleVisibility = () => (document.hidden ? this.stopAutoplay() : this.startAutoplay());
+        document.addEventListener('visibilitychange', this.handleVisibility);
         window.addEventListener('resize', this.handleResize);
 
         this.wrapper.addEventListener('pointerdown', this.handlePointerDown);
@@ -614,7 +637,9 @@
       }
 
       startAutoplay() {
-        if (this.totalPages <= 1) return;
+        // Always clear first so timers never stack (stacked timers made the carousel speed up).
+        this.stopAutoplay();
+        if (this.totalPages <= 1 || this.isHovered || this.menuOpen || this.isDragging || document.hidden) return;
         this.autoplayInterval = setInterval(() => {
           this.goNext();
         }, {{ block.settings.autoplay_speed | times: 1000 }});
@@ -629,6 +654,9 @@
 
       disconnectedCallback() {
         this.stopAutoplay();
+        document.removeEventListener('pointermove', this.handleMenuClosed);
+        document.removeEventListener('pointerdown', this.handleMenuClosed);
+        document.removeEventListener('visibilitychange', this.handleVisibility);
         window.removeEventListener('resize', this.handleResize);
         this.wrapper.removeEventListener('pointerdown', this.handlePointerDown);
         this.wrapper.removeEventListener('pointermove', this.handlePointerMove);
